@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="20dp"
+    android:background="#40ffffff"
+    android:gravity="center_vertical" >
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="1395.27"
+        android:textSize="10dp" />
+
+    <View
+        android:layout_width="2px"
+        android:layout_height="match_parent"
+        android:background="#90808080" />
+
+    <LinearLayout
+        android:layout_width="130dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical" >
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/circle_view_bg_green" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="K41+25.18箱型通道"
+            android:textSize="10dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="2px"
+        android:layout_height="match_parent"
+        android:background="#90808080" />
+
+    <TextView
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="G45131081H0650"
+        android:textSize="10dp" />
+
+    <View
+        android:layout_width="2px"
+        android:layout_height="match_parent"
+        android:background="#90808080" />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="G45"
+        android:textSize="10dp" />
+
+    <View
+        android:layout_width="2px"
+        android:layout_height="match_parent"
+        android:background="#90808080" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_weight="1" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:layout_weight="1"
+            android:text="大广高速公路"
+            android:textSize="10dp" />
+
+        <Button
+            android:layout_height="match_parent"
+            android:layout_width="45dp"
+            android:background="#33ff99"
+            android:layout_gravity="right"
+            android:text="上传"
+            android:textSize="10dp" />
+    </LinearLayout>
+
+</LinearLayout>

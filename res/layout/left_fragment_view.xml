@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="52dp"
+    android:layout_height="match_parent"
+    android:background="@drawable/nav_bg"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:id="@+id/left_frag_profile"
+        android:layout_width="52dp"
+        android:layout_height="56dp" >
+
+        <com.suken.bridgedetection.widget.CircleImageView
+            android:id="@+id/left_frag_item_img"
+            xmlns:app="http://schemas.android.com/apk/res/com.suken.bridgedetection"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:src="@drawable/demo"
+            app:border_color="@color/dark"
+            app:border_width="1dp" />
+
+        <TextView
+            android:id="@+id/left_frag_item_num"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/circle_text_view_bg"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#ffffff"
+            android:textSize="6dp" />
+
+        <ImageView
+            android:id="@+id/left_frag_item_line"
+            android:layout_width="1dp"
+            android:visibility="gone"
+            android:layout_height="match_parent"
+            android:background="@color/red" />
+    </FrameLayout>
+
+    <include layout="@layout/left_item_view" android:id="@+id/left_frag_home"/>
+
+
+    <include layout="@layout/left_item_view" android:id="@+id/left_frag_ip"/>
+
+
+    <include layout="@layout/left_item_view" android:id="@+id/left_frag_video"/>
+
+
+    <include layout="@layout/left_item_view" android:id="@+id/left_frag_gps"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <include layout="@layout/left_item_view" android:id="@+id/left_frag_update"/>
+
+
+    <include layout="@layout/left_item_view" android:id="@+id/left_frag_exit"/>
+
+</LinearLayout>

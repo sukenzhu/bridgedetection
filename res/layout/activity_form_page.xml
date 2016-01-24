@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/list_main_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:background="#95323d4b"
+            android:gravity="center"
+            android:text="返回"
+            android:textColor="#ffffff"
+            android:textSize="10dp" />
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:background="#95323d4b"
+            android:gravity="center"
+            android:text="保存"
+            android:textColor="#ffffff"
+            android:textSize="10dp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#80ffffff"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:background="#3ea49d"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="桥梁经常检查纪律表"
+                        android:textColor="#ffffff"
+                        android:textSize="10dp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" >
+
+                        <TextView
+                            android:id="@+id/gps_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="GPS信号正常！"
+                            android:textColor="#ffffff"
+                            android:textSize="10dp" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/gps_text"
+                            android:src="@drawable/list_gps" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:gravity="right|center_vertical"
+                        android:paddingRight="5dp" >
+
+                        <CheckBox
+                            style="@android:style/Widget.CompoundButton.CheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="桥梁会诊"
+                            android:textColor="#ffffff"
+                            android:textSize="10dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="桥梁编号："
+                                android:textSize="9dp" />
+
+                            <EditText
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:background="@null"
+                                android:textSize="9dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="桥梁名称："
+                                android:textSize="9dp" />
+
+                            <EditText
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:background="@null"
+                                android:textSize="9dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="路线编号："
+                                android:textSize="9dp" />
+
+                            <EditText
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:background="@null"
+                                android:textSize="9dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="路线名称："
+                                android:textSize="9dp" />
+
+                            <EditText
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:background="@null"
+                                android:textSize="9dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="中心桩号："
+                                android:textSize="9dp" />
+
+                            <EditText
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:background="@null"
+                                android:textSize="9dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="养护单位："
+                                android:textSize="9dp" />
+
+                            <EditText
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:background="@null"
+                                android:textSize="9dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <include
+                android:id="@+id/yiqiang_layout"
+                layout="@layout/activity_form_item" />
+
+            <include
+                android:id="@+id/zhpo_layout"
+                layout="@layout/activity_form_item" />
+
+            <include
+                android:id="@+id/qtjc_layout"
+                layout="@layout/activity_form_item" />
+
+            <include
+                android:id="@+id/qdjc_layout"
+                layout="@layout/activity_form_item" />
+
+            <include
+                android:id="@+id/djcs_layout"
+                layout="@layout/activity_form_item" />
+
+            <include
+                android:id="@+id/zhizuo_layout"
+                layout="@layout/activity_form_item" />
+
+            <include
+                android:id="@+id/sbjg_layout"
+                layout="@layout/activity_form_item" />
+
+            <include
+                android:id="@+id/qllj_layout"
+                layout="@layout/activity_form_item" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:background="#80ffffff"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="15dp" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="上次技术状况评定等级："
+                        android:textSize="9dp" />
+
+                    <Spinner
+                        android:layout_width="100dp"
+                        android:layout_height="20dp"
+                        android:textSize="9dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="本次技术状况评定等级："
+                        android:textSize="9dp" />
+
+                    <Spinner
+                        android:layout_width="100dp"
+                        android:layout_height="20dp"
+                        android:textSize="9dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="15dp" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="负责人："
+                        android:textSize="9dp" />
+
+                    <Spinner
+                        android:layout_width="100dp"
+                        android:layout_height="20dp"
+                        android:textSize="9dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="负责人："
+                        android:textSize="9dp" />
+
+                    <Spinner
+                        android:layout_width="100dp"
+                        android:layout_height="20dp"
+                        android:textSize="9dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:textColor="#ffffff"
+        android:layout_height="20dp"
+        android:background="#3ea49d"
+        android:textSize="12dp"
+        android:text="保存" />
+
+</LinearLayout>
