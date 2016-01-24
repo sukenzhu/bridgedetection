@@ -1,7 +1,9 @@
 package com.suken.bridgedetection.fragment;
 
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.activity.BridgeFormActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -46,7 +48,11 @@ public class HomePageFragment extends Fragment implements OnClickListener {
 	}
 
 	@Override
-	public void onClick(View arg0) {
-
+	public void onClick(View v) {
+		int vid = v.getId();
+		if (vid == R.drawable.qiaoliangjiancha || vid == R.drawable.qiaoliangxuncha || vid == R.drawable.suidaojiancha
+				|| vid == R.drawable.suidaoxuncha) {
+			startActivity(new Intent(getActivity(), BridgeFormActivity.class));
+		}
 	}
 }

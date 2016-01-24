@@ -20,6 +20,7 @@ public class HomeFragmentItemController {
 		mImageView.setImageResource(imgRes);
 		mTextView = (TextView) mItemView.findViewById(R.id.home_frag_item_text);
 		mTextView.setText(textStr);
+		mItemView.setOnClickListener(fragment);
 	}
 
 }

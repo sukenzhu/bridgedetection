@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:id="@+id/title_view_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/title_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="TEST TITLE test title"
+            android:textColor="#ffffff"
+            android:textIsSelectable="false" />
+    </FrameLayout>
+
+    <com.suken.imageditor.GraffitiSurface
+        android:id="@+id/doodle_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</merge>
