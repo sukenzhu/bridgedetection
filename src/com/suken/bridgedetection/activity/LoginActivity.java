@@ -19,16 +19,4 @@ public class LoginActivity extends Activity {
 		startActivity(new Intent(this, HomePageActivity.class));
 	}
 	
-	
-	public void jump(View view){
-		int id = view.getId();
-		if(id == R.id.jumpmain){
-			startActivity(new Intent(this, HomePageActivity.class));
-		} else if(id == R.id.jumplist){
-			startActivity(new Intent(this, BridgeDetectionListActivity.class));
-		} else if(id == R.id.jumpform){
-			startActivity(new Intent(this, BridgeFormActivity.class));
-		}
-	}
-	
 }

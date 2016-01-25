@@ -124,36 +124,4 @@
             android:textSize="9dp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/jumpmain"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:onClick="jump"
-            android:clickable="true"
-            android:text="跳转首页"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/jumplist"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:onClick="jump"
-            android:clickable="true"
-            android:text="跳转列表"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/jumpform"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:onClick="jump"
-            android:text="跳转表单"
-            android:clickable="true"
-            android:textColor="#ffffff" />
-    </LinearLayout>
-
 </LinearLayout>
