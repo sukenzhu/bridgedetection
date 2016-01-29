@@ -66,6 +66,7 @@
                 android:orientation="vertical" >
 
                 <EditText
+                    android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:background="#303a48"
@@ -75,6 +76,7 @@
                     android:textSize="10dp" />
 
                 <EditText
+                    android:id="@+id/userpwd"
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:layout_marginTop="10dp"
@@ -96,7 +98,7 @@
                         android:layout_marginRight="10dp"
                         android:layout_weight="1"
                         android:background="#3ea49d"
-                        android:onClick="startMain"
+                        android:onClick="onlineLogin"
                         android:text="在线登录"
                         android:textColor="#ffffff"
                         android:textSize="10dp" />
@@ -106,7 +108,7 @@
                         android:layout_height="25dp"
                         android:layout_weight="1"
                         android:background="#e76070"
-                        android:onClick="startMain"
+                        android:onClick="offlineLogin"
                         android:text="离线登录"
                         android:textColor="#ffffff"
                         android:textSize="10dp" />
