@@ -2,17 +2,15 @@ package com.suken.bridgedetection.fragment;
 
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.activity.BridgeDetectionListActivity;
-import com.suken.bridgedetection.activity.BridgeFormActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-public class HomePageFragment extends Fragment implements OnClickListener {
+public class HomePageFragment extends BaseFragment implements OnClickListener {
 
 	private HomeFragmentItemController mRiChangYangHu = null;
 	private HomeFragmentItemController mZhiLiangChouJian = null;
@@ -51,9 +49,12 @@ public class HomePageFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int vid = v.getId();
-		if (vid == R.drawable.qiaoliangjiancha || vid == R.drawable.qiaoliangxuncha || vid == R.drawable.suidaojiancha
-				|| vid == R.drawable.suidaoxuncha) {
-			startActivity(new Intent(getActivity(), BridgeDetectionListActivity.class));
+		if (vid == R.drawable.qiaoliangjiancha || vid == R.drawable.qiaoliangxuncha || vid == R.drawable.suidaojiancha || vid == R.drawable.suidaoxuncha) {
+			Intent intent = new Intent(getActivity(), BridgeDetectionListActivity.class);
+			intent.putExtra("type", vid);
+			startActivity(intent);
+		} else {
+			toast("敬请期待!");
 		}
 	}
 }

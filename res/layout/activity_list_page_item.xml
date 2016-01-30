@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="20dp"
+    android:layout_height="30dp"
     android:background="#40ffffff"
     android:gravity="center_vertical" >
 
     <TextView
+		android:id="@+id/zxzh"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -23,6 +24,7 @@
         android:gravity="center_vertical" >
 
         <View
+            android:id="@+id/color_circle"
             android:layout_width="8dp"
             android:layout_height="8dp"
             android:layout_marginLeft="10dp"
@@ -30,6 +32,7 @@
             android:background="@drawable/circle_view_bg_green" />
 
         <TextView
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -43,6 +46,7 @@
         android:background="#90808080" />
 
     <TextView
+        android:id="@+id/qhbs"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -55,6 +59,7 @@
         android:background="#90808080" />
 
     <TextView
+        android:id="@+id/lxbm"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -73,6 +78,7 @@
         android:layout_weight="1" >
 
         <TextView
+            android:id="@+id/lxmc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="30dp"
@@ -81,9 +87,11 @@
             android:textSize="10dp" />
 
         <Button
+            android:id="@+id/operator"
             android:layout_height="match_parent"
             android:layout_width="45dp"
             android:background="#33ff99"
+            android:visibility="gone"
             android:layout_gravity="right"
             android:text="上传"
             android:textSize="10dp" />

@@ -10,5 +10,6 @@
     
     <drawable name="left_frag_disable">#787878</drawable>
      <drawable name="black_drawable">#30000000</drawable>
-    
+     <drawable name="list_title_green">#5b9bd1</drawable>
+    <drawable name="list_title_gray">#c0c0c0</drawable>
 </resources>

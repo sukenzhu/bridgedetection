@@ -1,10 +1,16 @@
 package com.suken.bridgedetection.storage;
 
+import java.io.Serializable;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "tb_hdbasedata")
-public class HDBaseData {
+public class HDBaseData implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@DatabaseField
 	private String createBy;
 	@DatabaseField

@@ -89,6 +89,7 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	private void jumpToHome(UserInfo info, boolean isOnline) {
+		BridgeDetectionApplication.mCurrentUser = info;
 		Intent intent = new Intent(this, HomePageActivity.class);
 		intent.putExtra("userInfo", info);
 		intent.putExtra("isOnline", true);
