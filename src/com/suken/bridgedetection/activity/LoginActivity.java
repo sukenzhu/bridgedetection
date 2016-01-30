@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.RequestType;
 import com.suken.bridgedetection.http.HttpTask;
 import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
 import com.suken.bridgedetection.storage.UserInfo;
@@ -36,7 +37,7 @@ public class LoginActivity extends BaseActivity {
 		mUserDao = new UserInfoDao();
 		mUserInfos = mUserDao.queryAll();
 		if(mUserInfos != null && mUserInfos.size() > 0){
-			jumpToHome(mUserInfos.get(0));
+			jumpToHome(mUserInfos.get(0), false);
 			finish();
 		}
 		setContentView(R.layout.activity_login_page);
@@ -81,15 +82,16 @@ public class LoginActivity extends BaseActivity {
 			}
 		}
 		if (info != null) {
-			jumpToHome(info);
+			jumpToHome(info, true);
 		} else {
 			toast("用户名或密码不正确");
 		}
 	}
 
-	private void jumpToHome(UserInfo info) {
+	private void jumpToHome(UserInfo info, boolean isOnline) {
 		Intent intent = new Intent(this, HomePageActivity.class);
 		intent.putExtra("userInfo", info);
+		intent.putExtra("isOnline", true);
 		startActivity(intent);
 	}
 
@@ -97,16 +99,16 @@ public class LoginActivity extends BaseActivity {
 		final OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
 			@Override
-			public void onRequestSuccess(String result) {
+			public void onRequestSuccess(RequestType type, String result) {
 				JSONObject obj = JSON.parseObject(result);
 				UserInfo info = obj.getObject("userInfo", UserInfo.class);
 				info.setPassword(pwd);
 				mUserDao.create(info);
-				jumpToHome(info);
+				jumpToHome(info, true);
 			}
 
 			@Override
-			public void onRequestFail(String resultCode, String result) {
+			public void onRequestFail(RequestType type, String resultCode, String result) {
 				toast(result + "(" + resultCode + ")");
 			}
 		};
@@ -123,7 +125,7 @@ public class LoginActivity extends BaseActivity {
 				list.add(pair);
 				pair = new BasicNameValuePair("did", BridgeDetectionApplication.mDeviceId);
 				list.add(pair);
-				new HttpTask(listener).executePost(list, "/bpmp/m/login.ht");
+				new HttpTask(listener, RequestType.login).executePost(list);
 				dismissLoading();
 				finish();
 			}

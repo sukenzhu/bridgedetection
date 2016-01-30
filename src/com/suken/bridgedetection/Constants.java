@@ -8,5 +8,7 @@ public class Constants {
 	public static final String ERRORCODE = "errcode";
 
 	public static final String ERRORMSG = "errmsg";
+	
+	public static final String SQLTAG = "ormlite";
 
 }

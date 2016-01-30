@@ -14,7 +14,7 @@ public class SqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 	private static final String TABLE_NAME = "bridgedetection.db";
 	private static SqliteOpenHelper instance;
 	private SqliteOpenHelper(Context context) {
-		super(context, TABLE_NAME, null, 3);
+		super(context, TABLE_NAME, null, 5);
 	}
 
 	@Override
@@ -22,6 +22,12 @@ public class SqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 		try {
 			TableUtils.createTable(connectionSource, UserInfo.class);
 			TableUtils.createTable(connectionSource, GXLuXianInfo.class);
+			TableUtils.createTable(connectionSource, QLBaseData.class);
+			TableUtils.createTable(connectionSource, HDBaseData.class);
+			TableUtils.createTable(connectionSource, SDBaseData.class);
+			TableUtils.createTable(connectionSource, YWDictionaryInfo.class);
+			TableUtils.createTable(connectionSource, QHYangHuZeRenInfo.class);
+			TableUtils.createTable(connectionSource, SDYangHuZeRenInfo.class);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -32,6 +38,12 @@ public class SqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 		try {
 			TableUtils.dropTable(connectionSource, UserInfo.class, true);
 			TableUtils.dropTable(connectionSource, GXLuXianInfo.class, true);
+			TableUtils.dropTable(connectionSource, QLBaseData.class, true);
+			TableUtils.dropTable(connectionSource, HDBaseData.class, true);
+			TableUtils.dropTable(connectionSource, SDBaseData.class, true);
+			TableUtils.dropTable(connectionSource, YWDictionaryInfo.class, true);
+			TableUtils.dropTable(connectionSource, QHYangHuZeRenInfo.class, true);
+			TableUtils.dropTable(connectionSource, SDYangHuZeRenInfo.class, true);
 			onCreate(database, connectionSource);
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -6,7 +6,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "tb_user")
-public class UserInfo implements IOrmable, Serializable {
+public class UserInfo implements Serializable {
 	private static final long serialVersionUID = 100l;
 	// " token": "2t7nzqgodgbr19kqb0wui21ge", //系统后台后续功能验证使用
 	// " userId": "10000000050039", //当前用户ID

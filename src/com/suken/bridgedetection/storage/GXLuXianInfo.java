@@ -6,7 +6,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "tb_gxluxian")
-public class GXLuXianInfo implements IOrmable, Serializable {
+public class GXLuXianInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@DatabaseField
@@ -200,4 +200,11 @@ public class GXLuXianInfo implements IOrmable, Serializable {
 		this.zdzh = zdzh;
 	}
 
+	@Override
+	public String toString() {
+		return "GXLuXianInfo [createBy=" + createBy + ", createtime=" + createtime + ", creator=" + creator + ", flag=" + flag + ", gydwId=" + gydwId + ", gydwName=" + gydwName + ", id=" + id
+				+ ", lxbh=" + lxbh + ", lxmc=" + lxmc + ", qdmc=" + qdmc + ", qdzh=" + qdzh + ", updateBy=" + updateBy + ", updatetime=" + updatetime + ", updator=" + updator + ", versionno="
+				+ versionno + ", xzdj=" + xzdj + ", xzdjmc=" + xzdjmc + ", zdmc=" + zdmc + ", zdzh=" + zdzh + "]";
+	}
+	
 }
