@@ -95,8 +95,8 @@ public class HttpTask {
 		HttpClient httpClient = new DefaultHttpClient();
 		try {
 			HttpPost postMethod = new HttpPost(getUrl(mRequestType.getUrl()));
-			postMethod.setEntity(new UrlEncodedFormEntity(parameters)); // 将参数填入POST
-																		// Entity中
+			postMethod.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+			postMethod.setEntity(new UrlEncodedFormEntity(parameters, "utf-8")); // 将参数填入POST
 			HttpResponse response = httpClient.execute(postMethod); // 执行POST方法
 			int resultCode = response.getStatusLine().getStatusCode();
 			String result = EntityUtils.toString(response.getEntity(), "utf-8");

@@ -381,7 +381,8 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 							toast("上传失败");
 						}
 					};
-					list.add(new BasicNameValuePair("json", JSON.toJSONString(data)));
+					String json = new String(JSON.toJSONString(data));
+					list.add(new BasicNameValuePair("json", json));
 					new HttpTask(listener, RequestType.updateqhjcInfo).executePost(list);
 				}
 				dismissLoading();

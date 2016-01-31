@@ -192,10 +192,10 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 	private void saveToLocal() {
 		CheckFormData data = new CheckFormData();
 		if(bean instanceof QLBaseData){
-			if(qhyhzrInfo != null){
-				data.setGldwId(qhyhzrInfo.getGydwid());
-				data.setGldwName(qhyhzrInfo.getGydwname());
-			}
+			data.setGldwId(((QLBaseData) bean).getGydwId());
+			data.setGldwName(((QLBaseData) bean).getGydwName());
+			data.setYhdwId(((QLBaseData) bean).getGydwId());
+			data.setYhdwName(((QLBaseData) bean).getGydwName());
 			data.setQhid(qhId);
 			data.setQhbm(qlbhEv.getText().toString());
 			data.setQhlx("b");
