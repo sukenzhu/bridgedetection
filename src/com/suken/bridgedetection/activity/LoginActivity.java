@@ -14,14 +14,19 @@ import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.RequestType;
 import com.suken.bridgedetection.http.HttpTask;
 import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
+import com.suken.bridgedetection.storage.SharePreferenceManager;
 import com.suken.bridgedetection.storage.UserInfo;
 import com.suken.bridgedetection.storage.UserInfoDao;
+import com.suken.bridgedetection.util.UiUtil;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class LoginActivity extends BaseActivity {
 
@@ -30,19 +35,25 @@ public class LoginActivity extends BaseActivity {
 	private EditText mNameView = null;
 	private EditText mPwdView = null;
 	private UserInfoDao mUserDao;
+	private TextView mTextView = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mUserDao = new UserInfoDao();
 		mUserInfos = mUserDao.queryAll();
-		if(mUserInfos != null && mUserInfos.size() > 0){
-			jumpToHome(mUserInfos.get(0), false);
-			finish();
-		}
 		setContentView(R.layout.activity_login_page);
 		mNameView = (EditText) findViewById(R.id.username);
 		mPwdView = (EditText) findViewById(R.id.userpwd);
+		mTextView = (TextView) findViewById(R.id.login_desc);
+		PackageInfo info;
+		try {
+			info = getPackageManager().getPackageInfo(getPackageName(), 0);
+			String versionName = info.versionName;
+			mTextView.setText("当前版本：" + versionName + "   " + "设备号：" + UiUtil.genDeviceId());
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void onlineLogin(View view) {
@@ -89,7 +100,11 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	private void jumpToHome(UserInfo info, boolean isOnline) {
+		if(isOnline){
+			SharePreferenceManager.getInstance().updateString("lastLogin", UiUtil.formatNowTime("yyyy-MM-dd"));
+		}
 		BridgeDetectionApplication.mCurrentUser = info;
+		BridgeDetectionApplication.mIsOffline = !isOnline;
 		Intent intent = new Intent(this, HomePageActivity.class);
 		intent.putExtra("userInfo", info);
 		intent.putExtra("isOnline", true);
@@ -106,6 +121,7 @@ public class LoginActivity extends BaseActivity {
 				info.setPassword(pwd);
 				mUserDao.create(info);
 				jumpToHome(info, true);
+				finish();
 			}
 
 			@Override
@@ -128,7 +144,6 @@ public class LoginActivity extends BaseActivity {
 				list.add(pair);
 				new HttpTask(listener, RequestType.login).executePost(list);
 				dismissLoading();
-				finish();
 			}
 		});
 	}

@@ -55,5 +55,15 @@ public class YWDictionaryDao {
 		}
 		return null;
 	}
+	
+	public List<YWDictionaryInfo> queryByTypeId(String typeId){
+		try {
+			List<YWDictionaryInfo> infos = mGXLuXianInfoDao.queryForEq("typeId", typeId);
+			return infos;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }

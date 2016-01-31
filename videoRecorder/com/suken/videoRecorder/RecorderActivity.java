@@ -235,7 +235,6 @@ public class RecorderActivity extends BaseActivity implements SurfaceHolder.Call
 		}
 	};
 
-	@SuppressLint("NewApi")
 	private void openCamera() {
 		// Open camera
 		try {

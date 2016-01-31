@@ -214,7 +214,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="经度：116.34528"
+                                android:id="@+id/home_jingdu"
+                                android:text="经度："
                                 android:textColor="@android:color/white"
                                 android:textSize="10dp" />
 
@@ -222,7 +223,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="纬度：116.34528"
+                                android:id="@+id/home_weidu"
+                                android:text="纬度："
                                 android:textColor="@android:color/white"
                                 android:textSize="10dp" />
                         </LinearLayout>
@@ -253,6 +255,7 @@
                             android:src="@drawable/device_no" />
 
                         <TextView
+                            android:id="@+id/home_deviceId"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="设备号:123"
@@ -275,6 +278,7 @@
                             android:src="@drawable/last_login" />
 
                         <TextView
+                            android:id="@+id/last_login"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="上次登录：2015-11-06"

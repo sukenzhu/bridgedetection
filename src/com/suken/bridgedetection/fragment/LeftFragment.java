@@ -1,15 +1,15 @@
 package com.suken.bridgedetection.fragment;
 
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.activity.HomePageActivity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-public class LeftFragment extends Fragment implements OnClickListener {
+public class LeftFragment extends BaseFragment implements OnClickListener {
 
 	private View mContentView = null;
 
@@ -48,9 +48,17 @@ public class LeftFragment extends Fragment implements OnClickListener {
 		mExitItem = new LeftFragmentItemController(this, mContentView, R.id.left_frag_exit, "安全退出",
 				R.drawable.left_frag_exit_img_selector);
 	}
+	
+	public void selectHome(){
+		mHomeItem.performClick();
+	}
 
 	@Override
 	public void onClick(View view) {
+		if(view.getId() == R.id.left_frag_video){
+			return;
+		}
+		HomePageActivity activity = (HomePageActivity) getActivity();
 		mHomeItem.clearFocus();
 		mIpItem.clearFocus();
 		mVideoItem.clearFocus();
@@ -58,6 +66,7 @@ public class LeftFragment extends Fragment implements OnClickListener {
 		mUpdateItem.clearFocus();
 		mExitItem.clearFocus();
 		int id = view.getId();
+		activity.updateFragment(id);
 		switch (id) {
 		case R.id.left_frag_home:
 			mHomeItem.setSelected();

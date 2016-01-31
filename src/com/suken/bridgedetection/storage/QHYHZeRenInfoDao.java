@@ -54,5 +54,17 @@ public class QHYHZeRenInfoDao {
 		}
 		return null;
 	}
+	
+	public QHYangHuZeRenInfo queryByQhId(String id){
+		try {
+			List<QHYangHuZeRenInfo> infos = mGXLuXianInfoDao.queryForEq("qhid", id);
+			if(infos != null && infos.size() > 0){
+				return infos.get(0);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }

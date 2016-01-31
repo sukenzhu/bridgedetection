@@ -31,7 +31,7 @@ public class GraffitiSurface extends SurfaceView implements SurfaceHolder.Callba
 	// 记录画笔的列表
 	private List<DoodleAction> mActions;
 
-	private Bitmap bmp;
+	private static Bitmap bmp;
 
 	public GraffitiSurface(Context context) {
 		super(context);
@@ -63,7 +63,9 @@ public class GraffitiSurface extends SurfaceView implements SurfaceHolder.Callba
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		Canvas canvas = mSurfaceHolder.lockCanvas();
-		canvas.drawBitmap(bmp, 0, 0, null);
+		if(bmp != null){
+			canvas.drawBitmap(bmp, 0, 0, null);
+		}
 		mSurfaceHolder.unlockCanvasAndPost(canvas);
 		mActions = new ArrayList<DoodleAction>();
 	}
@@ -75,7 +77,7 @@ public class GraffitiSurface extends SurfaceView implements SurfaceHolder.Callba
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-
+		bmp = null;
 	}
 
 	@Override
@@ -94,7 +96,9 @@ public class GraffitiSurface extends SurfaceView implements SurfaceHolder.Callba
 			break;
 		case MotionEvent.ACTION_MOVE:
 			Canvas canvas = mSurfaceHolder.lockCanvas();
-			canvas.drawBitmap(bmp, 0, 0, null);
+			if(bmp != null){
+				canvas.drawBitmap(bmp, 0, 0, null);
+			}
 			for (DoodleAction a : mActions) {
 				a.draw(canvas);
 			}
@@ -142,10 +146,11 @@ public class GraffitiSurface extends SurfaceView implements SurfaceHolder.Callba
 	 * @return
 	 */
 	public Bitmap getBitmap() {
-		bmp = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-		Canvas canvas = new Canvas(bmp);
+		Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawBitmap(bmp, 0, 0, null);
 		doDraw(canvas);
-		return bmp;
+		return bitmap;
 	}
 
 	public void doDraw(Canvas canvas) {
@@ -216,7 +221,7 @@ public class GraffitiSurface extends SurfaceView implements SurfaceHolder.Callba
 
 	}
 
-	public void setBitmapPath(String path) {
+	public static void setBitmapPath(String path) {
 		bmp = BitmapFactory.decodeFile(path);
 	}
 

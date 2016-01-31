@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 public class ListPageAdapter extends BaseAdapter {
 	
-	private Activity mContext ;
+	private BridgeDetectionListActivity mContext ;
 	private List<ListBean> mSourceData;
 	private int mType = R.drawable.qiaoliangjiancha;
 	private OnClickListener mItemClickListener = new OnClickListener() {
@@ -43,9 +43,10 @@ public class ListPageAdapter extends BaseAdapter {
 						intent.putExtra("qhInfo", (SDBaseData)bean.realBean);
 					}
 					intent.putExtra("formData", bean.mLastFormData);
-					mContext.startActivity(intent);
+					mContext.startActivityForResult(intent, 1);
 				} else if(TextUtils.equals(status, "1")){
 					//去上传
+					mContext.updateSingle(bean.id);
 				} 
 			} else {
 				ViewHolder holder = (ViewHolder) v.getTag();
@@ -74,7 +75,7 @@ public class ListPageAdapter extends BaseAdapter {
 		}
 	}
 
-	public ListPageAdapter(Activity mContext, List<ListBean> data, int type) {
+	public ListPageAdapter(BridgeDetectionListActivity mContext, List<ListBean> data, int type) {
 		super();
 		this.mType = type;
 		this.mContext = mContext;
@@ -141,6 +142,16 @@ public class ListPageAdapter extends BaseAdapter {
 			holder.colorCircle.setVisibility(View.INVISIBLE);
 		}
 		return view;
+	}
+	
+	
+	public void updateStatus(String id){
+		for(ListBean bean : mSourceData){
+			if(TextUtils.equals(bean.id, id)){
+				bean.status = "1";
+				notifyDataSetChanged();
+			}
+		}
 	}
 
 }

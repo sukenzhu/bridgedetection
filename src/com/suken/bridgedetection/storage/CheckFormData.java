@@ -1,14 +1,13 @@
 package com.suken.bridgedetection.storage;
 
 import java.io.Serializable;
+import java.util.List;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "tb_checkform")
-public class CheckFormData implements Serializable{
+public class CheckFormData implements Serializable {
 	private static final long serialVersionUID = 1l;
 	@DatabaseField
 	private String bno;
@@ -37,12 +36,25 @@ public class CheckFormData implements Serializable{
 	private String gldwName;
 	@DatabaseField
 	private String hzf;
-	@DatabaseField(id = true)
-	private String id;
+	@DatabaseField
+	private long id;
+	@DatabaseField(generatedId = true)
+	private long localId;
 	@DatabaseField
 	private String jcsj;
 	@DatabaseField
 	private String jlry;
+	@DatabaseField
+	private String lxbm;
+
+	public String getLxbm() {
+		return lxbm;
+	}
+
+	public void setLxbm(String lxbm) {
+		this.lxbm = lxbm;
+	}
+
 	@DatabaseField
 	private String lxid;
 	@DatabaseField
@@ -56,8 +68,7 @@ public class CheckFormData implements Serializable{
 	// "lxbm": "G20",
 	// "lxid": 10000001740003,
 	// "lxmc": "青银高速",
-	@ForeignCollectionField
-	private ForeignCollection<CheckDetail> ofenCheckDetailList;
+	private List<CheckDetail> ofenCheckDetailList;
 	@DatabaseField
 	private String orgid;
 	@DatabaseField
@@ -97,8 +108,6 @@ public class CheckFormData implements Serializable{
 	private String yhdwName;
 	@DatabaseField
 	private String zxzh;
-	@DatabaseField
-	private int type;
 
 	// "status": "1", //状态 1 草稿 2 已提交，参考业务字典分类ID：10000000690004
 	// "tjsj": null, //提交时间
@@ -182,11 +191,11 @@ public class CheckFormData implements Serializable{
 		this.hzf = hzf;
 	}
 
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -222,11 +231,11 @@ public class CheckFormData implements Serializable{
 		this.lxmc = lxmc;
 	}
 
-	public ForeignCollection<CheckDetail> getOfenCheckDetailList() {
+	public List<CheckDetail> getOfenCheckDetailList() {
 		return ofenCheckDetailList;
 	}
 
-	public void setOfenCheckDetailList(ForeignCollection<CheckDetail> ofenCheckDetailList) {
+	public void setOfenCheckDetailList(List<CheckDetail> ofenCheckDetailList) {
 		this.ofenCheckDetailList = ofenCheckDetailList;
 	}
 
@@ -358,12 +367,12 @@ public class CheckFormData implements Serializable{
 		this.zxzh = zxzh;
 	}
 
-	public int getType() {
-		return type;
+	public long getLocalId() {
+		return localId;
 	}
 
-	public void setType(int type) {
-		this.type = type;
+	public void setLocalId(long localId) {
+		this.localId = localId;
 	}
 
 	@Override

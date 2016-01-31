@@ -57,6 +57,10 @@ public class LeftFragmentItemController{
 		mLineView.setVisibility(View.VISIBLE);
 	}
 	
+	public void performClick(){
+		mItemView.performClick();
+	}
+	
 	public void clearFocus(){
 		mItemView.setSelected(false);
 		mItemView.setFocusable(false);

@@ -117,6 +117,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/login_desc"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:background="#323d4b"

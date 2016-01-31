@@ -10,5 +10,9 @@ public class Constants {
 	public static final String ERRORMSG = "errmsg";
 	
 	public static final String SQLTAG = "ormlite";
+	
+	public static final int REQUEST_CODE_CAPTURE =  1;
+	public static final int REQUEST_CODE_EDIT_IMG =  2;
+	public static final int REQUEST_CODE_VIDEO =  3;
 
 }

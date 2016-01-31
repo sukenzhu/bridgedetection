@@ -1,5 +1,10 @@
 package com.suken.imageditor;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 
 import android.app.Activity;
@@ -7,7 +12,9 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -22,19 +29,26 @@ import android.widget.TextView;
 public class ImageditorActivity extends Activity implements View.OnClickListener {
 
 	private GraffitiView graffitiView;
-	private TextView iconGraffiti, iconClose, iconWenben, iconModify;
+	private TextView iconGraffiti, iconClose, iconWenben, iconModify, iconSave;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		graffitiView = (GraffitiView) findViewById(R.id.top_panel);
 		Intent intent = getIntent();
-		String path = intent.getStringExtra("imgPath");
-		graffitiView.setBitmapPath(path);
+		Uri path = intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+		try {
+			File f = new File(new URI(path.toString()));
+			GraffitiView.setBitmapPath(f.getPath());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		graffitiView = (GraffitiView) findViewById(R.id.top_panel);
 		iconGraffiti = (TextView) findViewById(R.id.icon_doodle);
 		iconClose = (TextView) findViewById(R.id.icon_close);
 		iconWenben = (TextView) findViewById(R.id.icon_wenben);
+		iconSave = (TextView) findViewById(R.id.icon_save);
+		iconSave.setOnClickListener(this);
 		iconWenben.setOnClickListener(this);
 		iconClose.setOnClickListener(this);
 		iconGraffiti.setOnClickListener(this);
@@ -42,6 +56,14 @@ public class ImageditorActivity extends Activity implements View.OnClickListener
 		iconModify = (TextView) findViewById(R.id.icon_modify);
 		iconModify.setOnClickListener(this);
 	}
+
+	@Override
+	public void finish() {
+		setResult(Constants.REQUEST_CODE_EDIT_IMG);
+		super.finish();
+	}
+
+
 
 	@Override
 	public void onClick(View v) {
@@ -61,6 +83,11 @@ public class ImageditorActivity extends Activity implements View.OnClickListener
 			graffitiView.setTopView(GraffitiView.TOP_DOODLE);
 			iconGraffiti.setBackgroundColor(getResources().getColor(R.color.active));
 			iconWenben.setBackgroundColor(getResources().getColor(R.color.none));
+			break;
+		}
+		case R.id.icon_save:{
+			graffitiView.saveBitmap();
+			finish();
 			break;
 		}
 		case R.id.icon_modify: {

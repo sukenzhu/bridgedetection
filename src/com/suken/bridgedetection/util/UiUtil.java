@@ -1,6 +1,8 @@
 package com.suken.bridgedetection.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -32,6 +34,8 @@ import com.suken.bridgedetection.storage.YWDictionaryInfo;
 import com.suken.bridgedetection.util.NetWorkUtil.ConnectType;
 
 import android.app.Activity;
+import android.content.Context;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
@@ -47,14 +51,14 @@ public class UiUtil {
 		}
 		return DP;
 	}
-	
-	public static  void syncData(final BaseActivity activity) {
+
+	public static void syncData(final BaseActivity activity) {
 		ConnectType type = NetWorkUtil.getConnectType(activity);
-		if(type == ConnectType.CONNECT_TYPE_DISCONNECT){
+		if (type == ConnectType.CONNECT_TYPE_DISCONNECT) {
 			activity.toast("当前无网络，无法同步数据");
 			return;
 		}
-		if(type != ConnectType.CONNECT_TYPE_WIFI){
+		if (type != ConnectType.CONNECT_TYPE_WIFI) {
 			activity.toast("当前网络不是WiFi，不同步数据");
 			return;
 		}
@@ -131,7 +135,7 @@ public class UiUtil {
 				new HttpTask(listener, RequestType.sdyhzrInfo).executePost(list);
 				new HttpTask(listener, RequestType.ywzddmInfo).executePost(list);
 				String msg = builder.toString();
-				if(TextUtils.isEmpty(msg)){
+				if (TextUtils.isEmpty(msg)) {
 					SharePreferenceManager.getInstance().updateString("lastSyncTime", System.currentTimeMillis() + "");
 					activity.toast("数据同步成功");
 				} else {
@@ -141,5 +145,31 @@ public class UiUtil {
 				activity.dismissLoading();
 			}
 		});
+	}
+
+	public static String formatNowTime() {
+		Date nowTime = new Date();
+		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return time.format(nowTime);
+	}
+	
+	public static String formatNowTime(String format) {
+		Date nowTime = new Date();
+		SimpleDateFormat time = new SimpleDateFormat(format);
+		return time.format(nowTime);
+	}
+
+	public static String[] concat(String[] a, String[] b) {
+		String[] c = new String[a.length + b.length];
+		System.arraycopy(a, 0, c, 0, a.length);
+		System.arraycopy(b, 0, c, a.length, b.length);
+		return c;
+	}
+	
+	public static String genDeviceId(){
+		Context context = BridgeDetectionApplication.getInstance();
+		TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		int hash = (manager.getDeviceId().hashCode() + "").hashCode();
+		return hash + "";
 	}
 }

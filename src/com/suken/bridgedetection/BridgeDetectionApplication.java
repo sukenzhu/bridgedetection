@@ -14,6 +14,7 @@ public class BridgeDetectionApplication extends Application {
 	public static String mDeviceId = "";
 	
 	public static UserInfo mCurrentUser = null;
+	public static boolean mIsOffline = false;
 
 	@Override
 	public void onCreate() {

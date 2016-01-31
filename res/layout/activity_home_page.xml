@@ -21,6 +21,18 @@
             android:name="com.suken.bridgedetection.fragment.HomePageFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <fragment
+            android:name="com.suken.bridgedetection.fragment.GpsFragment"
+            android:id="@+id/gps_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        
+        <fragment
+            android:name="com.suken.bridgedetection.fragment.IpConfigFragment"
+            android:id="@+id/ip_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </FrameLayout>
 
 </LinearLayout>

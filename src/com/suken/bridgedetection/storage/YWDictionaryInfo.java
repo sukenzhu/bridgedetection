@@ -31,6 +31,8 @@ public class YWDictionaryInfo {
 	@DatabaseField
 	private int type;
 	@DatabaseField
+	private String typeId;
+	@DatabaseField
 	private int updateBy;
 	@DatabaseField
 	private String updatetime;
@@ -117,6 +119,13 @@ public class YWDictionaryInfo {
 	}
 	public void setUpdatetime(String updatetime) {
 		this.updatetime = updatetime;
+	}
+	
+	public String getTypeId() {
+		return typeId;
+	}
+	public void setTypeId(String typeId) {
+		this.typeId = typeId;
 	}
 	@Override
 	public String toString() {

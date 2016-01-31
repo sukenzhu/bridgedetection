@@ -64,8 +64,8 @@ public class CheckDetail implements Serializable{
 	private String versionno;
 	@DatabaseField
 	private String vidattachment;
-	@DatabaseField(foreign = true, foreignAutoRefresh = true)
-	private CheckFormData formData;
+	@DatabaseField
+	private long formId;
 
 	public String getBjmc() {
 		return bjmc;
@@ -259,12 +259,12 @@ public class CheckDetail implements Serializable{
 		this.vidattachment = vidattachment;
 	}
 
-	public CheckFormData getFormData() {
-		return formData;
+	public long getFormId() {
+		return formId;
 	}
 
-	public void setFormData(CheckFormData formData) {
-		this.formData = formData;
+	public void setFormId(long formId) {
+		this.formId = formId;
 	}
 
 	@Override
@@ -272,7 +272,7 @@ public class CheckDetail implements Serializable{
 		return "CheckDetail [bjmc=" + bjmc + ", bycsyj=" + bycsyj + ", bycsyjblank=" + bycsyjblank + ", createBy=" + createBy + ", createtime=" + createtime + ", creator=" + creator + ", flag=" + flag
 				+ ", id=" + id + ", orgid=" + orgid + ", picattachment=" + picattachment + ", qhId=" + qhId + ", qkms=" + qkms + ", qkmsblank=" + qkmsblank + ", qsfw=" + qsfw + ", qsfwblank="
 				+ qsfwblank + ", qslx=" + qslx + ", qslxblank=" + qslxblank + ", remark=" + remark + ", remarkblank=" + remarkblank + ", updateBy=" + updateBy + ", updatetime=" + updatetime
-				+ ", updator=" + updator + ", versionno=" + versionno + ", vidattachment=" + vidattachment + ", formData=" + formData + "]";
+				+ ", updator=" + updator + ", versionno=" + versionno + ", vidattachment=" + vidattachment +  "]";
 	}
 
 }

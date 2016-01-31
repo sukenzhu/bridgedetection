@@ -17,7 +17,10 @@ import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.location.LocationResult;
 import com.suken.bridgedetection.location.OnLocationFinishedListener;
+import com.suken.bridgedetection.storage.CheckDetail;
+import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
 import com.suken.bridgedetection.storage.CheckFormData;
+import com.suken.bridgedetection.storage.FileDesc;
 import com.suken.bridgedetection.storage.HDBaseData;
 import com.suken.bridgedetection.storage.HDBaseDataDao;
 import com.suken.bridgedetection.storage.QLBaseData;
@@ -50,11 +53,22 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 	private TextView mQlListTitleText;
 	private View mListTitleHd;
 	private TextView mHdListTitleText;
+	private CheckFormAndDetailDao mFormDao = null;
+	private View mUpdateAll = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mFormDao = new CheckFormAndDetailDao();
 		setContentView(R.layout.activity_list_page);
+		mUpdateAll = findViewById(R.id.update_all);
+		mUpdateAll.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				updateAll();
+			}
+		});
 		Intent intent = getIntent();
 		mType = intent.getIntExtra("type", mType);
 		mList = (ListView) findViewById(R.id.activity_list_ql);
@@ -63,6 +77,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		mHdListTitleText = (TextView) findViewById(R.id.list_hd_title);
 		mListTitleQl = findViewById(R.id.qiaoliang_base_title);
 		mListTitleHd = findViewById(R.id.handong_base_title);
+		findViewById(R.id.back).setOnClickListener(this);
 		syncData();
 	}
 
@@ -83,6 +98,36 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 			mListTitleHd.setSelected(true);
 		}
 	}
+	
+	private int initStatus(ListBean bean, Object bd){
+		int a = 0;
+		CheckFormData lastFormData = findLastSyncData(bean.id);
+		List<CheckFormData> savedFormDatas = mFormDao.queryByQHId(bean.id);
+		bean.status = "0";
+		boolean has1 = false;
+		boolean has2 = false;
+		if(savedFormDatas != null && savedFormDatas.size() > 0){
+			for(CheckFormData cfd : savedFormDatas){
+				if(TextUtils.equals(cfd.getStatus(), "1")){
+					has1 = true;
+					break;
+				} else if(TextUtils.equals(cfd.getStatus(), "2")){
+					has2 = true;
+				}
+			}
+		}	
+		if(has1){
+			bean.status = "1";
+			a++;
+		} else if(has2){
+			bean.status = "2";
+		} else {
+			bean.status = "0";
+		}
+		bean.mLastFormData = lastFormData;
+		bean.realBean = bd;
+		return a;
+	}
 
 	private void init() {
 		List<ListBean> data = new ArrayList<ListBean>();
@@ -102,21 +147,11 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 					bean.qhbs = bd.getHdbh();
 					bean.qhmc = bd.getHdmc();
 					bean.qhzh = bd.getZxzh();
-					CheckFormData lastFormData = findLastSyncData(bean.id);
-					if (lastFormData != null) {
-						bean.status = lastFormData.getStatus();
-						if (TextUtils.equals(bean.status, "2")) {
-							a++;
-						}
-					} else {
-						bean.status = "0";
-					}
-					bean.mLastFormData = lastFormData;
-					bean.realBean = bd;
+					a = initStatus(bean, bd);
 					hdData.add(bean);
 				}
 			}
-			mHdListTitleText.setText(" 涵洞(" + a + "/" + hdData.size() + ")" );
+			mHdListTitleText.setText(" 涵洞(" + a + "/" + hdData.size() + ")");
 			mHdList.setAdapter(new ListPageAdapter(this, hdData, mType));
 			a = 0;
 			List<QLBaseData> qlBaseData = new QLBaseDataDao().queryAll();
@@ -129,21 +164,11 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 					bean.qhbs = bd.getQlbh();
 					bean.qhmc = bd.getQlmc();
 					bean.qhzh = bd.getZxzh();
-					CheckFormData lastFormData = findLastSyncData(bean.id);
-					if (lastFormData != null) {
-						bean.status = lastFormData.getStatus();
-						if (TextUtils.equals(bean.status, "2")) {
-							a++;
-						}
-					} else {
-						bean.status = "0";
-					}
-					bean.mLastFormData = lastFormData;
-					bean.realBean = bd;
+					a = initStatus(bean, bd);
 					data.add(bean);
 				}
 			}
-			mQlListTitleText.setText(" 桥梁(" + a + "/" + data.size() + ")" );
+			mQlListTitleText.setText(" 桥梁(" + a + "/" + data.size() + ")");
 			mListTitleQl.performClick();
 			break;
 		}
@@ -159,21 +184,15 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 					bean.qhbs = bd.getSdbh();
 					bean.qhmc = bd.getSdmc();
 					bean.qhzh = bd.getZxzh();
-					CheckFormData lastFormData = findLastSyncData(bean.id);
-					if (lastFormData != null) {
-						bean.status = lastFormData.getStatus();
-						if (TextUtils.equals(bean.status, "2")) {
-							a++;
-						}
-					} else {
-						bean.status = "0";
-					}
-					bean.mLastFormData = lastFormData;
-					bean.realBean = bd;
+					a = initStatus(bean, bd);
 					data.add(bean);
 				}
 			}
-			mQlListTitleText.setText(" 隧道(" + a + "/" + data.size() + ")" );
+			mHdList.setVisibility(View.GONE);
+			mListTitleHd.setVisibility(View.GONE);
+			mListTitleQl.setSelected(true);
+			mListTitleQl.requestFocus();
+			mQlListTitleText.setText(" 隧道(" + a + "/" + data.size() + ")");
 			break;
 		}
 		}
@@ -185,6 +204,9 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 	}
 
 	private void syncData() {
+		if (BridgeDetectionApplication.mIsOffline) {
+			return;
+		}
 		BackgroundExecutor.execute(new Runnable() {
 
 			@Override
@@ -252,14 +274,119 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 					}
 				}
 			}).show();
-		} else {
+		} else if (v.getId() == R.id.gps_btn) {
 
+		} else if (v.getId() == R.id.back) {
+			finish();
 		}
 
 	}
 
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		super.onActivityResult(arg0, arg1, arg2);
+		if (arg0 == 1) {
+			String id = arg2.getStringExtra("id");
+			if (mList.getVisibility() == View.VISIBLE) {
+				ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
+				adapter.updateStatus(id);
+			} else if (mHdList.getVisibility() == View.VISIBLE) {
+				ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
+				adapter.updateStatus(id);
+			}
+		}
+	}
+
 	private void updateAll() {
 
+	}
+
+	public void updateSingle(final String qhId) {
+		BackgroundExecutor.execute(new Runnable() {
+			public void run() {
+				showLoading("上传中...");
+				List<NameValuePair> list = new ArrayList<NameValuePair>();
+				BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
+				list.add(pair);
+				pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
+				list.add(pair);
+				CheckFormData data = new CheckFormAndDetailDao().queryByQHIdAndStatus(qhId, "1");
+				if (data != null) {
+					for (final CheckDetail detail : data.getOfenCheckDetailList()) {
+						OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
+
+							@Override
+							public void onRequestSuccess(RequestType type, String result) {
+								JSONObject obj = JSON.parseObject(result);
+								String re = obj.getString("datas");
+								List<FileDesc> files = JSON.parseArray(re, FileDesc.class);
+								String[] pics = new String[] {};
+								int i = 0;
+								if (!TextUtils.isEmpty(detail.getPicattachment())) {
+									pics = detail.getPicattachment().split(",");
+									StringBuilder sb = new StringBuilder();
+									for (String s : pics) {
+										if (!TextUtils.isEmpty(s)) {
+											sb.append(files.get(i).fileId);
+											i++;
+										}
+									}
+									detail.setPicattachment(sb.toString());
+								}
+								String[] vdos = new String[] {};
+								if (!TextUtils.isEmpty(detail.getVidattachment())) {
+									vdos = detail.getVidattachment().split(",");
+									StringBuilder sb = new StringBuilder();
+									for (String s : vdos) {
+										if (!TextUtils.isEmpty(s)) {
+											if (!TextUtils.isEmpty(s)) {
+												sb.append(files.get(i).fileId);
+												i++;
+											}
+										}
+									}
+									detail.setVidattachment(sb.toString());
+								}
+
+							}
+
+							@Override
+							public void onRequestFail(RequestType type, String resultCode, String result) {
+
+							}
+						};
+						
+						String[] pics = new String[] {};
+						if (!TextUtils.isEmpty(detail.getPicattachment())) {
+							pics = detail.getPicattachment().split(",");
+						}
+						String[] vdos = new String[] {};
+						if (!TextUtils.isEmpty(detail.getVidattachment())) {
+							vdos = detail.getVidattachment().split(",");
+						}
+						String[] attaches = UiUtil.concat(pics, vdos);
+						if(attaches.length > 0){
+							new HttpTask(listener, RequestType.uploadFile).uploadFile(list, attaches);
+						}
+					}
+					OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
+						
+						@Override
+						public void onRequestSuccess(RequestType type, String result) {
+							toast("上传成功");
+						}
+						
+						@Override
+						public void onRequestFail(RequestType type, String resultCode, String result) {
+							toast("上传失败");
+						}
+					};
+					list.add(new BasicNameValuePair("json", JSON.toJSONString(data)));
+					new HttpTask(listener, RequestType.updateqhjcInfo).executePost(list);
+				}
+				dismissLoading();
+			}
+		});
 	}
 
 	@Override

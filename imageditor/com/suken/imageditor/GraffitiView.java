@@ -9,7 +9,7 @@ import com.suken.bridgedetection.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.os.Environment;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,12 +66,15 @@ public class GraffitiView extends FrameLayout {
 		inflate(getContext(), R.layout.graffiti_layout, this);
 		mTextFrame = findViewById(R.id.title_view_frame);
 		titleView = (TextView) findViewById(R.id.title_view);
+		titleView.setTextColor(Color.RED);
 		titleView.setOnTouchListener(new MultiTouchListener());
 		doodleView = (GraffitiSurface) findViewById(R.id.doodle_view);
 	}
+	private static String path = "";
 	
-	public void setBitmapPath(String path){
-		doodleView.setBitmapPath(path);
+	public  static void setBitmapPath(String path){
+		GraffitiView.path = path;
+		GraffitiSurface.setBitmapPath(path);
 	}
 
 	@Override
@@ -95,6 +98,9 @@ public class GraffitiView extends FrameLayout {
 			Canvas cv = new Canvas(bitmap);
 			cv.drawBitmap(b, 0, 0, null);
 			cv.drawBitmap(bitmapdoodle, 0, 0, null);
+			int[] location = new int[4];
+			titleView.getLocationInWindow(location);
+			cv.drawText(titleView.getText().toString(), location[0], location[1], titleView.getPaint());
 			cv.save(Canvas.ALL_SAVE_FLAG);
 			cv.restore();
 		} catch (Exception e) {
@@ -102,8 +108,7 @@ public class GraffitiView extends FrameLayout {
 			e.getStackTrace();
 		}
 
-		File sdCard = Environment.getExternalStorageDirectory();
-		File file = new File(sdCard, "image.png");
+		File file = new File(path);
 		try {
 			FileOutputStream fos = new FileOutputStream(file);
 			bitmap.compress(Bitmap.CompressFormat.PNG, 95, fos);
