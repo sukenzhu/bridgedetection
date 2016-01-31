@@ -145,7 +145,7 @@ public class ListPageAdapter extends BaseAdapter {
 	}
 	
 	
-	public void updateStatus(String id){
+	public void updateStatus(String id, String status){
 		for(ListBean bean : mSourceData){
 			if(TextUtils.equals(bean.id, id)){
 				bean.status = "1";

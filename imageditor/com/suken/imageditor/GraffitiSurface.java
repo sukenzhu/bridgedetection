@@ -186,7 +186,7 @@ public class GraffitiSurface extends SurfaceView implements SurfaceHolder.Callba
 		private int size;
 
 		DoodleAction() {
-			color = Color.WHITE;
+			color = Color.RED;
 			path = new Path();
 			size = 1;
 		}

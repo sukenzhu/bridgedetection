@@ -287,13 +287,17 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		super.onActivityResult(arg0, arg1, arg2);
 		if (arg0 == 1) {
 			String id = arg2.getStringExtra("id");
-			if (mList.getVisibility() == View.VISIBLE) {
-				ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
-				adapter.updateStatus(id);
-			} else if (mHdList.getVisibility() == View.VISIBLE) {
-				ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
-				adapter.updateStatus(id);
-			}
+			updateStatus(id, "1");
+		}
+	}
+	
+	private void updateStatus(String id, String status){
+		if (mList.getVisibility() == View.VISIBLE) {
+			ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
+			adapter.updateStatus(id, "1");
+		} else if (mHdList.getVisibility() == View.VISIBLE) {
+			ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
+			adapter.updateStatus(id, "1");
 		}
 	}
 
@@ -310,7 +314,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 				list.add(pair);
 				pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
 				list.add(pair);
-				CheckFormData data = new CheckFormAndDetailDao().queryByQHIdAndStatus(qhId, "1");
+				final CheckFormData data = new CheckFormAndDetailDao().queryByQHIdAndStatus(qhId, "1");
 				if (data != null) {
 					for (final CheckDetail detail : data.getOfenCheckDetailList()) {
 						OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
@@ -373,6 +377,8 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 						
 						@Override
 						public void onRequestSuccess(RequestType type, String result) {
+							mFormDao.create(data);
+							updateStatus(data.getQhid(), "2");
 							toast("上传成功");
 						}
 						
@@ -381,6 +387,9 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 							toast("上传失败");
 						}
 					};
+					data.setStatus("2");
+					data.setUpdatetime(UiUtil.formatNowTime());
+					data.setCreatetime(UiUtil.formatNowTime());
 					String json = new String(JSON.toJSONString(data));
 					list.add(new BasicNameValuePair("json", json));
 					new HttpTask(listener, RequestType.updateqhjcInfo).executePost(list);

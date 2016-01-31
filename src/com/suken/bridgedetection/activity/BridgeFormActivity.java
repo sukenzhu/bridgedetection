@@ -45,11 +45,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class BridgeFormActivity extends Activity implements OnClickListener {
-	private static final String[] qlformDetailNames = new String[] { "翼墙", "锥坡、护坡", "桥台及基础", "桥墩及基础", "地基冲刷", "支座", "上部结构异常变形", "桥与路连接", "伸缩缝, 桥面铺装", "人行道、缘石", "栏杆、护栏", "标志、标线", "排水设施", "照明系统",
-			"桥面清洁", "调治结构物", "其他" };
 	
-	
+
 	private String[] detailNames = null;
+	private String[] detailValues = null;
 	private Object bean = null;
 	private QHYangHuZeRenInfo qhyhzrInfo;
 	private CheckFormData formData;
@@ -70,13 +69,13 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 	private EditText zxzhEv = null;
 	private TextView yhdwTv = null;
 	private EditText yhdwEv = null;
-	
+
 	private EditText fzr = null;
 	private EditText jlr = null;
-	
+
 	private Spinner lastPddj = null;
 	private Spinner pddj = null;
-	
+
 	private CheckBox qlhz = null;
 
 	@Override
@@ -87,7 +86,7 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 	}
 
 	private void init() {
-		qlhz =  (CheckBox) findViewById(R.id.form_qlhz);
+		qlhz = (CheckBox) findViewById(R.id.form_qlhz);
 		lastPddj = (Spinner) findViewById(R.id.form_scpd_spinner);
 		pddj = (Spinner) findViewById(R.id.form_bcpd_spinner);
 		jlr = (EditText) findViewById(R.id.form_jlr_spinner);
@@ -114,14 +113,15 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 		save2 = (Button) findViewById(R.id.save2);
 		save1.setOnClickListener(this);
 		save2.setOnClickListener(this);
-		mFormContent =  (LinearLayout) findViewById(R.id.form_content);
-		bean =  getIntent().getSerializableExtra("qhInfo");
+		mFormContent = (LinearLayout) findViewById(R.id.form_content);
+		bean = getIntent().getSerializableExtra("qhInfo");
 		formData = (CheckFormData) getIntent().getSerializableExtra("formData");
 		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId("10000001160070");
 		int type = 1;
-		if(bean instanceof QLBaseData){
+		if (bean instanceof QLBaseData) {
 			type = 1;
-			detailNames = qlformDetailNames;
+			detailNames = Constants.qlformDetailNames;
+			detailValues = Constants.qlformDetailValues;
 			qhId = ((QLBaseData) bean).getId();
 			qlbhEv.setText(((QLBaseData) bean).getQlbh());
 			qlmcEv.setText(((QLBaseData) bean).getQlmc());
@@ -130,40 +130,40 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 			zxzhEv.setText(((QLBaseData) bean).getZxzh());
 			yhdwEv.setText(((QLBaseData) bean).getGydwName());
 			qhyhzrInfo = new QHYHZeRenInfoDao().queryByQhId(qhId);
-			if(qhyhzrInfo != null){
+			if (qhyhzrInfo != null) {
 				fzr.setText(qhyhzrInfo.getYhgcs());
 			}
 			jlr.setText(BridgeDetectionApplication.mCurrentUser.getUserName());
 			lastPddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
 			pddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
-			if(formData != null){
-				for(YWDictionaryInfo info : dinfos){
-					if(TextUtils.equals(info.getType() + "", formData.getPrePddj())){
+			if (formData != null) {
+				for (YWDictionaryInfo info : dinfos) {
+					if (TextUtils.equals(info.getType() + "", formData.getPrePddj())) {
 						int index = dinfos.indexOf(info);
 						lastPddj.setSelection(index);
 						pddj.setSelection(index);
 					}
 				}
 			}
-		} else if(bean instanceof HDBaseData){
+		} else if (bean instanceof HDBaseData) {
 			type = 2;
 			qhId = ((HDBaseData) bean).getId();
-		} else if(bean instanceof SDBaseData){
+		} else if (bean instanceof SDBaseData) {
 			type = 3;
 			qhId = ((SDBaseData) bean).getId();
 		}
-		
-		for(int index = 0; index < detailNames.length; index ++ ){
+
+		for (int index = 0; index < detailNames.length; index++) {
 			View view = LayoutInflater.from(this).inflate(R.layout.activity_form_item, null);
 			LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(-1, -1);
 			param.leftMargin = (int) (10 * UiUtil.getDp(this));
-			param.rightMargin = (int) (10* UiUtil.getDp(this));
-			param.topMargin = (int) (5* UiUtil.getDp(this));
+			param.rightMargin = (int) (10 * UiUtil.getDp(this));
+			param.topMargin = (int) (5 * UiUtil.getDp(this));
 			view.setPadding(0, 0, 0, param.topMargin);
 			view.setBackgroundColor(Color.parseColor("#80ffffff"));
 			mFormContent.addView(view, param);
-			FormItemController con = new FormItemController(this, view, this, detailNames[index], type);
-			if(index == 0){
+			FormItemController con = new FormItemController(this, view, this, detailNames[index], type, detailValues[index]);
+			if (index == 0) {
 				con.show();
 			} else {
 				con.hide();
@@ -174,11 +174,11 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View view) {
-		if(view.getId() == R.id.save1 || view.getId() == R.id.save2){
+		if (view.getId() == R.id.save1 || view.getId() == R.id.save2) {
 			saveToLocal();
 			return;
 		}
-		for(FormItemController fic : mDetailMaps.values()){
+		for (FormItemController fic : mDetailMaps.values()) {
 			fic.hide();
 		}
 		FormItemController con = (FormItemController) view.getTag();
@@ -188,10 +188,10 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 			con.show();
 		}
 	}
-	
+
 	private void saveToLocal() {
 		CheckFormData data = new CheckFormData();
-		if(bean instanceof QLBaseData){
+		if (bean instanceof QLBaseData) {
 			data.setGldwId(((QLBaseData) bean).getGydwId());
 			data.setGldwName(((QLBaseData) bean).getGydwName());
 			data.setYhdwId(((QLBaseData) bean).getGydwId());
@@ -204,17 +204,18 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 			data.setLxbm(lxbhEv.getText().toString());
 			data.setQhmc(qlmcEv.getText().toString());
 		}
-		data.setPrePddj(((YWDictionaryInfo)lastPddj.getSelectedItem()).getType() + "");
-		data.setPddj(((YWDictionaryInfo)pddj.getSelectedItem()).getType() + "");
+		data.setPrePddj(((YWDictionaryInfo) lastPddj.getSelectedItem()).getItemValue() + "");
+		data.setPddj(((YWDictionaryInfo) pddj.getSelectedItem()).getItemValue() + "");
 		data.setFzry(fzr.getText().toString());
 		data.setJlry(jlr.getText().toString());
 		data.setStatus("1");
 		data.setHzf(qlhz.isChecked() ? "1" : "0");
 		data.setZxzh(zxzhEv.getText().toString());
 		data.setJcsj(UiUtil.formatNowTime());
+		data.setCreator(BridgeDetectionApplication.mCurrentUser.getUserName());
 		CheckFormAndDetailDao dao = new CheckFormAndDetailDao();
 		dao.create(data);
-		for(String s : detailNames){
+		for (String s : detailNames) {
 			FormItemController con = mDetailMaps.get(s);
 			CheckDetail detail = con.packageCheckDetail();
 			detail.setFormId(data.getId());
@@ -228,8 +229,8 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 
 	private Uri mOutPutFileUri = null;
 	private FormItemController mEditController;
-	
-	public void jumpToMedia(FormItemController con, int requestCode, ImageDesc desc){
+
+	public void jumpToMedia(FormItemController con, int requestCode, ImageDesc desc) {
 		mEditController = con;
 		String path = Environment.getExternalStorageDirectory().toString() + File.separator + qhId;
 		File path1 = new File(path);
@@ -237,9 +238,9 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 			path1.mkdirs();
 		}
 		String name = "";
-		if(requestCode == Constants.REQUEST_CODE_CAPTURE){
+		if (requestCode == Constants.REQUEST_CODE_CAPTURE) {
 			name = path1 + File.separator + con.generateMediaName(true);
-		} else if(requestCode == Constants.REQUEST_CODE_EDIT_IMG){
+		} else if (requestCode == Constants.REQUEST_CODE_EDIT_IMG) {
 			name = desc.path;
 		} else {
 			name = path1 + File.separator + con.generateMediaName(false);
@@ -251,12 +252,12 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 		if (requestCode == Constants.REQUEST_CODE_CAPTURE) {
 			intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(intent, requestCode);
-		} else if(requestCode == Constants.REQUEST_CODE_EDIT_IMG){
+		} else if (requestCode == Constants.REQUEST_CODE_EDIT_IMG) {
 			intent.setClass(this, ImageditorActivity.class);
 			startActivityForResult(intent, requestCode);
 		} else {
-//			intent.setClass(this, RecorderActivity.class);
-			intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);//参数设置可以省略
+			// intent.setClass(this, RecorderActivity.class);
+			intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);// 参数设置可以省略
 			intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
 			startActivityForResult(intent, requestCode);
 		}
@@ -265,39 +266,38 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		File f =  null;
+		File f = null;
 		try {
 			f = new File(new URI(mOutPutFileUri.toString()));
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		if(requestCode == Constants.REQUEST_CODE_CAPTURE){
+		if (requestCode == Constants.REQUEST_CODE_CAPTURE) {
 			ImageDesc desc = new ImageDesc();
 			desc.name = f.getName();
 			desc.path = f.getPath();
 			mEditController.updateImg(desc);
-		} else if(requestCode == Constants.REQUEST_CODE_EDIT_IMG){
-			//保存在原先的图片中所以不处理
-			
-		} else if(requestCode == Constants.REQUEST_CODE_VIDEO){
+		} else if (requestCode == Constants.REQUEST_CODE_EDIT_IMG) {
+			// 保存在原先的图片中所以不处理
+
+		} else if (requestCode == Constants.REQUEST_CODE_VIDEO) {
 			VideoDesc desc = new VideoDesc();
 			desc.name = f.getName();
 			desc.path = f.getPath();
 			mEditController.updateVideo(desc);
 		}
 	}
-	
-	public CheckDetail getCheckDetail(String title){
-		if(formData != null){
+
+	public CheckDetail getCheckDetail(String title) {
+		if (formData != null) {
 			List<CheckDetail> list = formData.getOfenCheckDetailList();
-			for(CheckDetail detail : list){
-				if(TextUtils.equals(detail.getBjmc(), title)){
+			for (CheckDetail detail : list) {
+				if (TextUtils.equals(detail.getBjmc(), title)) {
 					return detail;
 				}
 			}
 		}
 		return null;
 	}
-	
-	
+
 }

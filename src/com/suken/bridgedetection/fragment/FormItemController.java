@@ -8,7 +8,6 @@ import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.activity.BridgeFormActivity;
 import com.suken.bridgedetection.storage.CheckDetail;
 
-import android.R.color;
 import android.app.Activity;
 import android.graphics.Color;
 import android.util.TypedValue;
@@ -30,12 +29,10 @@ public class FormItemController implements OnClickListener{
 	private boolean mIsShowing = false;
 	private String mTitle = "";
 	private BridgeFormActivity mContext ;
-	private static final String qxlx_default = "完好或有无开裂、倾斜、滑移、沉降、风化剥落或异常变形等";
-	private static final String qxfw_default = "描述翼墙位置（上下行方向、左右位置）和缺损程度";
-	private static final String byyj_default = "注明继续观察或修复时限和采取的交通管制措施及向上级报告情况";
 	private int type = 1;
+	private String mDefaultValue;
 
-	public FormItemController(Activity context, View view, OnClickListener listener, String text, int type) {
+	public FormItemController(Activity context, View view, OnClickListener listener, String text, int type, String defaultValue) {
 		mContext = (BridgeFormActivity) context;
 		mFormItem = view;
 		mImgVideoLayout = mFormItem.findViewById(R.id.img_video_layout);
@@ -47,6 +44,7 @@ public class FormItemController implements OnClickListener{
 		formTitle.setText(text);
 		mArrowImgView.setTag(this);
 		mArrowImgView.setOnClickListener(listener);
+		this.mDefaultValue = defaultValue;
 		initImageAndVideo();
 	}
 
@@ -114,6 +112,7 @@ public class FormItemController implements OnClickListener{
 
 	private void initImageAndVideo() {
 		qslxEv = (EditText) mFormItem.findViewById(R.id.qslx_edit);
+		qslxEv.setText(mDefaultValue);
 		qsfwEv = (EditText) mFormItem.findViewById(R.id.qsfw_edit);
 		byyjEv = (EditText) mFormItem.findViewById(R.id.byyj_edit);
 		xiangji = (ImageView) mImgVideoLayout.findViewById(R.id.xiangji);
