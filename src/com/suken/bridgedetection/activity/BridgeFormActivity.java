@@ -21,6 +21,11 @@ import com.suken.bridgedetection.storage.QHYHZeRenInfoDao;
 import com.suken.bridgedetection.storage.QHYangHuZeRenInfo;
 import com.suken.bridgedetection.storage.QLBaseData;
 import com.suken.bridgedetection.storage.SDBaseData;
+import com.suken.bridgedetection.storage.SDYHZeRenInfoDao;
+import com.suken.bridgedetection.storage.SDYangHuZeRenInfo;
+import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
+import com.suken.bridgedetection.storage.SdxcFormData;
+import com.suken.bridgedetection.storage.SdxcFormDetail;
 import com.suken.bridgedetection.storage.YWDictionaryDao;
 import com.suken.bridgedetection.storage.YWDictionaryInfo;
 import com.suken.bridgedetection.util.UiUtil;
@@ -45,12 +50,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class BridgeFormActivity extends Activity implements OnClickListener {
-	
 
 	private String[] detailNames = null;
+	private String[] mItemTexts = null;
 	private String[] detailValues = null;
+	private String[] et1blanks = null;
+	private String[] et2blanks = null;
 	private Object bean = null;
-	private QHYangHuZeRenInfo qhyhzrInfo;
 	private CheckFormData formData;
 	private Map<String, FormItemController> mDetailMaps = new HashMap<String, FormItemController>();
 	private LinearLayout mFormContent;
@@ -77,6 +83,8 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 	private Spinner pddj = null;
 
 	private CheckBox qlhz = null;
+	private TextView mFormTitle;
+	private int mType = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +94,7 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 	}
 
 	private void init() {
+		mFormTitle = (TextView) findViewById(R.id.form_title);
 		qlhz = (CheckBox) findViewById(R.id.form_qlhz);
 		lastPddj = (Spinner) findViewById(R.id.form_scpd_spinner);
 		pddj = (Spinner) findViewById(R.id.form_bcpd_spinner);
@@ -115,13 +124,17 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 		save2.setOnClickListener(this);
 		mFormContent = (LinearLayout) findViewById(R.id.form_content);
 		bean = getIntent().getSerializableExtra("qhInfo");
+		mType = getIntent().getIntExtra("type", R.drawable.qiaoliangjiancha);
 		formData = (CheckFormData) getIntent().getSerializableExtra("formData");
 		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId("10000001160070");
-		int type = 1;
-		if (bean instanceof QLBaseData) {
-			type = 1;
+		boolean mIsQh = mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha;
+		boolean mIsHanDong = false;
+		if (mIsQh && bean instanceof QLBaseData) {
+			mItemTexts = Constants.qlformDetailItemTexts;
 			detailNames = Constants.qlformDetailNames;
 			detailValues = Constants.qlformDetailValues;
+			et1blanks = Constants.qlformDetailEt2Blanks;
+			et2blanks = Constants.qlformDetailEt3Blanks;
 			qhId = ((QLBaseData) bean).getId();
 			qlbhEv.setText(((QLBaseData) bean).getQlbh());
 			qlmcEv.setText(((QLBaseData) bean).getQlmc());
@@ -129,14 +142,64 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 			lxmcEv.setText(((QLBaseData) bean).getLxmc());
 			zxzhEv.setText(((QLBaseData) bean).getZxzh());
 			yhdwEv.setText(((QLBaseData) bean).getGydwName());
-			qhyhzrInfo = new QHYHZeRenInfoDao().queryByQhId(qhId);
+		} else if (mIsQh && bean instanceof HDBaseData) {
+			mFormTitle.setText("涵洞经常检查记录表");
+			qlhz.setText("涵洞会诊");
+			qlbhTv.setText("涵洞编号");
+			qlmcTv.setText("涵洞名称");
+			mIsHanDong = true;
+			mItemTexts = Constants.hdformDetailItemTexts;
+			detailNames = Constants.hdformDetailNames;
+			detailValues = Constants.hdformDetailValues;
+			et1blanks = Constants.hdformDetailEt2Blanks;
+			et2blanks = Constants.hdformDetailEt3Blanks;
+			qhId = ((HDBaseData) bean).getId();
+			qlbhEv.setText(((HDBaseData) bean).getHdbh());
+			qlmcEv.setText(((HDBaseData) bean).getHdmc());
+			lxbhEv.setText(((HDBaseData) bean).getLxbh());
+			lxmcEv.setText(((HDBaseData) bean).getLxmc());
+			zxzhEv.setText(((HDBaseData) bean).getZxzh());
+			yhdwEv.setText(((HDBaseData) bean).getGydwName());
+		} else if (!mIsQh && bean instanceof SDBaseData) {
+			if(mType == R.drawable.suidaojiancha){
+				mItemTexts = Constants.sdformDetailItemTexts;
+				detailNames = Constants.sdformDetailNames;
+				mFormTitle.setText("隧道经常检查记录表");
+				qlhz.setText("隧道会诊");
+			} else {
+				mItemTexts = Constants.sdxcformDetailItemTexts;
+				detailNames = Constants.sdxcformDetailNames;
+				mFormTitle.setText("隧道日常巡查记录表");
+				qlhz.setVisibility(View.GONE);
+			}
+			qlbhTv.setText("隧道编号");
+			qlmcTv.setText("隧道名称");
+			qhId = ((SDBaseData) bean).getId();
+			qlbhEv.setText(((SDBaseData) bean).getSdbh());
+			qlmcEv.setText(((SDBaseData) bean).getSdmc());
+			lxbhEv.setText(((SDBaseData) bean).getLxbh());
+			lxmcEv.setText(((SDBaseData) bean).getLxmc());
+			zxzhEv.setText(((SDBaseData) bean).getZxzh());
+			yhdwEv.setText(((SDBaseData) bean).getGydwName());
+		}
+		if (mIsQh) {
+			QHYangHuZeRenInfo qhyhzrInfo = new QHYHZeRenInfoDao().queryByQhId(qhId);
 			if (qhyhzrInfo != null) {
 				fzr.setText(qhyhzrInfo.getYhgcs());
 			}
-			jlr.setText(BridgeDetectionApplication.mCurrentUser.getUserName());
-			lastPddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
-			pddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
-			if (formData != null) {
+		} else {
+			SDYangHuZeRenInfo sdyhzrInfo = new SDYHZeRenInfoDao().queryById(qhId);
+			if (sdyhzrInfo != null) {
+				fzr.setText(sdyhzrInfo.getYhgcs());
+			}
+			findViewById(R.id.pddj_layout).setVisibility(View.GONE);
+		}
+		jlr.setText(BridgeDetectionApplication.mCurrentUser.getUserName());
+		lastPddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
+		pddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
+		Map<String, CheckDetail> mLastFormDetails = new HashMap<String, CheckDetail>();
+		if (formData != null) {
+			if (mIsQh) {
 				for (YWDictionaryInfo info : dinfos) {
 					if (TextUtils.equals(info.getType() + "", formData.getPrePddj())) {
 						int index = dinfos.indexOf(info);
@@ -145,12 +208,11 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 					}
 				}
 			}
-		} else if (bean instanceof HDBaseData) {
-			type = 2;
-			qhId = ((HDBaseData) bean).getId();
-		} else if (bean instanceof SDBaseData) {
-			type = 3;
-			qhId = ((SDBaseData) bean).getId();
+			if (formData.getOfenCheckDetailList() != null) {
+				for (CheckDetail cd : formData.getOfenCheckDetailList()) {
+					mLastFormDetails.put(cd.getBjmc(), cd);
+				}
+			}
 		}
 
 		for (int index = 0; index < detailNames.length; index++) {
@@ -162,7 +224,14 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 			view.setPadding(0, 0, 0, param.topMargin);
 			view.setBackgroundColor(Color.parseColor("#80ffffff"));
 			mFormContent.addView(view, param);
-			FormItemController con = new FormItemController(this, view, this, detailNames[index], type, detailValues[index]);
+			String blank2 = "";
+			if (et2blanks != null && et2blanks.length == 1) {
+				blank2 = et2blanks[0];
+			} else {
+				blank2 = et2blanks[index];
+			}
+			FormItemController con = new FormItemController(this, view, this, detailNames[index], mType, detailValues != null ? detailValues[index] : "",
+					mItemTexts, mLastFormDetails.get(detailNames[index]), et1blanks != null ? et1blanks[index] : "", blank2, qhId, mIsHanDong);
 			if (index == 0) {
 				con.show();
 			} else {
@@ -190,37 +259,96 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 	}
 
 	private void saveToLocal() {
-		CheckFormData data = new CheckFormData();
-		if (bean instanceof QLBaseData) {
-			data.setGldwId(((QLBaseData) bean).getGydwId());
-			data.setGldwName(((QLBaseData) bean).getGydwName());
-			data.setYhdwId(((QLBaseData) bean).getGydwId());
-			data.setYhdwName(((QLBaseData) bean).getGydwName());
-			data.setQhid(qhId);
-			data.setQhbm(qlbhEv.getText().toString());
-			data.setQhlx("b");
-			data.setLxid(((QLBaseData) bean).getLxid());
+		if(mType == R.drawable.suidaoxuncha){
+			SdxcFormData data = new SdxcFormData();
+			if (bean instanceof SDBaseData) {
+				data.setGldwId(((SDBaseData) bean).getGydwId());
+				data.setGldwName(((SDBaseData) bean).getGydwName());
+				data.setYhdwId(((SDBaseData) bean).getGydwId());
+				data.setYhdwName(((SDBaseData) bean).getGydwName());
+				data.setLxid(((SDBaseData) bean).getLxid());
+				data.setYhjgId(((SDBaseData) bean).getGydwId());
+				data.setYhjgName(((SDBaseData) bean).getGydwName());
+			}
+			data.setSdmc(qlmcEv.getText().toString());
+			data.setSdid(qhId);
+			data.setSdbh(qlbhEv.getText().toString());
+			data.setSdzh(zxzhEv.getText().toString());
+			data.setType(mType);
 			data.setLxmc(lxmcEv.getText().toString());
+			data.setZxzh(zxzhEv.getText().toString());
+			data.setFzry(fzr.getText().toString());
+			data.setJlry(jlr.getText().toString());
+			data.setStatus("1");
+			data.setCreator(BridgeDetectionApplication.mCurrentUser.getUserName());
+			SdxcFormAndDetailDao dao = new SdxcFormAndDetailDao();
+			dao.create(data);
+			for (String s : detailNames) {
+				FormItemController con = mDetailMaps.get(s);
+				SdxcFormDetail detail = con.packageSxDetail();
+				detail.setFormId(data.getId());
+				dao.create(detail);
+			}
+		} else {
+			CheckFormData data = new CheckFormData();
+			if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
+				if (bean instanceof QLBaseData) {
+					data.setGldwId(((QLBaseData) bean).getGydwId());
+					data.setGldwName(((QLBaseData) bean).getGydwName());
+					data.setYhdwId(((QLBaseData) bean).getGydwId());
+					data.setYhdwName(((QLBaseData) bean).getGydwName());
+					data.setQhlx("b");
+					data.setLxid(((QLBaseData) bean).getLxid());
+				} else if (bean instanceof HDBaseData) {
+					data.setGldwId(((HDBaseData) bean).getGydwId());
+					data.setGldwName(((HDBaseData) bean).getGydwName());
+					data.setYhdwId(((HDBaseData) bean).getGydwId());
+					data.setYhdwName(((HDBaseData) bean).getGydwName());
+					data.setQhlx("c");
+					data.setLxid(((HDBaseData) bean).getLxid());
+				}
+				data.setQhmc(qlmcEv.getText().toString());
+				data.setQhid(qhId);
+				data.setQhbm(qlbhEv.getText().toString());
+				data.setPrePddj(((YWDictionaryInfo) lastPddj.getSelectedItem()).getItemValue() + "");
+				data.setPddj(((YWDictionaryInfo) pddj.getSelectedItem()).getItemValue() + "");
+			} else if (mType == R.drawable.suidaojiancha) {
+				if (bean instanceof SDBaseData) {
+					data.setGldwId(((SDBaseData) bean).getGydwId());
+					data.setGldwName(((SDBaseData) bean).getGydwName());
+					data.setYhdwId(((SDBaseData) bean).getGydwId());
+					data.setYhdwName(((SDBaseData) bean).getGydwName());
+					data.setLxid(((SDBaseData) bean).getLxid());
+					data.setYhjgId(((SDBaseData) bean).getGydwId());
+					data.setYhjgName(((SDBaseData) bean).getGydwName());
+				}
+				data.setSdmc(qlmcEv.getText().toString());
+				data.setSdid(qhId);
+				data.setSdbm(qlbhEv.getText().toString());
+				data.setSdzh(zxzhEv.getText().toString());
+//				data.setSdfx(((SDBaseData) bean).get);
+//				data.setWeather(weather);
+			}
+			data.setType(mType);
+			data.setLxmc(lxmcEv.getText().toString());
+			data.setZxzh(zxzhEv.getText().toString());
 			data.setLxbm(lxbhEv.getText().toString());
-			data.setQhmc(qlmcEv.getText().toString());
+			data.setFzry(fzr.getText().toString());
+			data.setJlry(jlr.getText().toString());
+			data.setStatus("1");
+			data.setHzf(qlhz.isChecked() ? "1" : "0");
+			data.setJcsj(UiUtil.formatNowTime());
+			data.setCreator(BridgeDetectionApplication.mCurrentUser.getUserName());
+			CheckFormAndDetailDao dao = new CheckFormAndDetailDao();
+			dao.create(data);
+			for (String s : detailNames) {
+				FormItemController con = mDetailMaps.get(s);
+				CheckDetail detail = con.packageCheckDetail();
+				detail.setFormId(data.getId());
+				dao.create(detail);
+			}
 		}
-		data.setPrePddj(((YWDictionaryInfo) lastPddj.getSelectedItem()).getItemValue() + "");
-		data.setPddj(((YWDictionaryInfo) pddj.getSelectedItem()).getItemValue() + "");
-		data.setFzry(fzr.getText().toString());
-		data.setJlry(jlr.getText().toString());
-		data.setStatus("1");
-		data.setHzf(qlhz.isChecked() ? "1" : "0");
-		data.setZxzh(zxzhEv.getText().toString());
-		data.setJcsj(UiUtil.formatNowTime());
-		data.setCreator(BridgeDetectionApplication.mCurrentUser.getUserName());
-		CheckFormAndDetailDao dao = new CheckFormAndDetailDao();
-		dao.create(data);
-		for (String s : detailNames) {
-			FormItemController con = mDetailMaps.get(s);
-			CheckDetail detail = con.packageCheckDetail();
-			detail.setFormId(data.getId());
-			dao.create(detail);
-		}
+		
 		Intent intent = new Intent();
 		intent.putExtra("id", qhId);
 		setResult(1, intent);

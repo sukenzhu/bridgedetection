@@ -27,6 +27,9 @@ import com.suken.bridgedetection.storage.QLBaseData;
 import com.suken.bridgedetection.storage.QLBaseDataDao;
 import com.suken.bridgedetection.storage.SDBaseData;
 import com.suken.bridgedetection.storage.SDBaseDataDao;
+import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
+import com.suken.bridgedetection.storage.SdxcFormData;
+import com.suken.bridgedetection.storage.SdxcFormDetail;
 import com.suken.bridgedetection.util.UiUtil;
 
 import android.app.AlertDialog;
@@ -34,8 +37,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.widget.EditText;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,6 +62,8 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 	private TextView mHdListTitleText;
 	private CheckFormAndDetailDao mFormDao = null;
 	private View mUpdateAll = null;
+	private EditText mSearchInput;
+	private ImageView mSearchButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +108,10 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		}
 	}
 	
-	private int initStatus(ListBean bean, Object bd){
+	private int initStatus(ListBean bean, Object bd, int type){
 		int a = 0;
 		CheckFormData lastFormData = findLastSyncData(bean.id);
-		List<CheckFormData> savedFormDatas = mFormDao.queryByQHId(bean.id);
+		List<CheckFormData> savedFormDatas = mFormDao.queryByQHId(bean.id, type);
 		bean.status = "0";
 		boolean has1 = false;
 		boolean has2 = false;
@@ -147,7 +156,8 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 					bean.qhbs = bd.getHdbh();
 					bean.qhmc = bd.getHdmc();
 					bean.qhzh = bd.getZxzh();
-					a = initStatus(bean, bd);
+					bean.type = mType;
+					a = initStatus(bean, bd, bean.type);
 					hdData.add(bean);
 				}
 			}
@@ -164,7 +174,8 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 					bean.qhbs = bd.getQlbh();
 					bean.qhmc = bd.getQlmc();
 					bean.qhzh = bd.getZxzh();
-					a = initStatus(bean, bd);
+					bean.type = mType;
+					a = initStatus(bean, bd, bean.type);
 					data.add(bean);
 				}
 			}
@@ -184,7 +195,8 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 					bean.qhbs = bd.getSdbh();
 					bean.qhmc = bd.getSdmc();
 					bean.qhzh = bd.getZxzh();
-					a = initStatus(bean, bd);
+					bean.type = mType;
+					a = initStatus(bean, bd, bean.type);
 					data.add(bean);
 				}
 			}
@@ -201,6 +213,28 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		syncBtn = findViewById(R.id.tongbu_btn);
 		syncBtn.setOnClickListener(this);
 		mList.setAdapter(new ListPageAdapter(this, data, mType));
+		mSearchInput = (EditText) findViewById(R.id.search_input);
+		mSearchInput.setOnKeyListener(new OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if(keyCode == KeyEvent.KEYCODE_SEARCH || keyCode == KeyEvent.KEYCODE_ENTER){
+					mSearchButton.performClick();
+				}
+				return false;
+			}
+		});
+		mSearchButton = (ImageView) findViewById(R.id.search_btn);
+		mSearchButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(mList.getVisibility() == View.VISIBLE){
+					((Filterable) mList.getAdapter()).getFilter().filter(mSearchInput.getEditableText().toString());
+				} else {
+					((Filterable) mHdList.getAdapter()).getFilter().filter(mSearchInput.getEditableText().toString());
+				}
+			}
+		});
 	}
 
 	private void syncData() {
@@ -285,7 +319,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 	@Override
 	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
 		super.onActivityResult(arg0, arg1, arg2);
-		if (arg0 == 1) {
+		if (arg0 == 1 && arg2 != null) {
 			String id = arg2.getStringExtra("id");
 			updateStatus(id, "1");
 		}
@@ -305,7 +339,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 
 	}
 
-	public void updateSingle(final String qhId) {
+	public void updateSingle(final String qhId, final int type, final boolean handleDialog) {
 		BackgroundExecutor.execute(new Runnable() {
 			public void run() {
 				showLoading("上传中...");
@@ -314,89 +348,182 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 				list.add(pair);
 				pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
 				list.add(pair);
-				final CheckFormData data = new CheckFormAndDetailDao().queryByQHIdAndStatus(qhId, "1");
-				if (data != null) {
-					for (final CheckDetail detail : data.getOfenCheckDetailList()) {
-						OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
+				if(type == R.drawable.suidaoxuncha){
+					updateXunchaData(qhId, type, list);
+				} else {
+					updateCheckData(qhId, type, list);
+				}
+				
+				dismissLoading();
+			}
+		});
+	}
+	
+	private void updateXunchaData(final String qhId, final int type, List<NameValuePair> list){
+		final SdxcFormData data = new SdxcFormAndDetailDao().queryByQHIdAndStatus(qhId, "1", type);
+		if (data != null) {
+			for (final SdxcFormDetail detail : data.getInspectlogDetailList()) {
+				OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
-							@Override
-							public void onRequestSuccess(RequestType type, String result) {
-								JSONObject obj = JSON.parseObject(result);
-								String re = obj.getString("datas");
-								List<FileDesc> files = JSON.parseArray(re, FileDesc.class);
-								String[] pics = new String[] {};
-								int i = 0;
-								if (!TextUtils.isEmpty(detail.getPicattachment())) {
-									pics = detail.getPicattachment().split(",");
-									StringBuilder sb = new StringBuilder();
-									for (String s : pics) {
-										if (!TextUtils.isEmpty(s)) {
-											sb.append(files.get(i).fileId);
-											i++;
-										}
-									}
-									detail.setPicattachment(sb.toString());
-								}
-								String[] vdos = new String[] {};
-								if (!TextUtils.isEmpty(detail.getVidattachment())) {
-									vdos = detail.getVidattachment().split(",");
-									StringBuilder sb = new StringBuilder();
-									for (String s : vdos) {
-										if (!TextUtils.isEmpty(s)) {
-											if (!TextUtils.isEmpty(s)) {
-												sb.append(files.get(i).fileId);
-												i++;
-											}
-										}
-									}
-									detail.setVidattachment(sb.toString());
-								}
-
-							}
-
-							@Override
-							public void onRequestFail(RequestType type, String resultCode, String result) {
-
-							}
-						};
-						
+					@Override
+					public void onRequestSuccess(RequestType type, String result) {
+						JSONObject obj = JSON.parseObject(result);
+						String re = obj.getString("datas");
+						List<FileDesc> files = JSON.parseArray(re, FileDesc.class);
 						String[] pics = new String[] {};
+						int i = 0;
 						if (!TextUtils.isEmpty(detail.getPicattachment())) {
 							pics = detail.getPicattachment().split(",");
+							StringBuilder sb = new StringBuilder();
+							for (String s : pics) {
+								if (!TextUtils.isEmpty(s)) {
+									sb.append(files.get(i).fileId);
+									i++;
+								}
+							}
+							detail.setPicattachment(sb.toString());
 						}
 						String[] vdos = new String[] {};
 						if (!TextUtils.isEmpty(detail.getVidattachment())) {
 							vdos = detail.getVidattachment().split(",");
+							StringBuilder sb = new StringBuilder();
+							for (String s : vdos) {
+								if (!TextUtils.isEmpty(s)) {
+									if (!TextUtils.isEmpty(s)) {
+										sb.append(files.get(i).fileId);
+										i++;
+									}
+								}
+							}
+							detail.setVidattachment(sb.toString());
 						}
-						String[] attaches = UiUtil.concat(pics, vdos);
-						if(attaches.length > 0){
-							new HttpTask(listener, RequestType.uploadFile).uploadFile(list, attaches);
-						}
+
 					}
-					OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
-						
-						@Override
-						public void onRequestSuccess(RequestType type, String result) {
-							mFormDao.create(data);
-							updateStatus(data.getQhid(), "2");
-							toast("上传成功");
-						}
-						
-						@Override
-						public void onRequestFail(RequestType type, String resultCode, String result) {
-							toast("上传失败");
-						}
-					};
-					data.setStatus("2");
-					data.setUpdatetime(UiUtil.formatNowTime());
-					data.setCreatetime(UiUtil.formatNowTime());
-					String json = new String(JSON.toJSONString(data));
-					list.add(new BasicNameValuePair("json", json));
-					new HttpTask(listener, RequestType.updateqhjcInfo).executePost(list);
+
+					@Override
+					public void onRequestFail(RequestType type, String resultCode, String result) {
+
+					}
+				};
+				
+				String[] pics = new String[] {};
+				if (!TextUtils.isEmpty(detail.getPicattachment())) {
+					pics = detail.getPicattachment().split(",");
 				}
-				dismissLoading();
+				String[] vdos = new String[] {};
+				if (!TextUtils.isEmpty(detail.getVidattachment())) {
+					vdos = detail.getVidattachment().split(",");
+				}
+				String[] attaches = UiUtil.concat(pics, vdos);
+				if(attaches.length > 0){
+					new HttpTask(listener, RequestType.uploadFile).uploadFile(list, attaches);
+				}
 			}
-		});
+			OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
+				
+				@Override
+				public void onRequestSuccess(RequestType type, String result) {
+					new SdxcFormAndDetailDao().create(data);
+					updateStatus(data.getSdid(), "2");
+					toast("上传成功");
+				}
+				
+				@Override
+				public void onRequestFail(RequestType type, String resultCode, String result) {
+					toast("上传失败");
+				}
+			};
+			data.setStatus("2");
+			data.setUpdatetime(UiUtil.formatNowTime());
+			data.setCreatetime(UiUtil.formatNowTime());
+			String json = new String(JSON.toJSONString(data));
+			list.add(new BasicNameValuePair("json", json));
+			new HttpTask(listener, RequestType.updateqhjcInfo).executePost(list);
+		}
+	}
+	
+	
+	private void updateCheckData(final String qhId, final int type, List<NameValuePair> list){
+		final CheckFormData data = new CheckFormAndDetailDao().queryByQHIdAndStatus(qhId, "1", type);
+		if (data != null) {
+			for (final CheckDetail detail : data.getOfenCheckDetailList()) {
+				OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
+
+					@Override
+					public void onRequestSuccess(RequestType type, String result) {
+						JSONObject obj = JSON.parseObject(result);
+						String re = obj.getString("datas");
+						List<FileDesc> files = JSON.parseArray(re, FileDesc.class);
+						String[] pics = new String[] {};
+						int i = 0;
+						if (!TextUtils.isEmpty(detail.getPicattachment())) {
+							pics = detail.getPicattachment().split(",");
+							StringBuilder sb = new StringBuilder();
+							for (String s : pics) {
+								if (!TextUtils.isEmpty(s)) {
+									sb.append(files.get(i).fileId);
+									i++;
+								}
+							}
+							detail.setPicattachment(sb.toString());
+						}
+						String[] vdos = new String[] {};
+						if (!TextUtils.isEmpty(detail.getVidattachment())) {
+							vdos = detail.getVidattachment().split(",");
+							StringBuilder sb = new StringBuilder();
+							for (String s : vdos) {
+								if (!TextUtils.isEmpty(s)) {
+									if (!TextUtils.isEmpty(s)) {
+										sb.append(files.get(i).fileId);
+										i++;
+									}
+								}
+							}
+							detail.setVidattachment(sb.toString());
+						}
+
+					}
+
+					@Override
+					public void onRequestFail(RequestType type, String resultCode, String result) {
+
+					}
+				};
+				
+				String[] pics = new String[] {};
+				if (!TextUtils.isEmpty(detail.getPicattachment())) {
+					pics = detail.getPicattachment().split(",");
+				}
+				String[] vdos = new String[] {};
+				if (!TextUtils.isEmpty(detail.getVidattachment())) {
+					vdos = detail.getVidattachment().split(",");
+				}
+				String[] attaches = UiUtil.concat(pics, vdos);
+				if(attaches.length > 0){
+					new HttpTask(listener, RequestType.uploadFile).uploadFile(list, attaches);
+				}
+			}
+			OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
+				
+				@Override
+				public void onRequestSuccess(RequestType type, String result) {
+					mFormDao.create(data);
+					updateStatus(data.getQhid(), "2");
+					toast("上传成功");
+				}
+				
+				@Override
+				public void onRequestFail(RequestType type, String resultCode, String result) {
+					toast("上传失败");
+				}
+			};
+			data.setStatus("2");
+			data.setUpdatetime(UiUtil.formatNowTime());
+			data.setCreatetime(UiUtil.formatNowTime());
+			String json = new String(JSON.toJSONString(data));
+			list.add(new BasicNameValuePair("json", json));
+			new HttpTask(listener, RequestType.updateqhjcInfo).executePost(list);
+		}
 	}
 
 	@Override

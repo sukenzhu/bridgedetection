@@ -23,7 +23,7 @@ public class GraffitiSurface extends SurfaceView implements SurfaceHolder.Callba
 	// 当前操作
 	private DoodleAction curAction = null;
 	// 默认画笔为白色
-	private int currentColor = Color.WHITE;
+	private int currentColor = Color.RED;
 	// 画笔的粗细
 	private int currentSize = 2;
 

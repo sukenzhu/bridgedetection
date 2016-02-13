@@ -1,5 +1,6 @@
 package com.suken.bridgedetection.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.suken.bridgedetection.R;
@@ -7,7 +8,6 @@ import com.suken.bridgedetection.storage.HDBaseData;
 import com.suken.bridgedetection.storage.QLBaseData;
 import com.suken.bridgedetection.storage.SDBaseData;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -16,38 +16,43 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
-public class ListPageAdapter extends BaseAdapter {
-	
-	private BridgeDetectionListActivity mContext ;
+public class ListPageAdapter extends BaseAdapter implements Filterable {
+
+	private BridgeDetectionListActivity mContext;
 	private List<ListBean> mSourceData;
+	private List<ListBean> mUnfilteredData = null;
 	private int mType = R.drawable.qiaoliangjiancha;
+	private ListFilter mFilter;
 	private OnClickListener mItemClickListener = new OnClickListener() {
-		
+
 		@Override
 		public void onClick(View v) {
-			if(v.getId() == R.id.operator){
+			if (v.getId() == R.id.operator) {
 				ListBean bean = (ListBean) v.getTag();
 				String status = bean.status;
-				if(TextUtils.equals(status, "0") || TextUtils.equals(status, "2")){
-					//去检查
+				if (TextUtils.equals(status, "0") || TextUtils.equals(status, "2")) {
+					// 去检查
 					Intent intent = new Intent(mContext, BridgeFormActivity.class);
-					if(mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha){
-						if(bean.realBean instanceof QLBaseData){
-							intent.putExtra("qhInfo", (QLBaseData)bean.realBean);
-						} else if(bean.realBean instanceof HDBaseData){
-							intent.putExtra("qhInfo", (HDBaseData)bean.realBean);
+					if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
+						if (bean.realBean instanceof QLBaseData) {
+							intent.putExtra("qhInfo", (QLBaseData) bean.realBean);
+						} else if (bean.realBean instanceof HDBaseData) {
+							intent.putExtra("qhInfo", (HDBaseData) bean.realBean);
 						}
 					} else {
-						intent.putExtra("qhInfo", (SDBaseData)bean.realBean);
+						intent.putExtra("qhInfo", (SDBaseData) bean.realBean);
 					}
+					intent.putExtra("type", mType);
 					intent.putExtra("formData", bean.mLastFormData);
 					mContext.startActivityForResult(intent, 1);
-				} else if(TextUtils.equals(status, "1")){
-					//去上传
-					mContext.updateSingle(bean.id);
-				} 
+				} else if (TextUtils.equals(status, "1")) {
+					// 去上传
+					mContext.updateSingle(bean.id, bean.type, true);
+				}
 			} else {
 				ViewHolder holder = (ViewHolder) v.getTag();
 				holder.operate.setVisibility(View.VISIBLE);
@@ -56,19 +61,19 @@ public class ListPageAdapter extends BaseAdapter {
 			}
 		}
 	};
-	
-	private void changeView(String status, ViewHolder holder){
+
+	private void changeView(String status, ViewHolder holder) {
 		holder.operate.setVisibility(View.VISIBLE);
 		holder.colorCircle.setVisibility(View.VISIBLE);
-		if(TextUtils.equals(status, "0")){
+		if (TextUtils.equals(status, "0")) {
 			holder.operate.setBackgroundColor(Color.parseColor("#c0c0c0"));
 			holder.operate.setText("开始检查");
 			holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_gray);
-		} else if(TextUtils.equals(status, "1")){
+		} else if (TextUtils.equals(status, "1")) {
 			holder.operate.setBackgroundColor(Color.parseColor("#ff9900"));
 			holder.operate.setText("上传");
 			holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_yellow);
-		} else if(TextUtils.equals(status, "2")){
+		} else if (TextUtils.equals(status, "2")) {
 			holder.operate.setBackgroundColor(Color.parseColor("#199847"));
 			holder.operate.setText("再次检查");
 			holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_green);
@@ -96,8 +101,8 @@ public class ListPageAdapter extends BaseAdapter {
 	public long getItemId(int arg0) {
 		return arg0;
 	}
-	
-	private class ViewHolder{
+
+	private class ViewHolder {
 		TextView zxzh;
 		TextView qhmc;
 		TextView qhbs;
@@ -106,21 +111,21 @@ public class ListPageAdapter extends BaseAdapter {
 		View colorCircle;
 		Button operate;
 		ListBean bean;
-		
+
 	}
 
 	@Override
 	public View getView(int position, View view, ViewGroup arg2) {
 		ViewHolder holder;
-		if(view == null){
+		if (view == null) {
 			view = mContext.getLayoutInflater().inflate(R.layout.activity_list_page_item, arg2, false);
 			holder = new ViewHolder();
 			holder.zxzh = (TextView) view.findViewById(R.id.zxzh);
-			holder.qhmc =  (TextView) view.findViewById(R.id.name);
+			holder.qhmc = (TextView) view.findViewById(R.id.name);
 			holder.qhbs = (TextView) view.findViewById(R.id.qhbs);
 			holder.lxbm = (TextView) view.findViewById(R.id.lxbm);
 			holder.lxmc = (TextView) view.findViewById(R.id.lxmc);
-			holder.operate =  (Button) view.findViewById(R.id.operator);
+			holder.operate = (Button) view.findViewById(R.id.operator);
 			holder.colorCircle = view.findViewById(R.id.color_circle);
 		} else {
 			holder = (ViewHolder) view.getTag();
@@ -135,7 +140,7 @@ public class ListPageAdapter extends BaseAdapter {
 		view.setOnClickListener(mItemClickListener);
 		holder.operate.setTag(holder.bean);
 		holder.operate.setOnClickListener(mItemClickListener);
-		if(holder.operate.getVisibility() == View.VISIBLE){
+		if (holder.operate.getVisibility() == View.VISIBLE) {
 			changeView(holder.bean.status, holder);
 		} else {
 			holder.operate.setVisibility(View.GONE);
@@ -143,15 +148,68 @@ public class ListPageAdapter extends BaseAdapter {
 		}
 		return view;
 	}
-	
-	
-	public void updateStatus(String id, String status){
-		for(ListBean bean : mSourceData){
-			if(TextUtils.equals(bean.id, id)){
+
+	public void updateStatus(String id, String status) {
+		for (ListBean bean : mSourceData) {
+			if (TextUtils.equals(bean.id, id)) {
 				bean.status = "1";
 				notifyDataSetChanged();
 			}
 		}
+	}
+
+	@Override
+	public Filter getFilter() {
+		if (mFilter == null) {
+			mFilter = new ListFilter();
+		}
+		return mFilter;
+	}
+
+	private class ListFilter extends Filter {
+
+		@Override
+		protected FilterResults performFiltering(CharSequence prefix) {
+			FilterResults results = new FilterResults();
+			if (mUnfilteredData == null) {
+				mUnfilteredData = new ArrayList<ListBean>(mSourceData);
+			}
+			if (prefix == null || prefix.length() == 0) {
+				List<ListBean> list = mUnfilteredData;
+				results.values = list;
+				results.count = list.size();
+			} else {
+				String prefixString = prefix.toString().toLowerCase();
+				int count = mUnfilteredData.size();
+				List<ListBean> newValues = new ArrayList<ListBean>();
+				for (int i = 0; i < count; i++) {
+					ListBean bean = mUnfilteredData.get(i);
+					boolean a = TextUtils.indexOf(bean.lxmc.toLowerCase(), prefixString) != -1;
+					boolean b = TextUtils.indexOf(bean.lxbm.toLowerCase(), prefixString) != -1;
+					boolean c = TextUtils.indexOf(bean.qhmc.toLowerCase(), prefixString) != -1;
+					boolean d = TextUtils.indexOf(bean.qhbs.toLowerCase(), prefixString) != -1;
+					boolean e = TextUtils.indexOf(bean.qhzh.toLowerCase(), prefixString) != -1;
+					if (a || b || c || d || e) {
+						newValues.add(bean);
+					}
+				}
+				results.values = newValues;
+				results.count = newValues.size();
+			}
+			return results;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void publishResults(CharSequence constraint, FilterResults results) {
+            mSourceData = ((List<ListBean>) results.values);
+            if (results.count > 0) {
+                notifyDataSetChanged();
+            } else {
+                notifyDataSetInvalidated();
+            }
+        }
+
 	}
 
 }

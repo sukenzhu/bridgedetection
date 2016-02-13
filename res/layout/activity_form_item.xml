@@ -190,6 +190,77 @@
                 android:layout_margin="5dp"
                 android:src="@drawable/menu" />
         </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/item4_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:paddingRight="40dp" >
+
+            <TextView
+                android:id="@+id/item4_title"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:text="保养措施意见："
+                android:textSize="9dp" />
+
+            <EditText
+                android:id="@+id/item4_edit"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/form_item_bg"
+                android:gravity="top"
+                android:padding="5dp"
+                android:textSize="9dp" />
+
+            <ImageView
+                android:id="@+id/item4_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:src="@drawable/menu" />
+        </LinearLayout>
+        
+         <LinearLayout
+            android:id="@+id/item5_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:paddingRight="40dp" >
+
+            <TextView
+                android:id="@+id/item5_title"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:text="保养措施意见："
+                android:textSize="9dp" />
+
+            <EditText
+                android:id="@+id/item5_edit"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/form_item_bg"
+                android:gravity="top"
+                android:padding="5dp"
+                android:textSize="9dp" />
+
+            <ImageView
+                android:id="@+id/item5_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:src="@drawable/menu" />
+        </LinearLayout>
+        
     </LinearLayout>
 
 </LinearLayout>

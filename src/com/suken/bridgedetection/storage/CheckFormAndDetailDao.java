@@ -66,7 +66,7 @@ public class CheckFormAndDetailDao {
 		try {
 			List<CheckFormData> datas =  mFormDao.queryForEq("type", type);
 			for(CheckFormData data : datas){
-				data.setOfenCheckDetailList(queryByFormId(data.getId()));
+				data.setOfenCheckDetailList(queryByFormId(data.getId(), type));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -75,20 +75,23 @@ public class CheckFormAndDetailDao {
 		return null;
 	}
 	
-	public List<CheckDetail> queryByFormId(long id){
+	public List<CheckDetail> queryByFormId(long id, int type){
 		try {
-			return mDetailDao.queryForEq("formId", id);
+			Map<String,Object> map = new HashMap<String, Object>();
+			map.put("formId", id);
+			map.put("type", type);
+			return mDetailDao.queryForFieldValues(map);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public List<CheckFormData> queryAll(){
+	public List<CheckFormData> queryAll(int type){
 		try {
 			List<CheckFormData> datas =  mFormDao.queryForAll();
 			for(CheckFormData data : datas){
-				data.setOfenCheckDetailList(queryByFormId(data.getId()));
+				data.setOfenCheckDetailList(queryByFormId(data.getId(), type));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -97,11 +100,11 @@ public class CheckFormAndDetailDao {
 		return null;
 	}
 	
-	public List<CheckFormData> queryByQHId(String id){
+	public List<CheckFormData> queryByQHId(String id, int type){
 		try {
 			List<CheckFormData> datas =  mFormDao.queryForEq("qhid", id);
 			for(CheckFormData data : datas){
-				data.setOfenCheckDetailList(queryByFormId(data.getId()));
+				data.setOfenCheckDetailList(queryByFormId(data.getId(), type));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -110,15 +113,16 @@ public class CheckFormAndDetailDao {
 		return null;
 	}
 	
-	public CheckFormData queryByQHIdAndStatus(String id, String status){
+	public CheckFormData queryByQHIdAndStatus(String id, String status, int type){
 		try {
 			Map<String,Object> map = new HashMap<String, Object>();
 			map.put("qhid", id);
 			map.put("status", status);
+			map.put("type", type);
 			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);
 			if(datas != null && datas.size() > 0){
 				CheckFormData data =  datas.get(0);
-				data.setOfenCheckDetailList(queryByFormId(data.getId()));
+				data.setOfenCheckDetailList(queryByFormId(data.getId(), type));
 				return data;
 			}
 		} catch (SQLException e) {

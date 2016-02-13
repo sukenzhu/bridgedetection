@@ -12,6 +12,7 @@ public class ListBean {
 	
 	public String status;
 	public String id;
+	public int type;
 	
 	public Object realBean;
 	public CheckFormData mLastFormData;

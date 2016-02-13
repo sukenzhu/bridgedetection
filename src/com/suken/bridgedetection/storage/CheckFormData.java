@@ -46,6 +46,8 @@ public class CheckFormData implements Serializable {
 	private String jlry;
 	@DatabaseField
 	private String lxbm;
+	@DatabaseField
+	private int type;
 
 	public String getLxbm() {
 		return lxbm;
@@ -108,6 +110,22 @@ public class CheckFormData implements Serializable {
 	private String yhdwName;
 	@DatabaseField
 	private String zxzh;
+	@DatabaseField
+	private String yhjgName;
+	@DatabaseField
+	private String yhjgId;
+	@DatabaseField
+	private String weather;
+	@DatabaseField
+	private String sdbm;
+	@DatabaseField
+	private String sdmc;
+	@DatabaseField
+	private String sdid;
+	@DatabaseField
+	private String sdzh;
+	@DatabaseField
+	private String sdfx;
 
 	// "status": "1", //状态 1 草稿 2 已提交，参考业务字典分类ID：10000000690004
 	// "tjsj": null, //提交时间
@@ -375,13 +393,86 @@ public class CheckFormData implements Serializable {
 		this.localId = localId;
 	}
 
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public String getYhjgName() {
+		return yhjgName;
+	}
+
+	public void setYhjgName(String yhjgName) {
+		this.yhjgName = yhjgName;
+	}
+
+	public String getYhjgId() {
+		return yhjgId;
+	}
+
+	public void setYhjgId(String yhjgId) {
+		this.yhjgId = yhjgId;
+	}
+
+	public String getWeather() {
+		return weather;
+	}
+
+	public void setWeather(String weather) {
+		this.weather = weather;
+	}
+
+	public String getSdbm() {
+		return sdbm;
+	}
+
+	public void setSdbm(String sdbm) {
+		this.sdbm = sdbm;
+	}
+
+	public String getSdmc() {
+		return sdmc;
+	}
+
+	public void setSdmc(String sdmc) {
+		this.sdmc = sdmc;
+	}
+
+	public String getSdid() {
+		return sdid;
+	}
+
+	public void setSdid(String sdid) {
+		this.sdid = sdid;
+	}
+
+	public String getSdzh() {
+		return sdzh;
+	}
+
+	public void setSdzh(String sdzh) {
+		this.sdzh = sdzh;
+	}
+
+	public String getSdfx() {
+		return sdfx;
+	}
+
+	public void setSdfx(String sdfx) {
+		this.sdfx = sdfx;
+	}
+
 	@Override
 	public String toString() {
-		return "JianChaFormData [bno=" + bno + ", createBy=" + createBy + ", createtime=" + createtime + ", creator=" + creator + ", flag=" + flag + ", fzry=" + fzry + ", gldwId=" + gldwId
-				+ ", gldwName=" + gldwName + ", hzf=" + hzf + ", id=" + id + ", jcsj=" + jcsj + ", jlry=" + jlry + ", lxid=" + lxid + ", lxmc=" + lxmc + ", ofenCheckDetailList=" + ofenCheckDetailList
-				+ ", orgid=" + orgid + ", pddj=" + pddj + ", prePddj=" + prePddj + ", qhbm=" + qhbm + ", qhid=" + qhid + ", qhlx=" + qhlx + ", qhmc=" + qhmc + ", status=" + status + ", tjsj=" + tjsj
-				+ ", updateBy=" + updateBy + ", updatetime=" + updatetime + ", updator=" + updator + ", versionno=" + versionno + ", yhdwId=" + yhdwId + ", yhdwName=" + yhdwName + ", zxzh=" + zxzh
-				+ "]";
+		return "JianChaFormData [bno=" + bno + ", createBy=" + createBy + ", createtime=" + createtime + ", creator=" + creator + ", flag=" + flag + ", fzry="
+				+ fzry + ", gldwId=" + gldwId + ", gldwName=" + gldwName + ", hzf=" + hzf + ", id=" + id + ", jcsj=" + jcsj + ", jlry=" + jlry + ", lxid="
+				+ lxid + ", lxmc=" + lxmc + ", ofenCheckDetailList=" + ofenCheckDetailList + ", orgid=" + orgid + ", pddj=" + pddj + ", prePddj=" + prePddj
+				+ ", qhbm=" + qhbm + ", qhid=" + qhid + ", qhlx=" + qhlx + ", qhmc=" + qhmc + ", status=" + status + ", tjsj=" + tjsj + ", updateBy=" + updateBy
+				+ ", updatetime=" + updatetime + ", updator=" + updator + ", versionno=" + versionno + ", yhdwId=" + yhdwId + ", yhdwName=" + yhdwName
+				+ ", zxzh=" + zxzh + "]";
 	}
 
 }

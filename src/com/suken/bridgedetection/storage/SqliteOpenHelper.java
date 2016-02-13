@@ -30,6 +30,8 @@ public class SqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, SDYangHuZeRenInfo.class);
 			TableUtils.createTable(connectionSource, CheckFormData.class);
 			TableUtils.createTable(connectionSource, CheckDetail.class);
+			TableUtils.createTable(connectionSource, SdxcFormData.class);
+			TableUtils.createTable(connectionSource, SdxcFormDetail.class);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -48,6 +50,8 @@ public class SqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, SDYangHuZeRenInfo.class, true);
 			TableUtils.dropTable(connectionSource, CheckFormData.class, true);
 			TableUtils.dropTable(connectionSource, CheckDetail.class, true);
+			TableUtils.dropTable(connectionSource, SdxcFormData.class, true);
+			TableUtils.dropTable(connectionSource, SdxcFormDetail.class, true);
 			onCreate(database, connectionSource);
 		} catch (SQLException e) {
 			e.printStackTrace();

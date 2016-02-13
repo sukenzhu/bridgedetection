@@ -6,7 +6,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "tb_checkdetail")
-public class CheckDetail implements Serializable{
+public class CheckDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@DatabaseField
 	private String bjmc;
@@ -66,6 +66,19 @@ public class CheckDetail implements Serializable{
 	private String vidattachment;
 	@DatabaseField
 	private long formId;
+
+	@DatabaseField
+	private String jgmc;
+	@DatabaseField
+	private String ycwz;
+	@DatabaseField
+	private String qsnr;
+	@DatabaseField
+	private String ycms;
+	@DatabaseField
+	private String pd;
+	@DatabaseField
+	private String yhcsyj;
 
 	public String getBjmc() {
 		return bjmc;
@@ -267,12 +280,62 @@ public class CheckDetail implements Serializable{
 		this.formId = formId;
 	}
 
+	public String getJgmc() {
+		return jgmc;
+	}
+
+	public void setJgmc(String jgmc) {
+		this.jgmc = jgmc;
+	}
+
+	public String getYcwz() {
+		return ycwz;
+	}
+
+	public void setYcwz(String ycwz) {
+		this.ycwz = ycwz;
+	}
+
+	public String getQsnr() {
+		return qsnr;
+	}
+
+	public void setQsnr(String qsnr) {
+		this.qsnr = qsnr;
+	}
+
+
+	public String getYcms() {
+		return ycms;
+	}
+
+	public void setYcms(String ycms) {
+		this.ycms = ycms;
+	}
+
+	public String getPd() {
+		return pd;
+	}
+
+	public void setPd(String pd) {
+		this.pd = pd;
+	}
+
+	public String getYhcsyj() {
+		return yhcsyj;
+	}
+
+	public void setYhcsyj(String yhcsyj) {
+		this.yhcsyj = yhcsyj;
+	}
+
 	@Override
 	public String toString() {
-		return "CheckDetail [bjmc=" + bjmc + ", bycsyj=" + bycsyj + ", bycsyjblank=" + bycsyjblank + ", createBy=" + createBy + ", createtime=" + createtime + ", creator=" + creator + ", flag=" + flag
-				+ ", id=" + id + ", orgid=" + orgid + ", picattachment=" + picattachment + ", qhId=" + qhId + ", qkms=" + qkms + ", qkmsblank=" + qkmsblank + ", qsfw=" + qsfw + ", qsfwblank="
-				+ qsfwblank + ", qslx=" + qslx + ", qslxblank=" + qslxblank + ", remark=" + remark + ", remarkblank=" + remarkblank + ", updateBy=" + updateBy + ", updatetime=" + updatetime
-				+ ", updator=" + updator + ", versionno=" + versionno + ", vidattachment=" + vidattachment +  "]";
+		return "CheckDetail [bjmc=" + bjmc + ", bycsyj=" + bycsyj + ", bycsyjblank=" + bycsyjblank + ", createBy=" + createBy + ", createtime=" + createtime
+				+ ", creator=" + creator + ", flag=" + flag + ", id=" + id + ", orgid=" + orgid + ", picattachment=" + picattachment + ", qhId=" + qhId
+				+ ", qkms=" + qkms + ", qkmsblank=" + qkmsblank + ", qsfw=" + qsfw + ", qsfwblank=" + qsfwblank + ", qslx=" + qslx + ", qslxblank=" + qslxblank
+				+ ", remark=" + remark + ", remarkblank=" + remarkblank + ", updateBy=" + updateBy + ", updatetime=" + updatetime + ", updator=" + updator
+				+ ", versionno=" + versionno + ", vidattachment=" + vidattachment + "]";
 	}
 
 }
