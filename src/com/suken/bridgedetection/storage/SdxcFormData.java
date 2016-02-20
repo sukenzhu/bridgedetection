@@ -6,7 +6,7 @@ import java.util.List;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "tb_checkform")
+@DatabaseTable(tableName = "tb_sdcheckform")
 public class SdxcFormData implements Serializable {
 	private static final long serialVersionUID = 1l;
 	@DatabaseField
@@ -33,11 +33,17 @@ public class SdxcFormData implements Serializable {
 	@DatabaseField
 	private String gldwName;
 	@DatabaseField
+	private String gydwId;
+	@DatabaseField
+	private String gydwName;
+	@DatabaseField
 	private long id;
 	@DatabaseField(generatedId = true)
 	private long localId;
 	@DatabaseField
 	private String jcsd;
+	@DatabaseField
+	private String jcsj;
 	@DatabaseField
 	private String jlry;
 	@DatabaseField
@@ -58,7 +64,7 @@ public class SdxcFormData implements Serializable {
 	// "lxbm": "G20",
 	// "lxid": 10000001740003,
 	// "lxmc": "青银高速",
-	private List<SdxcFormDetail> inspectlogDetailList;
+	private List<SdxcFormDetail> inspectLogDetailList;
 	@DatabaseField
 	private String sdbh;
 	@DatabaseField
@@ -96,6 +102,54 @@ public class SdxcFormData implements Serializable {
 	private String weather;
 	@DatabaseField
 	private String sdzh;
+	@DatabaseField
+	private String dealwith;
+	@DatabaseField
+	private String xcry;
+	@DatabaseField
+	private String jcry;
+	@DatabaseField
+	private String qhlx;
+
+	public String getJcsj() {
+		return jcsj;
+	}
+
+	public void setJcsj(String jcsj) {
+		this.jcsj = jcsj;
+	}
+
+	public String getDealWith() {
+		return dealwith;
+	}
+
+	public void setDealWith(String dealWith) {
+		this.dealwith = dealWith;
+	}
+
+	public String getXcry() {
+		return xcry;
+	}
+
+	public void setXcry(String xcry) {
+		this.xcry = xcry;
+	}
+
+	public String getJcry() {
+		return jcry;
+	}
+
+	public void setJcry(String jcry) {
+		this.jcry = jcry;
+	}
+
+	public String getQhlx() {
+		return qhlx;
+	}
+
+	public void setQhlx(String qhlx) {
+		this.qhlx = qhlx;
+	}
 
 	public void setCreateBy(String createBy) {
 		this.createBy = createBy;
@@ -147,6 +201,22 @@ public class SdxcFormData implements Serializable {
 
 	public void setGldwName(String gldwName) {
 		this.gldwName = gldwName;
+	}
+
+	public String getGydwId() {
+		return gydwId;
+	}
+
+	public void setGydwId(String gydwId) {
+		this.gydwId = gydwId;
+	}
+
+	public String getGydwName() {
+		return gydwName;
+	}
+
+	public void setGydwName(String gydwName) {
+		this.gydwName = gydwName;
 	}
 
 	public long getId() {
@@ -309,12 +379,14 @@ public class SdxcFormData implements Serializable {
 		this.sdfx = sdfx;
 	}
 
-	public List<SdxcFormDetail> getInspectlogDetailList() {
-		return inspectlogDetailList;
+	
+
+	public List<SdxcFormDetail> getInspectLogDetailList() {
+		return inspectLogDetailList;
 	}
 
-	public void setInspectlogDetailList(List<SdxcFormDetail> inspectlogDetailList) {
-		this.inspectlogDetailList = inspectlogDetailList;
+	public void setInspectLogDetailList(List<SdxcFormDetail> inspectLogDetailList) {
+		this.inspectLogDetailList = inspectLogDetailList;
 	}
 
 	public String getJcsd() {
@@ -349,7 +421,7 @@ public class SdxcFormData implements Serializable {
 	public String toString() {
 		return "SdxcFormData [createBy=" + createBy + ", createtime=" + createtime + ", creator=" + creator + ", flag=" + flag + ", fzry=" + fzry + ", gldwId="
 				+ gldwId + ", gldwName=" + gldwName + ", id=" + id + ", localId=" + localId + ", jcsd=" + jcsd + ", jlry=" + jlry + ", lxbh=" + lxbh + ", type="
-				+ type + ", lxid=" + lxid + ", lxmc=" + lxmc + ", inspectlogDetailList=" + inspectlogDetailList + ", sdbh=" + sdbh + ", sdid=" + sdid
+				+ type + ", lxid=" + lxid + ", lxmc=" + lxmc + ", inspectlogDetailList=" + inspectLogDetailList + ", sdbh=" + sdbh + ", sdid=" + sdid
 				+ ", sdfx=" + sdfx + ", sdmc=" + sdmc + ", status=" + status + ", updateBy=" + updateBy + ", updatetime=" + updatetime + ", updator=" + updator
 				+ ", yhdwId=" + yhdwId + ", yhdwName=" + yhdwName + ", zxzh=" + zxzh + ", yhjgName=" + yhjgName + ", yhjgId=" + yhjgId + ", weather=" + weather
 				+ ", sdzh=" + sdzh + "]";

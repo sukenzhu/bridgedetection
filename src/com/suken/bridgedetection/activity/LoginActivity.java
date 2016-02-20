@@ -10,10 +10,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.BridgeDetectionApplication;
+import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.RequestType;
 import com.suken.bridgedetection.http.HttpTask;
 import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
+import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.storage.SharePreferenceManager;
 import com.suken.bridgedetection.storage.UserInfo;
 import com.suken.bridgedetection.storage.UserInfoDao;
@@ -46,6 +48,11 @@ public class LoginActivity extends BaseActivity {
 		mNameView = (EditText) findViewById(R.id.username);
 		mPwdView = (EditText) findViewById(R.id.userpwd);
 		mTextView = (TextView) findViewById(R.id.login_desc);
+		if(mUserInfos != null && mUserInfos.size() > 0){
+			UserInfo info = mUserInfos.get(0);
+			mNameView.setText(info.getAccount());
+			mPwdView.setText(info.getPassword());
+		}
 		PackageInfo info;
 		try {
 			info = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -93,7 +100,7 @@ public class LoginActivity extends BaseActivity {
 			}
 		}
 		if (info != null) {
-			jumpToHome(info, true);
+			jumpToHome(info, false);
 		} else {
 			toast("用户名或密码不正确");
 		}
@@ -105,9 +112,13 @@ public class LoginActivity extends BaseActivity {
 		}
 		BridgeDetectionApplication.mCurrentUser = info;
 		BridgeDetectionApplication.mIsOffline = !isOnline;
+		boolean flag = SharePreferenceManager.getInstance().readBoolean(Constants.GPS_SWITCH, false);
+		if(flag){
+			LocationManager.getInstance().startRecordLocation();
+		}
 		Intent intent = new Intent(this, HomePageActivity.class);
 		intent.putExtra("userInfo", info);
-		intent.putExtra("isOnline", true);
+		intent.putExtra("isOnline", isOnline);
 		startActivity(intent);
 	}
 

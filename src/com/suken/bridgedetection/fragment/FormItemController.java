@@ -35,6 +35,7 @@ public class FormItemController implements OnClickListener {
 	private String mDefaultValue;
 	private String mQhId;
 	private boolean mIsHandong;
+	private EditText xczh;
 
 	public FormItemController(Activity context, View view, OnClickListener listener, String text, int type, String defaultValue, String[] itemTexts,
 			CheckDetail formDetail, String blank1, String blank2, String qhId, boolean isHandong) {
@@ -42,6 +43,10 @@ public class FormItemController implements OnClickListener {
 		mContext = (BridgeFormActivity) context;
 		mFormItem = view;
 		mQhId = qhId;
+		xczh = (EditText) view.findViewById(R.id.form_qlzh);
+		if(type == R.drawable.qiaoliangxuncha){
+			xczh.setVisibility(View.VISIBLE);
+		}
 		mImgVideoLayout = mFormItem.findViewById(R.id.img_video_layout);
 		mArrowImgView = (ImageView) mFormItem.findViewById(R.id.arrow_img);
 		mEditLayout = mFormItem.findViewById(R.id.form_item_edit_layout);
@@ -52,7 +57,7 @@ public class FormItemController implements OnClickListener {
 		qslxText.setText(itemTexts[0]);
 		qsfwText.setText(itemTexts[1]);
 		byyjText.setText(itemTexts[2]);
-		if(type == R.drawable.suidaojiancha){
+		if(type == R.drawable.suidaojiancha || type == R.drawable.qiaoliangxuncha){
 			TextView item4 = (TextView) mFormItem.findViewById(R.id.item4_title);
 			item4.setText(itemTexts[3]);
 			TextView item5 = (TextView) mFormItem.findViewById(R.id.item5_title);
@@ -138,14 +143,14 @@ public class FormItemController implements OnClickListener {
 		qslxEv = (EditText) mFormItem.findViewById(R.id.qslx_edit);
 		qsfwEv = (EditText) mFormItem.findViewById(R.id.qsfw_edit);
 		byyjEv = (EditText) mFormItem.findViewById(R.id.byyj_edit);
-		if(type == R.drawable.suidaojiancha){
+		if(type == R.drawable.suidaojiancha || type == R.drawable.qiaoliangxuncha){
 			mFormItem.findViewById(R.id.item4_layout).setVisibility(View.VISIBLE);
 			mFormItem.findViewById(R.id.item5_layout).setVisibility(View.VISIBLE);
 			item4Ev = (EditText) mFormItem.findViewById(R.id.item4_edit);
 			item5Ev = (EditText) mFormItem.findViewById(R.id.item5_edit);
 		}
 
-		if (!mIsHandong && (type == R.drawable.qiaoliangjiancha || type == R.drawable.qiaoliangxuncha)) {
+		if (!mIsHandong && (type == R.drawable.qiaoliangjiancha)) {
 			if (formDetail != null && !TextUtils.isEmpty(formDetail.getQslx())) {
 				qslxEv.setText(formDetail.getQslx());
 			} else {
@@ -204,6 +209,10 @@ public class FormItemController implements OnClickListener {
 		mImgVideoLayout.setVisibility(View.VISIBLE);
 		mArrowImgView.setImageResource(R.drawable.shang);
 	}
+	
+	public void performArrowImgClick(){
+		mArrowImgView.performClick();
+	}
 
 	public void hide() {
 		mIsShowing = false;
@@ -214,9 +223,9 @@ public class FormItemController implements OnClickListener {
 
 	public String generateMediaName(boolean isImg) {
 		if (isImg) {
-			return "pic-" + mQhId + "-" + (mImages.size() + 1) + ".png";
+			return "pic-" + System.currentTimeMillis() + "-" + (mImages.size() + 1) + ".png";
 		} else {
-			return "vdo-"+ mQhId + "-" + (mVedios.size() + 1) + ".mp4";
+			return "vdo-" + System.currentTimeMillis() + "-" + (mVedios.size() + 1) + ".mp4";
 		}
 	}
 
@@ -243,10 +252,19 @@ public class FormItemController implements OnClickListener {
 	
 	public SdxcFormDetail packageSxDetail(){
 		SdxcFormDetail detail = new SdxcFormDetail();
-		detail.setJcnr(mTitle);
-		detail.setQkms(qslxEv.getText().toString());
-		detail.setDealwith(qsfwEv.getText().toString());
-		detail.setJcsj(byyjEv.getText().toString());
+		if(type == R.drawable.suidaoxuncha){
+			detail.setJcnr(mTitle);
+			detail.setQkms(qslxEv.getText().toString());
+			detail.setDealwith(qsfwEv.getText().toString());
+			detail.setJcsj(byyjEv.getText().toString());
+		} else {
+			detail.setQhzh(xczh.getText().toString());
+			detail.setFx(qslxEv.getText().toString());
+			detail.setFxbh(qsfwEv.getText().toString());
+			detail.setShwz(byyjEv.getText().toString());
+			detail.setDx(item4Ev.getText().toString());
+			detail.setYs(item5Ev.getText().toString());
+		}
 		StringBuilder builder = new StringBuilder();
 		for (ImageDesc desc : mImages) {
 			builder.append(desc.path + ",");
@@ -276,7 +294,8 @@ public class FormItemController implements OnClickListener {
 			detail.setQsnr(qsfwEv.getText().toString());
 			detail.setYcms(byyjEv.getText().toString());
 			detail.setPd(item4Ev.getText().toString());
-			detail.setBycsyj(item5Ev.getText().toString());
+			detail.setYhcsyj(item5Ev.getText().toString());
+			detail.setJgmc(mTitle);
 		}
 		StringBuilder builder = new StringBuilder();
 		for (ImageDesc desc : mImages) {
@@ -289,6 +308,10 @@ public class FormItemController implements OnClickListener {
 		}
 		detail.setVidattachment(builder.toString());
 		return detail;
+	}
+	
+	public View getItemView(){
+		return mFormItem;
 	}
 
 }

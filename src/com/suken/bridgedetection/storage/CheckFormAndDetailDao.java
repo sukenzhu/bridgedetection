@@ -8,6 +8,7 @@ import java.util.Map;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.suken.bridgedetection.BridgeDetectionApplication;
+import com.suken.bridgedetection.R;
 
 public class CheckFormAndDetailDao {
 
@@ -22,19 +23,19 @@ public class CheckFormAndDetailDao {
 			e.printStackTrace();
 		}
 	}
-	
-	public boolean create(List<CheckFormData> list){
-		for(CheckFormData formData : list){
+
+	public boolean create(List<CheckFormData> list) {
+		for (CheckFormData formData : list) {
 			create(formData);
 		}
 		return true;
 	}
-	
-	public boolean create(CheckFormData formData){
+
+	public boolean create(CheckFormData formData) {
 		try {
 			CreateOrUpdateStatus status = mFormDao.createOrUpdate(formData);
-			if(formData.getOfenCheckDetailList() != null){
-				createDetails(formData.getOfenCheckDetailList());
+			if (formData.getOftenCheckDetailList() != null) {
+				createDetails(formData.getOftenCheckDetailList());
 			}
 			return status.isCreated() || status.isUpdated();
 		} catch (SQLException e) {
@@ -42,15 +43,14 @@ public class CheckFormAndDetailDao {
 		}
 		return false;
 	}
-	
-	
-	public void createDetails(List<CheckDetail> details){
-		for(CheckDetail formData : details){
+
+	public void createDetails(List<CheckDetail> details) {
+		for (CheckDetail formData : details) {
 			create(formData);
 		}
 	}
-	
-	public boolean create(CheckDetail detail){
+
+	public boolean create(CheckDetail detail) {
 
 		try {
 			CreateOrUpdateStatus status = mDetailDao.createOrUpdate(detail);
@@ -59,76 +59,130 @@ public class CheckFormAndDetailDao {
 			e.printStackTrace();
 		}
 		return false;
-	
+
 	}
-	
-	public List<CheckFormData> queryByType(int type){
+
+	public List<CheckDetail> queryByFormId(long id, int type) {
 		try {
-			List<CheckFormData> datas =  mFormDao.queryForEq("type", type);
-			for(CheckFormData data : datas){
-				data.setOfenCheckDetailList(queryByFormId(data.getId(), type));
-			}
-			return datas;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public List<CheckDetail> queryByFormId(long id, int type){
-		try {
-			Map<String,Object> map = new HashMap<String, Object>();
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("formId", id);
-			map.put("type", type);
 			return mDetailDao.queryForFieldValues(map);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	public List<CheckFormData> queryAll(int type){
+
+	public List<CheckFormData> queryByQHId(String id, int type) {
 		try {
-			List<CheckFormData> datas =  mFormDao.queryForAll();
-			for(CheckFormData data : datas){
-				data.setOfenCheckDetailList(queryByFormId(data.getId(), type));
-			}
-			return datas;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public List<CheckFormData> queryByQHId(String id, int type){
-		try {
-			List<CheckFormData> datas =  mFormDao.queryForEq("qhid", id);
-			for(CheckFormData data : datas){
-				data.setOfenCheckDetailList(queryByFormId(data.getId(), type));
-			}
-			return datas;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public CheckFormData queryByQHIdAndStatus(String id, String status, int type){
-		try {
-			Map<String,Object> map = new HashMap<String, Object>();
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("qhid", id);
+			map.put("type", type);
+			map.put("lastUpdate", false);
+			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);
+			for (CheckFormData data : datas) {
+				data.setOftenCheckDetailList(queryByFormId(data.getLocalId(), type));
+			}
+			return datas;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public CheckFormData queryByQHIdAndStatus(String id, String status, int type) {
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(type == R.drawable.suidaojiancha){
+				map.put("sdid", id);
+			} else {
+				map.put("qhid", id);
+			}
 			map.put("status", status);
 			map.put("type", type);
+			map.put("lastUpdate", false);
 			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);
-			if(datas != null && datas.size() > 0){
-				CheckFormData data =  datas.get(0);
-				data.setOfenCheckDetailList(queryByFormId(data.getId(), type));
+			if (datas != null && datas.size() > 0) {
+				CheckFormData data = datas.get(0);
+				data.setOftenCheckDetailList(queryByFormId(data.getLocalId(), type));
 				return data;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public boolean deleteByQhId(String id, int type) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(type == R.drawable.suidaojiancha){
+			map.put("sdid", id);
+		} else {
+			map.put("qhid", id);
+		}
+		map.put("type", type);
+		map.put("lastUpdate", false);
+		try {
+			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
+			deleteCheckFormList(list);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean deleteCheckFormList(List<CheckFormData> list) {
+		if (list != null && list.size() > 0) {
+			for (CheckFormData data : list) {
+				deleteChecFormDataById(data);
+			}
+		}
+		return true;
+	}
+	
+	public List<CheckFormData> queryLastUpdate(int type){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", type);
+		map.put("lastUpdate", true);
+		try {
+			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public boolean deleteLastUpdate() {
+		try {
+			List<CheckFormData> list = mFormDao.queryForEq("lastUpdate", true);
+			if (list != null && list.size() > 0) {
+				for (CheckFormData data : list) {
+					deleteChecFormDataById(data);
+				}
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean deleteChecFormDataById(CheckFormData data) {
+		try {
+			mFormDao.delete(data);
+			List<CheckDetail> list = mDetailDao.queryForEq("formId", data.getLocalId());
+			if (list != null && list.size() > 0) {
+				for (CheckDetail detail : list) {
+					mDetailDao.delete(detail);
+				}
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

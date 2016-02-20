@@ -43,7 +43,7 @@
             android:orientation="vertical" >
 
             <LinearLayout
-            android:id="@+id/form_content"
+                android:id="@+id/form_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -113,7 +113,35 @@
                     android:layout_margin="5dp"
                     android:orientation="vertical" >
 
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
+
+                        <RadioButton
+                            android:id="@+id/radioql"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="桥梁"
+                            android:textSize="9dp" >
+                        </RadioButton>
+
+                        <RadioButton
+                            android:id="@+id/radiohd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="涵洞"
+                            android:textSize="9dp" >
+                        </RadioButton>
+                    </RadioGroup>
+
                     <LinearLayout
+                        android:id="@+id/form_qlbh"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -135,8 +163,8 @@
                                 android:id="@+id/form_qlbh_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:textColor="#333333"
                                 android:background="@null"
+                                android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
 
@@ -156,8 +184,8 @@
                                 android:id="@+id/form_qlmc_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:textColor="#333333"
                                 android:background="@null"
+                                android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
                     </LinearLayout>
@@ -165,6 +193,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/form_lxbh"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="15dp" >
 
@@ -184,8 +213,8 @@
                                 android:id="@+id/form_lxbh_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:textColor="#333333"
                                 android:background="@null"
+                                android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
 
@@ -215,6 +244,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:id="@+id/form_zxzh"
                         android:layout_marginRight="15dp" >
 
                         <LinearLayout
@@ -233,8 +263,8 @@
                                 android:id="@+id/form_zxzh_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:textColor="#333333"
                                 android:background="@null"
+                                android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
 
@@ -254,15 +284,92 @@
                                 android:id="@+id/form_yhdw_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:textColor="#333333"
                                 android:background="@null"
+                                android:textColor="#333333"
+                                android:textSize="9dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/extra_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:visibility="gone" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_extra1_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="隧道方向："
+                                android:textSize="9dp" />
+
+                            <EditText
+                                android:id="@+id/form_extra1_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:background="@null"
+                                android:textColor="#333333"
+                                android:textSize="9dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_weather_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="天气情况："
+                                android:textSize="9dp" />
+
+                            <EditText
+                                android:id="@+id/form_weather_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="20dp"
+                                android:background="@null"
+                                android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            
+                <LinearLayout
+                    android:id="@+id/operateLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:visibility="gone" >
+
+                    <Button
+                        android:id="@+id/operateAdd"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="10dp"
+                        android:onClick="operate"
+                        android:text="添加"
+                        android:textSize="11dp" />
+
+                    <Button
+                        android:id="@+id/operateDelete"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:enabled="false"
+                        android:onClick="operate"
+                        android:text="删除"
+                        android:textSize="11dp" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -283,9 +390,9 @@
             android:orientation="vertical" >
 
             <LinearLayout
+                android:id="@+id/pddj_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/pddj_layout"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="15dp" >
 
@@ -386,10 +493,10 @@
     <Button
         android:id="@+id/save2"
         android:layout_width="match_parent"
-        android:textColor="#ffffff"
         android:layout_height="20dp"
         android:background="#3ea49d"
-        android:textSize="12dp"
-        android:text="保存" />
+        android:text="保存"
+        android:textColor="#ffffff"
+        android:textSize="12dp" />
 
 </LinearLayout>

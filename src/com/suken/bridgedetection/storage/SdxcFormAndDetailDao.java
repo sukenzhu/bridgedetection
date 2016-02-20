@@ -8,6 +8,7 @@ import java.util.Map;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.suken.bridgedetection.BridgeDetectionApplication;
+import com.suken.bridgedetection.R;
 
 public class SdxcFormAndDetailDao {
 
@@ -22,19 +23,19 @@ public class SdxcFormAndDetailDao {
 			e.printStackTrace();
 		}
 	}
-	
-	public boolean create(List<SdxcFormData> list){
-		for(SdxcFormData formData : list){
+
+	public boolean create(List<SdxcFormData> list) {
+		for (SdxcFormData formData : list) {
 			create(formData);
 		}
 		return true;
 	}
-	
-	public boolean create(SdxcFormData formData){
+
+	public boolean create(SdxcFormData formData) {
 		try {
 			CreateOrUpdateStatus status = mFormDao.createOrUpdate(formData);
-			if(formData.getInspectlogDetailList() != null){
-				createDetails(formData.getInspectlogDetailList());
+			if (formData.getInspectLogDetailList() != null) {
+				createDetails(formData.getInspectLogDetailList());
 			}
 			return status.isCreated() || status.isUpdated();
 		} catch (SQLException e) {
@@ -42,15 +43,14 @@ public class SdxcFormAndDetailDao {
 		}
 		return false;
 	}
-	
-	
-	public void createDetails(List<SdxcFormDetail> details){
-		for(SdxcFormDetail formData : details){
+
+	public void createDetails(List<SdxcFormDetail> details) {
+		for (SdxcFormDetail formData : details) {
 			create(formData);
 		}
 	}
-	
-	public boolean create(SdxcFormDetail detail){
+
+	public boolean create(SdxcFormDetail detail) {
 
 		try {
 			CreateOrUpdateStatus status = mDetailDao.createOrUpdate(detail);
@@ -59,14 +59,14 @@ public class SdxcFormAndDetailDao {
 			e.printStackTrace();
 		}
 		return false;
-	
+
 	}
-	
-	public List<SdxcFormData> queryByType(int type){
+
+	public List<SdxcFormData> queryByType(int type) {
 		try {
-			List<SdxcFormData> datas =  mFormDao.queryForEq("type", type);
-			for(SdxcFormData data : datas){
-				data.setInspectlogDetailList(queryByFormId(data.getId(), type));
+			List<SdxcFormData> datas = mFormDao.queryForEq("type", type);
+			for (SdxcFormData data : datas) {
+				data.setInspectLogDetailList(queryByFormId(data.getLocalId(), type));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -74,12 +74,11 @@ public class SdxcFormAndDetailDao {
 		}
 		return null;
 	}
-	
-	public List<SdxcFormDetail> queryByFormId(long id, int type){
+
+	public List<SdxcFormDetail> queryByFormId(long id, int type) {
 		try {
-			Map<String,Object> map = new HashMap<String, Object>();
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("formId", id);
-			map.put("type", type);
 			List<SdxcFormDetail> datas = mDetailDao.queryForFieldValues(map);
 			return datas;
 		} catch (SQLException e) {
@@ -87,12 +86,12 @@ public class SdxcFormAndDetailDao {
 		}
 		return null;
 	}
-	
-	public List<SdxcFormData> queryAll(int type){
+
+	public List<SdxcFormData> queryAll(int type) {
 		try {
-			List<SdxcFormData> datas =  mFormDao.queryForAll();
-			for(SdxcFormData data : datas){
-				data.setInspectlogDetailList(queryByFormId(data.getId(), type));
+			List<SdxcFormData> datas = mFormDao.queryForAll();
+			for (SdxcFormData data : datas) {
+				data.setInspectLogDetailList(queryByFormId(data.getLocalId(), type));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -100,12 +99,12 @@ public class SdxcFormAndDetailDao {
 		}
 		return null;
 	}
-	
-	public List<SdxcFormData> queryByQHId(String id, int type){
+
+	public List<SdxcFormData> queryByQHId(String id, int type) {
 		try {
-			List<SdxcFormData> datas =  mFormDao.queryForEq("qhid", id);
-			for(SdxcFormData data : datas){
-				data.setInspectlogDetailList(queryByFormId(data.getId(), type));
+			List<SdxcFormData> datas = mFormDao.queryForEq("sdid", id);
+			for (SdxcFormData data : datas) {
+				data.setInspectLogDetailList(queryByFormId(data.getLocalId(), type));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -113,23 +112,68 @@ public class SdxcFormAndDetailDao {
 		}
 		return null;
 	}
-	
-	public SdxcFormData queryByQHIdAndStatus(String id, String status, int type){
+
+	public SdxcFormData queryByQHIdAndStatus(String id, String status, int type) {
 		try {
-			Map<String,Object> map = new HashMap<String, Object>();
-			map.put("qhid", id);
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(type == R.drawable.qiaoliangxuncha){
+				map.put("localId", Long.parseLong(id));
+			} else {
+				map.put("qhid", id);
+			}
 			map.put("status", status);
 			map.put("type", type);
 			List<SdxcFormData> datas = mFormDao.queryForFieldValues(map);
-			if(datas != null && datas.size() > 0){
-				SdxcFormData data =  datas.get(0);
-				data.setInspectlogDetailList(queryByFormId(data.getId(), type));
+			if (datas != null && datas.size() > 0) {
+				SdxcFormData data = datas.get(0);
+				data.setInspectLogDetailList(queryByFormId(data.getLocalId(), type));
 				return data;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public boolean deleteByQhId(String id, int type) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(type == R.drawable.suidaoxuncha){
+			map.put("sdid", id);
+		}
+		map.put("type", type);
+		try {
+			List<SdxcFormData> list = mFormDao.queryForFieldValues(map);
+			deleteCheckFormList(list);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean deleteCheckFormList(List<SdxcFormData> list) {
+		if (list != null && list.size() > 0) {
+			for (SdxcFormData data : list) {
+				deleteChecFormDataById(data);
+			}
+		}
+		return true;
+	}
+
+	public boolean deleteChecFormDataById(SdxcFormData data) {
+		try {
+			mFormDao.delete(data);
+			List<SdxcFormDetail> list = mDetailDao.queryForEq("formId", data.getLocalId());
+			if (list != null && list.size() > 0) {
+				for (SdxcFormDetail detail : list) {
+					mDetailDao.delete(detail);
+				}
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

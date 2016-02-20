@@ -3,17 +3,32 @@ package com.suken.bridgedetection.location;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import com.baidu.location.Poi;
+import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.BridgeDetectionApplication;
+import com.suken.bridgedetection.Constants;
+import com.suken.bridgedetection.RequestType;
+import com.suken.bridgedetection.http.HttpTask;
+import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
+import com.suken.bridgedetection.storage.SharePreferenceManager;
+import com.suken.bridgedetection.util.NetWorkUtil;
+import com.suken.bridgedetection.util.NetWorkUtil.ConnectType;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
-public class LocationManager {
+public class LocationManager implements OnReceivedHttpResponseListener {
 
 	private static LocationManager mInstance;
 	private LocationClient mLocationClient;
@@ -21,6 +36,68 @@ public class LocationManager {
 	private LocationResult mLastBDLocation = null;
 	private List<OnLocationFinishedListener> mListenerArray = new ArrayList<OnLocationFinishedListener>();
 	private Object lock = new Object();
+	private List<GpsRecorder> recordList = new ArrayList<GpsRecorder>();
+
+	class GpsRecorder {
+		public GpsRecorder(String latitude, String longitude) {
+			super();
+			this.latitude = latitude;
+			this.longitude = longitude;
+		}
+
+		String latitude;
+		String longitude;
+	}
+
+	private OnLocationFinishedListener recordListener = new OnLocationFinishedListener() {
+
+		@Override
+		public void onLocationFinished(LocationResult result) {
+			if (result.isSuccess) {
+				recordList.add(new GpsRecorder(Double.toString(result.latitude), Double.toString(result.longitude)));
+				updateGps(false);
+			}
+			int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
+			mLocationHandler.sendEmptyMessageAtTime(0, b);
+		}
+	};
+	private Handler mLocationHandler = new Handler(Looper.getMainLooper()) {
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			syncLocation(recordListener);
+		}
+	};
+
+	public void startRecordLocation() {
+		mLocationHandler.sendEmptyMessage(0);
+	}
+
+	public void stopRecordLocation() {
+		mLocationHandler.removeMessages(0);
+		// 这里传一次
+		updateGps(true);
+	}
+
+	public void updateGps(final boolean force) {
+		BackgroundExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				ConnectType type = NetWorkUtil.getConnectType(BridgeDetectionApplication.getInstance());
+				if (type == ConnectType.CONNECT_TYPE_WIFI && (force || recordList.size() > 700)) {
+					List<NameValuePair> list = new ArrayList<NameValuePair>();
+					BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
+					list.add(pair);
+					pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
+					list.add(pair);
+					pair = new BasicNameValuePair("did", BridgeDetectionApplication.mDeviceId);
+					list.add(pair);
+					pair = new BasicNameValuePair("json", JSON.toJSONString(recordList));
+					new HttpTask(LocationManager.this, RequestType.updateGpsgjInfo).executePost(list);
+				}
+			}
+		});
+	}
 
 	private LocationManager() {
 		mLocationClient = new LocationClient(BridgeDetectionApplication.getInstance()); // 声明LocationClient类
@@ -54,9 +131,10 @@ public class LocationManager {
 
 	private void initLocation() {
 		LocationClientOption option = new LocationClientOption();
-		option.setLocationMode(LocationMode.Hight_Accuracy);// 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+		option.setLocationMode(LocationMode.Device_Sensors);// 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
 		option.setCoorType("bd09ll");// 可选，默认gcj02，设置返回的定位结果坐标系
 		int span = 1000;
+		option.setTimeOut(30000);
 		option.setScanSpan(span);// 可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
 		option.setIsNeedAddress(true);// 可选，设置是否需要地址信息，默认不需要
 		option.setOpenGps(true);// 可选，默认false,设置是否使用gps
@@ -164,5 +242,17 @@ public class LocationManager {
 		synchronized (lock) {
 			return mListenerArray.isEmpty();
 		}
+	}
+
+	@Override
+	public void onRequestSuccess(RequestType type, String result) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onRequestFail(RequestType type, String resultCode, String result) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -85,6 +85,16 @@
         <activity
             android:name="com.suken.videoRecorder.RecorderActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.UpdateAllActivity"
+            android:theme="@style/Theme.Translucent"
+            android:screenOrientation="landscape" />
+
+        <receiver android:name="com.suken.bridgedetection.location.NetworkChangedReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

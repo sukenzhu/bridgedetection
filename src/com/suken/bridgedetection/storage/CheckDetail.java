@@ -22,8 +22,10 @@ public class CheckDetail implements Serializable {
 	private String creator;
 	@DatabaseField
 	private int flag;
-	@DatabaseField(id = true)
+	@DatabaseField
 	private String id;
+	@DatabaseField(generatedId = true)
+	private long localId;
 	// "bjmc": "翼墙", //部件名称
 	// "blcsyj": "继续观察", //保养措施意见
 	// "blcsyjblank": "", //保养措施意思 提示文本 不存储后台
@@ -327,6 +329,14 @@ public class CheckDetail implements Serializable {
 
 	public void setYhcsyj(String yhcsyj) {
 		this.yhcsyj = yhcsyj;
+	}
+
+	public long getLocalId() {
+		return localId;
+	}
+
+	public void setLocalId(long localId) {
+		this.localId = localId;
 	}
 
 	@Override

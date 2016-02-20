@@ -32,6 +32,7 @@ public class BaseActivity extends FragmentActivity {
 		});
 	}
 
+
 	/**
 	 * 得到自定义的progressDialog
 	 * 
@@ -44,6 +45,9 @@ public class BaseActivity extends FragmentActivity {
 
 			@Override
 			public void run() {
+				if(mLoadingDialog != null && mLoadingDialog.isShowing()){
+					return;
+				}
 				LayoutInflater inflater = LayoutInflater.from(BaseActivity.this);
 				View v = inflater.inflate(R.layout.loading_dialog, null);// 得到加载view
 				LinearLayout layout = (LinearLayout) v.findViewById(R.id.dialog_view);// 加载布局

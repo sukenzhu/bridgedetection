@@ -13,6 +13,7 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -25,7 +26,7 @@ import android.text.TextUtils;
 
 public class HttpTask {
 
-	public static String REQUEST_IP = "121.28.74.58";
+	public static String REQUEST_IP = "10.10.10.101";
 
 	public static String REQUEST_PORT = "8080";
 
@@ -94,6 +95,10 @@ public class HttpTask {
 		// 和GET方式一样，先将参数放入List
 		HttpClient httpClient = new DefaultHttpClient();
 		try {
+			 // 请求超时
+			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 30000);
+            // 读取超时
+			httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 60000);
 			HttpPost postMethod = new HttpPost(getUrl(mRequestType.getUrl()));
 			postMethod.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 			postMethod.setEntity(new UrlEncodedFormEntity(parameters, "utf-8")); // 将参数填入POST

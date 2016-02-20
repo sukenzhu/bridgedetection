@@ -48,5 +48,13 @@ public class SharePreferenceManager {
 	public void updateString(String key, String value) {
 		getEditablePreference().putString(key, value).commit();
 	}
+	
+	public int readInt(String key, int defaltValue) {
+		return getPreference().getInt(key, defaltValue);
+	}
+
+	public void updateInt(String key, int value) {
+		getEditablePreference().putInt(key, value).commit();
+	}
 
 }

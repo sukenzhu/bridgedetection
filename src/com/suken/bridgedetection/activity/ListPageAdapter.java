@@ -3,10 +3,12 @@ package com.suken.bridgedetection.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.storage.HDBaseData;
 import com.suken.bridgedetection.storage.QLBaseData;
 import com.suken.bridgedetection.storage.SDBaseData;
+import com.suken.bridgedetection.util.UiUtil;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,6 +29,10 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 	private List<ListBean> mUnfilteredData = null;
 	private int mType = R.drawable.qiaoliangjiancha;
 	private ListFilter mFilter;
+	
+	public List<ListBean> getSourceData(){
+		return mUnfilteredData;
+	}
 	private OnClickListener mItemClickListener = new OnClickListener() {
 
 		@Override
@@ -51,7 +57,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 					mContext.startActivityForResult(intent, 1);
 				} else if (TextUtils.equals(status, "1")) {
 					// 去上传
-					mContext.updateSingle(bean.id, bean.type, true);
+					UiUtil.updateSingle(bean.id, bean.type, true, mContext);
 				}
 			} else {
 				ViewHolder holder = (ViewHolder) v.getTag();
@@ -65,17 +71,17 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 	private void changeView(String status, ViewHolder holder) {
 		holder.operate.setVisibility(View.VISIBLE);
 		holder.colorCircle.setVisibility(View.VISIBLE);
-		if (TextUtils.equals(status, "0")) {
+		if (TextUtils.equals(status, Constants.STATUS_CHECK)) {
 			holder.operate.setBackgroundColor(Color.parseColor("#c0c0c0"));
-			holder.operate.setText("开始检查");
+			holder.operate.setText(mType == R.drawable.suidaoxuncha ? "开始巡查":"开始检查");
 			holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_gray);
-		} else if (TextUtils.equals(status, "1")) {
+		} else if (TextUtils.equals(status, Constants.STATUS_UPDATE)) {
 			holder.operate.setBackgroundColor(Color.parseColor("#ff9900"));
 			holder.operate.setText("上传");
 			holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_yellow);
-		} else if (TextUtils.equals(status, "2")) {
+		} else if (TextUtils.equals(status, Constants.STATUS_AGAIN)) {
 			holder.operate.setBackgroundColor(Color.parseColor("#199847"));
-			holder.operate.setText("再次检查");
+			holder.operate.setText(mType == R.drawable.suidaoxuncha ? "再次巡查":"再次检查");
 			holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_green);
 		}
 	}
@@ -85,6 +91,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 		this.mType = type;
 		this.mContext = mContext;
 		mSourceData = data;
+		mUnfilteredData = data;
 	}
 
 	@Override
@@ -140,7 +147,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 		view.setOnClickListener(mItemClickListener);
 		holder.operate.setTag(holder.bean);
 		holder.operate.setOnClickListener(mItemClickListener);
-		if (holder.operate.getVisibility() == View.VISIBLE) {
+		if (!TextUtils.equals(holder.bean.status, "0")) {
 			changeView(holder.bean.status, holder);
 		} else {
 			holder.operate.setVisibility(View.GONE);
@@ -152,7 +159,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 	public void updateStatus(String id, String status) {
 		for (ListBean bean : mSourceData) {
 			if (TextUtils.equals(bean.id, id)) {
-				bean.status = "1";
+				bean.status = Constants.STATUS_UPDATE;
 				notifyDataSetChanged();
 			}
 		}

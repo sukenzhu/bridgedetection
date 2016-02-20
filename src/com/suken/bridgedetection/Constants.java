@@ -11,6 +11,11 @@ public class Constants {
 
 	public static final String SQLTAG = "ormlite";
 
+	public static long LOCATION_RECORD_INTERVAL = 50 * 1000l;
+
+	public static final String INTERVAL = "interval";
+	public static final String GPS_SWITCH = "gps_switch";
+
 	public static final int REQUEST_CODE_CAPTURE = 1;
 	public static final int REQUEST_CODE_EDIT_IMG = 2;
 	public static final int REQUEST_CODE_VIDEO = 3;
@@ -46,6 +51,12 @@ public class Constants {
 	public static final String[] sdformDetailItemTexts = new String[] { "异常位置：", "缺损内容：", "异常描述：", "判定：", "保养措施意见：" };
 	public static final String[] sdxcformDetailNames = new String[] { "洞口边仰坡", "洞门结构", "内部衬砌", "洞内路面积水", "洞内路面撒落物", "洞顶预埋件和悬吊件", "供配电设施", "照明设施", "通风设施",
 			"消防设施", "监控和通信设施", "其他" };
-	public static final String[] sdxcformDetailItemTexts = new String[] { "情况描述：", "处置意见：" };
+	public static final String[] sdxcformDetailItemTexts = new String[] { "情况描述：", "处置意见：", "检查时间：" };
+
+	public static final String[] qhxcformDetailItemTexts = new String[] { "方向：", "发现病害：", "损害位置：", "尺寸大小：", "病害原因：" };
+
+	public static final String STATUS_CHECK = "0";
+	public static final String STATUS_UPDATE = "1";
+	public static final String STATUS_AGAIN = "2";
 
 }

@@ -3,24 +3,13 @@ package com.suken.bridgedetection.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.googlecode.androidannotations.api.BackgroundExecutor;
-import com.suken.bridgedetection.BridgeDetectionApplication;
+import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
-import com.suken.bridgedetection.RequestType;
-import com.suken.bridgedetection.http.HttpTask;
-import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.location.LocationResult;
 import com.suken.bridgedetection.location.OnLocationFinishedListener;
-import com.suken.bridgedetection.storage.CheckDetail;
 import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
 import com.suken.bridgedetection.storage.CheckFormData;
-import com.suken.bridgedetection.storage.FileDesc;
 import com.suken.bridgedetection.storage.HDBaseData;
 import com.suken.bridgedetection.storage.HDBaseDataDao;
 import com.suken.bridgedetection.storage.QLBaseData;
@@ -29,7 +18,6 @@ import com.suken.bridgedetection.storage.SDBaseData;
 import com.suken.bridgedetection.storage.SDBaseDataDao;
 import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
 import com.suken.bridgedetection.storage.SdxcFormData;
-import com.suken.bridgedetection.storage.SdxcFormDetail;
 import com.suken.bridgedetection.util.UiUtil;
 
 import android.app.AlertDialog;
@@ -47,14 +35,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class BridgeDetectionListActivity extends BaseActivity implements OnReceivedHttpResponseListener, OnClickListener, OnLocationFinishedListener {
+public class BridgeDetectionListActivity extends BaseActivity implements OnClickListener, OnLocationFinishedListener {
 
 	private ListView mList;
 	private ListView mHdList;
 	private int mType = R.drawable.qiaoliangjiancha;
 
 	private ImageView gpsBtn;
-	private View syncBtn;
+	private ImageView syncBtn;
 	private List<CheckFormData> mLastSyncData = null;
 	private View mListTitleQl;
 	private TextView mQlListTitleText;
@@ -72,7 +60,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		setContentView(R.layout.activity_list_page);
 		mUpdateAll = findViewById(R.id.update_all);
 		mUpdateAll.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				updateAll();
@@ -87,7 +75,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		mListTitleQl = findViewById(R.id.qiaoliang_base_title);
 		mListTitleHd = findViewById(R.id.handong_base_title);
 		findViewById(R.id.back).setOnClickListener(this);
-		syncData();
+		init(false);
 	}
 
 	public void switchPanel(View view) {
@@ -107,43 +95,94 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 			mListTitleHd.setSelected(true);
 		}
 	}
-	
-	private int initStatus(ListBean bean, Object bd, int type){
+
+	private int initStatus(ListBean bean, Object bd, int type) {
 		int a = 0;
 		CheckFormData lastFormData = findLastSyncData(bean.id);
-		List<CheckFormData> savedFormDatas = mFormDao.queryByQHId(bean.id, type);
-		bean.status = "0";
+		bean.status = Constants.STATUS_CHECK;
 		boolean has1 = false;
 		boolean has2 = false;
-		if(savedFormDatas != null && savedFormDatas.size() > 0){
-			for(CheckFormData cfd : savedFormDatas){
-				if(TextUtils.equals(cfd.getStatus(), "1")){
-					has1 = true;
-					break;
-				} else if(TextUtils.equals(cfd.getStatus(), "2")){
-					has2 = true;
+		if(mType != R.drawable.suidaoxuncha){
+			List<CheckFormData> savedFormDatas = mFormDao.queryByQHId(bean.id, type);
+			if (savedFormDatas != null && savedFormDatas.size() > 0) {
+				for (CheckFormData cfd : savedFormDatas) {
+					if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_UPDATE)) {
+						has1 = true;
+						break;
+					} else if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_AGAIN)) {
+						has2 = true;
+					}
 				}
 			}
-		}	
-		if(has1){
-			bean.status = "1";
-			a++;
-		} else if(has2){
-			bean.status = "2";
 		} else {
-			bean.status = "0";
+			List<SdxcFormData> savedFormDatas = new SdxcFormAndDetailDao().queryByQHId(bean.id, type);
+			if (savedFormDatas != null && savedFormDatas.size() > 0) {
+				for (SdxcFormData cfd : savedFormDatas) {
+					if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_UPDATE)) {
+						has1 = true;
+						break;
+					} else if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_AGAIN)) {
+						has2 = true;
+					}
+				}
+			}
+			
+		}
+		if (has1) {
+			bean.status = Constants.STATUS_UPDATE;
+			a++;
+		} else if (has2) {
+			bean.status = Constants.STATUS_AGAIN;
+		} else {
+			bean.status = Constants.STATUS_CHECK;
 		}
 		bean.mLastFormData = lastFormData;
 		bean.realBean = bd;
 		return a;
 	}
 
-	private void init() {
+	private void init(boolean isReset) {
 		List<ListBean> data = new ArrayList<ListBean>();
 		int a = 0;
+		if (mType == R.drawable.qiaoliangxuncha) {
+			mLastSyncData = mFormDao.queryLastUpdate(mType);
+		}
 		switch (mType) {
-		case R.drawable.qiaoliangjiancha:
 		case R.drawable.qiaoliangxuncha: {
+			List<SdxcFormData> list = new SdxcFormAndDetailDao().queryAll(mType);
+			List<ListBean> hdData = new ArrayList<ListBean>();
+			if (list != null && list.size() > 0) {
+				int b = 0;
+				for (SdxcFormData bd : list) {
+					ListBean bean = new ListBean();
+					bean.id = bd.getLocalId() + "";
+					bean.lxbm = bd.getJcry();
+					bean.lxmc = bd.getGldwName();
+					bean.qhbs = bd.getWeather();
+					bean.qhmc = bd.getXcry();
+					bean.qhzh = bd.getJcsj();
+					bean.type = mType;
+					bean.status = bd.getStatus();
+					if(!TextUtils.equals(bd.getQhlx(), "b")){
+						hdData.add(bean);
+						if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
+							b ++;
+						}
+					} else {
+						if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
+							a ++;
+						}
+						data.add(bean);
+					}
+				}
+				mHdListTitleText.setText(" 涵洞(" + b + "/" + hdData.size() + ")");
+				mHdList.setAdapter(new ListPageAdapter(this, hdData, mType));
+				mQlListTitleText.setText(" 桥梁(" + a + "/" + data.size() + ")");
+				mListTitleQl.performClick();
+			}
+			break;
+		}
+		case R.drawable.qiaoliangjiancha: {
 			List<ListBean> hdData = new ArrayList<ListBean>();
 
 			List<HDBaseData> hdBaseData = new HDBaseDataDao().queryAll();
@@ -210,15 +249,18 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		}
 		gpsBtn = (ImageView) findViewById(R.id.gps_btn);
 		LocationManager.getInstance().syncLocation(this);
-		syncBtn = findViewById(R.id.tongbu_btn);
+		syncBtn = (ImageView) findViewById(R.id.tongbu_btn);
 		syncBtn.setOnClickListener(this);
+		if(mType == R.drawable.qiaoliangxuncha){
+			syncBtn.setImageResource(R.drawable.jiahao);
+		}
 		mList.setAdapter(new ListPageAdapter(this, data, mType));
 		mSearchInput = (EditText) findViewById(R.id.search_input);
 		mSearchInput.setOnKeyListener(new OnKeyListener() {
-			
+
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if(keyCode == KeyEvent.KEYCODE_SEARCH || keyCode == KeyEvent.KEYCODE_ENTER){
+				if (keyCode == KeyEvent.KEYCODE_SEARCH || keyCode == KeyEvent.KEYCODE_ENTER) {
 					mSearchButton.performClick();
 				}
 				return false;
@@ -228,42 +270,13 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		mSearchButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(mList.getVisibility() == View.VISIBLE){
+				if (mList.getVisibility() == View.VISIBLE) {
 					((Filterable) mList.getAdapter()).getFilter().filter(mSearchInput.getEditableText().toString());
 				} else {
 					((Filterable) mHdList.getAdapter()).getFilter().filter(mSearchInput.getEditableText().toString());
 				}
 			}
 		});
-	}
-
-	private void syncData() {
-		if (BridgeDetectionApplication.mIsOffline) {
-			return;
-		}
-		BackgroundExecutor.execute(new Runnable() {
-
-			@Override
-			public void run() {
-				showLoading("同步中...");
-				List<NameValuePair> list = new ArrayList<NameValuePair>();
-				BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
-				list.add(pair);
-				pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
-				list.add(pair);
-				pair = new BasicNameValuePair("did", BridgeDetectionApplication.mDeviceId);
-				list.add(pair);
-				new HttpTask(BridgeDetectionListActivity.this, (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) ? RequestType.lastqhjcInfo : RequestType.lastsdjcInfo)
-						.executePost(list);
-				runOnUiThread(new Runnable() {
-					public void run() {
-						init();
-					}
-				});
-				dismissLoading();
-			}
-		});
-
 	}
 
 	private CheckFormData findLastSyncData(String qhId) {
@@ -278,20 +291,14 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 	}
 
 	@Override
-	public void onRequestSuccess(RequestType type, String result) {
-		JSONObject obj = JSON.parseObject(result);
-		mLastSyncData = JSON.parseArray(obj.getString("datas"), CheckFormData.class);
-		toast("同步成功");
-	}
-
-	@Override
-	public void onRequestFail(RequestType type, String resultCode, String result) {
-		toast("同步失败(" + resultCode + ")");
-	}
-
-	@Override
 	public void onClick(View v) {
 		if (v.getId() == syncBtn.getId()) {
+			if(mType == R.drawable.qiaoliangxuncha){
+				Intent intent = new Intent(this, BridgeFormActivity.class);
+				intent.putExtra("type", mType);
+				startActivity(intent);
+				return;
+			}
 			final CharSequence[] charSequences = { "同步基础数据", "同步上次检查数据", "同步本地检查数据" };
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -299,12 +306,12 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					if (which == 0) {
-						UiUtil.syncData(BridgeDetectionListActivity.this);
-					} else if (which == 1) {
-						syncData();
-					} else if (which == 2) {
+					if (which == 2) {
 						updateAll();
+					} else {
+						UiUtil.syncData(BridgeDetectionListActivity.this, which == 1);
+						mLastSyncData = mFormDao.queryLastUpdate(mType);
+						init(true);
 					}
 				}
 			}).show();
@@ -321,209 +328,45 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnRecei
 		super.onActivityResult(arg0, arg1, arg2);
 		if (arg0 == 1 && arg2 != null) {
 			String id = arg2.getStringExtra("id");
-			updateStatus(id, "1");
+			updateStatus(id, Constants.STATUS_UPDATE);
 		}
 	}
-	
-	private void updateStatus(String id, String status){
+
+	public void updateStatus(String id, String status) {
 		if (mList.getVisibility() == View.VISIBLE) {
 			ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
-			adapter.updateStatus(id, "1");
+			adapter.updateStatus(id, status);
 		} else if (mHdList.getVisibility() == View.VISIBLE) {
 			ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
-			adapter.updateStatus(id, "1");
+			adapter.updateStatus(id, status);
 		}
 	}
 
 	private void updateAll() {
-
-	}
-
-	public void updateSingle(final String qhId, final int type, final boolean handleDialog) {
-		BackgroundExecutor.execute(new Runnable() {
-			public void run() {
-				showLoading("上传中...");
-				List<NameValuePair> list = new ArrayList<NameValuePair>();
-				BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
-				list.add(pair);
-				pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
-				list.add(pair);
-				if(type == R.drawable.suidaoxuncha){
-					updateXunchaData(qhId, type, list);
-				} else {
-					updateCheckData(qhId, type, list);
-				}
-				
-				dismissLoading();
+		Intent intent = new Intent(this, UpdateAllActivity.class);
+		String[] array = null;
+		if (mList.getVisibility() == View.VISIBLE) {
+			ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
+			List<ListBean> data = adapter.getSourceData();
+			array = new String[data.size()];
+			for (int i = 0; i < array.length; i++) {
+				array[i] = data.get(i).id;
 			}
-		});
-	}
-	
-	private void updateXunchaData(final String qhId, final int type, List<NameValuePair> list){
-		final SdxcFormData data = new SdxcFormAndDetailDao().queryByQHIdAndStatus(qhId, "1", type);
-		if (data != null) {
-			for (final SdxcFormDetail detail : data.getInspectlogDetailList()) {
-				OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
-
-					@Override
-					public void onRequestSuccess(RequestType type, String result) {
-						JSONObject obj = JSON.parseObject(result);
-						String re = obj.getString("datas");
-						List<FileDesc> files = JSON.parseArray(re, FileDesc.class);
-						String[] pics = new String[] {};
-						int i = 0;
-						if (!TextUtils.isEmpty(detail.getPicattachment())) {
-							pics = detail.getPicattachment().split(",");
-							StringBuilder sb = new StringBuilder();
-							for (String s : pics) {
-								if (!TextUtils.isEmpty(s)) {
-									sb.append(files.get(i).fileId);
-									i++;
-								}
-							}
-							detail.setPicattachment(sb.toString());
-						}
-						String[] vdos = new String[] {};
-						if (!TextUtils.isEmpty(detail.getVidattachment())) {
-							vdos = detail.getVidattachment().split(",");
-							StringBuilder sb = new StringBuilder();
-							for (String s : vdos) {
-								if (!TextUtils.isEmpty(s)) {
-									if (!TextUtils.isEmpty(s)) {
-										sb.append(files.get(i).fileId);
-										i++;
-									}
-								}
-							}
-							detail.setVidattachment(sb.toString());
-						}
-
-					}
-
-					@Override
-					public void onRequestFail(RequestType type, String resultCode, String result) {
-
-					}
-				};
-				
-				String[] pics = new String[] {};
-				if (!TextUtils.isEmpty(detail.getPicattachment())) {
-					pics = detail.getPicattachment().split(",");
-				}
-				String[] vdos = new String[] {};
-				if (!TextUtils.isEmpty(detail.getVidattachment())) {
-					vdos = detail.getVidattachment().split(",");
-				}
-				String[] attaches = UiUtil.concat(pics, vdos);
-				if(attaches.length > 0){
-					new HttpTask(listener, RequestType.uploadFile).uploadFile(list, attaches);
-				}
-			}
-			OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
-				
-				@Override
-				public void onRequestSuccess(RequestType type, String result) {
-					new SdxcFormAndDetailDao().create(data);
-					updateStatus(data.getSdid(), "2");
-					toast("上传成功");
-				}
-				
-				@Override
-				public void onRequestFail(RequestType type, String resultCode, String result) {
-					toast("上传失败");
-				}
-			};
-			data.setStatus("2");
-			data.setUpdatetime(UiUtil.formatNowTime());
-			data.setCreatetime(UiUtil.formatNowTime());
-			String json = new String(JSON.toJSONString(data));
-			list.add(new BasicNameValuePair("json", json));
-			new HttpTask(listener, RequestType.updateqhjcInfo).executePost(list);
 		}
-	}
-	
-	
-	private void updateCheckData(final String qhId, final int type, List<NameValuePair> list){
-		final CheckFormData data = new CheckFormAndDetailDao().queryByQHIdAndStatus(qhId, "1", type);
-		if (data != null) {
-			for (final CheckDetail detail : data.getOfenCheckDetailList()) {
-				OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
-					@Override
-					public void onRequestSuccess(RequestType type, String result) {
-						JSONObject obj = JSON.parseObject(result);
-						String re = obj.getString("datas");
-						List<FileDesc> files = JSON.parseArray(re, FileDesc.class);
-						String[] pics = new String[] {};
-						int i = 0;
-						if (!TextUtils.isEmpty(detail.getPicattachment())) {
-							pics = detail.getPicattachment().split(",");
-							StringBuilder sb = new StringBuilder();
-							for (String s : pics) {
-								if (!TextUtils.isEmpty(s)) {
-									sb.append(files.get(i).fileId);
-									i++;
-								}
-							}
-							detail.setPicattachment(sb.toString());
-						}
-						String[] vdos = new String[] {};
-						if (!TextUtils.isEmpty(detail.getVidattachment())) {
-							vdos = detail.getVidattachment().split(",");
-							StringBuilder sb = new StringBuilder();
-							for (String s : vdos) {
-								if (!TextUtils.isEmpty(s)) {
-									if (!TextUtils.isEmpty(s)) {
-										sb.append(files.get(i).fileId);
-										i++;
-									}
-								}
-							}
-							detail.setVidattachment(sb.toString());
-						}
-
-					}
-
-					@Override
-					public void onRequestFail(RequestType type, String resultCode, String result) {
-
-					}
-				};
-				
-				String[] pics = new String[] {};
-				if (!TextUtils.isEmpty(detail.getPicattachment())) {
-					pics = detail.getPicattachment().split(",");
-				}
-				String[] vdos = new String[] {};
-				if (!TextUtils.isEmpty(detail.getVidattachment())) {
-					vdos = detail.getVidattachment().split(",");
-				}
-				String[] attaches = UiUtil.concat(pics, vdos);
-				if(attaches.length > 0){
-					new HttpTask(listener, RequestType.uploadFile).uploadFile(list, attaches);
-				}
+		String[] hdArray = null;
+		if (mType == R.drawable.qiaoliangjiancha) {
+			ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
+			List<ListBean> data = adapter.getSourceData();
+			hdArray = new String[data.size()];
+			for (int i = 0; i < hdArray.length; i++) {
+				hdArray[i] = data.get(i).id;
 			}
-			OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
-				
-				@Override
-				public void onRequestSuccess(RequestType type, String result) {
-					mFormDao.create(data);
-					updateStatus(data.getQhid(), "2");
-					toast("上传成功");
-				}
-				
-				@Override
-				public void onRequestFail(RequestType type, String resultCode, String result) {
-					toast("上传失败");
-				}
-			};
-			data.setStatus("2");
-			data.setUpdatetime(UiUtil.formatNowTime());
-			data.setCreatetime(UiUtil.formatNowTime());
-			String json = new String(JSON.toJSONString(data));
-			list.add(new BasicNameValuePair("json", json));
-			new HttpTask(listener, RequestType.updateqhjcInfo).executePost(list);
 		}
+		intent.putExtra("array", array);
+		intent.putExtra("hdArray", hdArray);
+		intent.putExtra("type", mType);
+		startActivity(intent);
 	}
 
 	@Override

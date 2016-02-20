@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "tb_checkdetail")
+@DatabaseTable(tableName = "tb_sdcheckdetail")
 public class SdxcFormDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@DatabaseField
@@ -32,12 +32,90 @@ public class SdxcFormDetail implements Serializable {
 	@DatabaseField
 	private String vidattachment;
 	@DatabaseField
-	private long formId;
-
+	private long formId; 
+	@DatabaseField
+	private String qhzh; 
+	@DatabaseField
+	private String fx; 
+	@DatabaseField
+	private String fxbh; 
+	@DatabaseField
+	private String shwz; 
+	@DatabaseField
+	private String dx; 
+	@DatabaseField
+	private String ys; 
+//	"qhzh": "23.23", //桥梁桩号
+//    "fx": "上行", //方向
+//    "fxbh": "暂无", //发现病害
+//    "shwz": "无", //损害位置
+//    "dx": "无", //尺寸大小
+//    "ys": "无", //病害原因
 
 	public String getCreatetime() {
 		return createtime;
 	}
+
+	public String getQhzh() {
+		return qhzh;
+	}
+
+	public void setQhzh(String qhzh) {
+		this.qhzh = qhzh;
+	}
+	public String getFx() {
+		return fx;
+	}
+
+	public void setFx(String fx) {
+		this.fx = fx;
+	}
+
+	public String getFxbh() {
+		return fxbh;
+	}
+
+	public void setFxbh(String fxbh) {
+		this.fxbh = fxbh;
+	}
+
+
+
+	public String getShwz() {
+		return shwz;
+	}
+
+
+
+	public void setShwz(String shwz) {
+		this.shwz = shwz;
+	}
+
+
+
+	public String getDx() {
+		return dx;
+	}
+
+
+
+	public void setDx(String dx) {
+		this.dx = dx;
+	}
+
+
+
+	public String getYs() {
+		return ys;
+	}
+
+
+
+	public void setYs(String ys) {
+		this.ys = ys;
+	}
+
+
 
 	public void setCreatetime(String createtime) {
 		this.createtime = createtime;

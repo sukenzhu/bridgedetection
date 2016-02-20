@@ -3,6 +3,7 @@ package com.suken.bridgedetection.storage;
 import java.io.Serializable;
 import java.util.List;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -21,6 +22,8 @@ public class CheckFormData implements Serializable {
 	private int flag;
 	@DatabaseField
 	private String fzry;
+	@DatabaseField
+	private String jcry;
 	@DatabaseField
 	private String gldwId;
 
@@ -70,7 +73,7 @@ public class CheckFormData implements Serializable {
 	// "lxbm": "G20",
 	// "lxid": 10000001740003,
 	// "lxmc": "青银高速",
-	private List<CheckDetail> ofenCheckDetailList;
+	private List<CheckDetail> oftenCheckDetailList;
 	@DatabaseField
 	private String orgid;
 	@DatabaseField
@@ -126,6 +129,8 @@ public class CheckFormData implements Serializable {
 	private String sdzh;
 	@DatabaseField
 	private String sdfx;
+	@DatabaseField(defaultValue = "false", dataType = DataType.BOOLEAN)
+	private boolean lastUpdate;
 
 	// "status": "1", //状态 1 草稿 2 已提交，参考业务字典分类ID：10000000690004
 	// "tjsj": null, //提交时间
@@ -137,8 +142,25 @@ public class CheckFormData implements Serializable {
 	// "yhdwName": "青银高速石家庄养护工区", //养护单位名称
 	// "zxzh": 595.844 //中心桩号
 	// }
+	
 	public String getBno() {
 		return bno;
+	}
+
+	public String getJcry() {
+		return jcry;
+	}
+
+	public void setJcry(String jcry) {
+		this.jcry = jcry;
+	}
+
+	public boolean isLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(boolean lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
 	public void setBno(String bno) {
@@ -249,12 +271,12 @@ public class CheckFormData implements Serializable {
 		this.lxmc = lxmc;
 	}
 
-	public List<CheckDetail> getOfenCheckDetailList() {
-		return ofenCheckDetailList;
+	public List<CheckDetail> getOftenCheckDetailList() {
+		return oftenCheckDetailList;
 	}
 
-	public void setOfenCheckDetailList(List<CheckDetail> ofenCheckDetailList) {
-		this.ofenCheckDetailList = ofenCheckDetailList;
+	public void setOftenCheckDetailList(List<CheckDetail> oftenCheckDetailList) {
+		this.oftenCheckDetailList = oftenCheckDetailList;
 	}
 
 	public String getOrgid() {
@@ -469,7 +491,7 @@ public class CheckFormData implements Serializable {
 	public String toString() {
 		return "JianChaFormData [bno=" + bno + ", createBy=" + createBy + ", createtime=" + createtime + ", creator=" + creator + ", flag=" + flag + ", fzry="
 				+ fzry + ", gldwId=" + gldwId + ", gldwName=" + gldwName + ", hzf=" + hzf + ", id=" + id + ", jcsj=" + jcsj + ", jlry=" + jlry + ", lxid="
-				+ lxid + ", lxmc=" + lxmc + ", ofenCheckDetailList=" + ofenCheckDetailList + ", orgid=" + orgid + ", pddj=" + pddj + ", prePddj=" + prePddj
+				+ lxid + ", lxmc=" + lxmc + ", oftenCheckDetailList=" + oftenCheckDetailList + ", orgid=" + orgid + ", pddj=" + pddj + ", prePddj=" + prePddj
 				+ ", qhbm=" + qhbm + ", qhid=" + qhid + ", qhlx=" + qhlx + ", qhmc=" + qhmc + ", status=" + status + ", tjsj=" + tjsj + ", updateBy=" + updateBy
 				+ ", updatetime=" + updatetime + ", updator=" + updator + ", versionno=" + versionno + ", yhdwId=" + yhdwId + ", yhdwName=" + yhdwName
 				+ ", zxzh=" + zxzh + "]";
