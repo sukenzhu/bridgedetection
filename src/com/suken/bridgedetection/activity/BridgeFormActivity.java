@@ -367,6 +367,12 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 				detail.setFormId(data.getLocalId());
 				dao.create(detail);
 			}
+			if(mType == R.drawable.qiaoliangxuncha){
+				Intent intent = new Intent();
+				intent.putExtra("id", data.getLocalId());
+				setResult(2, intent);
+				finish();
+			}
 		} else {
 			CheckFormData data = new CheckFormData();
 			if (mType == R.drawable.qiaoliangjiancha) {
@@ -428,11 +434,13 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 				dao.create(detail);
 			}
 		}
-
-		Intent intent = new Intent();
-		intent.putExtra("id", qhId);
-		setResult(1, intent);
-		finish();
+		if(mType != R.drawable.qiaoliangxuncha){
+			Intent intent = new Intent();
+			intent.putExtra("id", qhId);
+			setResult(1, intent);
+			finish();
+		}
+		
 	}
 
 	private Uri mOutPutFileUri = null;
@@ -521,6 +529,8 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 			mFormContent.removeView(controller.getItemView());
 			if(mDetailMaps.size() == 0){
 				findViewById(R.id.operateDelete).setEnabled(false);
+			} else {
+				mDetailMaps.get(mDetailMaps.size() - 1).performArrowImgClick();
 			}
 		}
 	}

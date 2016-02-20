@@ -175,5 +175,17 @@ public class SdxcFormAndDetailDao {
 		}
 		return false;
 	}
+	
+	public SdxcFormData queryByLocalId(long localId){
+		try {
+			List<SdxcFormData> list = mFormDao.queryForEq("localId", localId);
+			if(list != null && list.size() > 0){
+				return list.get(0);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }

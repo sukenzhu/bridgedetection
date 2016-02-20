@@ -76,7 +76,11 @@ public class CheckFormAndDetailDao {
 	public List<CheckFormData> queryByQHId(String id, int type) {
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("qhid", id);
+			if(type == R.drawable.suidaojiancha){
+				map.put("sdid", id);
+			} else {
+				map.put("qhid", id);
+			}
 			map.put("type", type);
 			map.put("lastUpdate", false);
 			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);

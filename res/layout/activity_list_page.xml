@@ -14,7 +14,7 @@
         <TextView
             android:id="@+id/back"
             android:layout_width="50dp"
-            android:layout_height="20dp"
+            android:layout_height="30dp"
             android:background="#95323d4b"
             android:gravity="center"
             android:text="返回"
@@ -23,13 +23,14 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="30dp"
             android:layout_alignParentRight="true" >
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/list_search_bg"
+                android:layout_marginRight="70dp"
                 android:paddingRight="2dp" >
 
                 <EditText
@@ -43,8 +44,8 @@
 
                 <ImageView
                     android:id="@+id/search_btn"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/search_input"
                     android:src="@drawable/list_search" />
@@ -57,8 +58,8 @@
 
                 <ImageView
                     android:id="@+id/gps_btn"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="#95323d4b"
                     android:paddingBottom="2dp"
                     android:paddingLeft="4dp"
@@ -73,8 +74,8 @@
 
                 <ImageView
                     android:id="@+id/tongbu_btn"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="#95323d4b"
                     android:paddingBottom="2dp"
                     android:paddingLeft="4dp"
@@ -114,7 +115,7 @@
                     android:id="@+id/list_ql_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" 桥梁[3/136]"
+                    android:text=" 桥梁[0/0]"
                     android:textColor="@drawable/list_title_text_bg_selector"
                     android:textSize="10dp" />
             </LinearLayout>
@@ -138,7 +139,7 @@
                     android:id="@+id/list_hd_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" 涵洞[3/136]"
+                    android:text=" 涵洞[0/0]"
                     android:textColor="@drawable/list_title_text_bg_selector"
                     android:textSize="10dp" />
             </LinearLayout>
@@ -179,6 +180,7 @@
             android:layout_marginTop="10dp" >
 
             <TextView
+                android:id="@+id/row1"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -186,6 +188,7 @@
                 android:textSize="10dp" />
 
             <TextView
+                android:id="@+id/row2"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -193,6 +196,7 @@
                 android:textSize="10dp" />
 
             <TextView
+                android:id="@+id/row3"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -200,6 +204,7 @@
                 android:textSize="12dp" />
 
             <TextView
+                android:id="@+id/row4"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -207,6 +212,7 @@
                 android:textSize="10dp" />
 
             <TextView
+                android:id="@+id/row5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

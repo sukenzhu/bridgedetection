@@ -52,6 +52,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 					} else {
 						intent.putExtra("qhInfo", (SDBaseData) bean.realBean);
 					}
+					bean.mLastFormData = mContext.findLastSyncData(bean.id);
 					intent.putExtra("type", mType);
 					intent.putExtra("formData", bean.mLastFormData);
 					mContext.startActivityForResult(intent, 1);
@@ -159,7 +160,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 	public void updateStatus(String id, String status) {
 		for (ListBean bean : mSourceData) {
 			if (TextUtils.equals(bean.id, id)) {
-				bean.status = Constants.STATUS_UPDATE;
+				bean.status = status;
 				notifyDataSetChanged();
 			}
 		}
@@ -217,6 +218,12 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
             }
         }
 
+	}
+	
+	public void addData(ListBean bean){
+		mUnfilteredData.add(bean);
+		mSourceData = mUnfilteredData;
+		notifyDataSetChanged();
 	}
 
 }
