@@ -3,6 +3,7 @@ package com.suken.bridgedetection.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
@@ -15,6 +16,7 @@ import com.suken.bridgedetection.util.UiUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,11 +121,12 @@ public class UpdateAllActivity extends BaseActivity {
 					UpdateBean bean = new UpdateBean();
 					if (mType == R.drawable.suidaoxuncha) {
 						bean.id = data.getSdid();
+						bean.mc = data.getSdmc();
 					} else {
 						bean.id = data.getLocalId() + "";
+						bean.mc = "";
 					}
 					bean.sj = data.getJcsj();
-					bean.mc = data.getSdmc();
 					bean.jlr = data.getJlry();
 					bean.mType = mType;
 					list.add(bean);
@@ -171,13 +174,19 @@ public class UpdateAllActivity extends BaseActivity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = null;
 			if (convertView == null) {
-				view = LayoutInflater.from(UpdateAllActivity.this).inflate(R.layout.activity_page_updateall, null);
+				view = LayoutInflater.from(UpdateAllActivity.this).inflate(R.layout.updateall_item, null);
 			} else {
 				view = convertView;
 			}
 			CheckBox box = (CheckBox) view.findViewById(R.id.checkbox);
 			UpdateBean bean = getItem(position);
-			box.setText("名称：" + bean.mc + "," + "记录人：" + bean.jlr + "," + "时间：" + bean.sj);
+			String text = "记录人：" + bean.jlr + "," + "时间：" + bean.sj;
+			if(bean.mType == R.drawable.qiaoliangxuncha){
+				box.setText(text);
+			} else {
+				box.setText("名称：" + bean.mc + "," + text);
+			}
+			box.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
 			box.setTag(bean);
 			box.setChecked(bean.isChecked);
 			view.setTag(bean);
@@ -196,14 +205,34 @@ public class UpdateAllActivity extends BaseActivity {
 
 	public void toUpdate(View view) {
 		if (mSourceData.size() > 0) {
-			showLoading("上传中...");
-			for (UpdateBean bean : mSourceData) {
-				if (bean.isChecked) {
-					UiUtil.updateSingle(bean.id + "", bean.mType, false, this);
+			BackgroundExecutor.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					showLoading("上传中...");
+					for (UpdateBean bean : mSourceData) {
+						if (bean.isChecked) {
+							UiUtil.updateSingleNotPost(bean.id + "", bean.mType, false, UpdateAllActivity.this);
+						}
+					}
+					runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							updateInit(true);
+							if(mSourceData == null || mSourceData.size() == 0){
+								finish();
+							}
+						}
+					});
+					dismissLoading();
 				}
-			}
-			dismissLoading();
+			});
 		}
+	}
+	
+	public void close(View view){
+		finish();
 	}
 
 }

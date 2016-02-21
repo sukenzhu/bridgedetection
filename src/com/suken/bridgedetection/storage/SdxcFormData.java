@@ -110,6 +110,8 @@ public class SdxcFormData implements Serializable {
 	private String jcry;
 	@DatabaseField
 	private String qhlx;
+	@DatabaseField
+	private String tjsj;
 
 	public String getJcsj() {
 		return jcsj;
@@ -379,8 +381,6 @@ public class SdxcFormData implements Serializable {
 		this.sdfx = sdfx;
 	}
 
-	
-
 	public List<SdxcFormDetail> getInspectLogDetailList() {
 		return inspectLogDetailList;
 	}
@@ -415,6 +415,22 @@ public class SdxcFormData implements Serializable {
 
 	public String getCreateBy() {
 		return createBy;
+	}
+
+	public String getDealwith() {
+		return dealwith;
+	}
+
+	public void setDealwith(String dealwith) {
+		this.dealwith = dealwith;
+	}
+
+	public String getTjsj() {
+		return tjsj;
+	}
+
+	public void setTjsj(String tjsj) {
+		this.tjsj = tjsj;
 	}
 
 	@Override

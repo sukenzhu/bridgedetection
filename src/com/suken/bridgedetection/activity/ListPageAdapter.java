@@ -41,6 +41,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 				ListBean bean = (ListBean) v.getTag();
 				String status = bean.status;
 				if (TextUtils.equals(status, "0") || TextUtils.equals(status, "2")) {
+					
 					// 去检查
 					Intent intent = new Intent(mContext, BridgeFormActivity.class);
 					if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
@@ -82,7 +83,13 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 			holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_yellow);
 		} else if (TextUtils.equals(status, Constants.STATUS_AGAIN)) {
 			holder.operate.setBackgroundColor(Color.parseColor("#199847"));
-			holder.operate.setText(mType == R.drawable.suidaoxuncha ? "再次巡查":"再次检查");
+			if(mType == R.drawable.qiaoliangxuncha){
+				holder.operate.setText("查看");
+				holder.operate.setVisibility(View.GONE);
+			} else {
+				holder.operate.setText(mType == R.drawable.suidaoxuncha ? "再次巡查":"再次检查");
+				holder.operate.setVisibility(View.VISIBLE);
+			}
 			holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_green);
 		}
 	}

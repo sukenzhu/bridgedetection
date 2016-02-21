@@ -27,11 +27,20 @@
 
         <ImageView
             android:id="@+id/image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="21dp"
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
             android:src="@drawable/wifi_red" />
+        
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="25dp"
+            android:layout_height="21dp"
+            android:onClick="close"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/guanbi" />
     </LinearLayout>
 
     <ListView

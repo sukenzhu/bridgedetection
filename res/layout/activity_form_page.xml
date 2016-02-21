@@ -191,9 +191,9 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/form_lxbh"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/form_lxbh"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="15dp" >
 
@@ -241,10 +241,10 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/form_zxzh"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:id="@+id/form_zxzh"
                         android:layout_marginRight="15dp" >
 
                         <LinearLayout
@@ -379,7 +379,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
+        android:paddingTop="5dp"
         android:background="#80ffffff"
         android:orientation="vertical" >
 
@@ -440,6 +440,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lastEditLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -452,10 +453,11 @@
                     android:gravity="center_vertical" >
 
                     <TextView
+                        android:id="@+id/fzrtv"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:text="负责人："
+                        android:text="负责人员："
                         android:textSize="9dp" />
 
                     <EditText
@@ -476,7 +478,7 @@
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:text="记录人："
+                        android:text="记录人员："
                         android:textSize="9dp" />
 
                     <EditText
@@ -486,6 +488,62 @@
                         android:background="@null"
                         android:textSize="9dp" />
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/qlxcLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10dp"
+                        android:text="处理意见：" />
+
+                    <EditText
+                        android:id="@+id/dealwithEv"
+                        android:textSize="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:layout_weight="1" />
+                </LinearLayout>
+                
+                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="10dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10dp"
+                        android:text="检查人：" />
+
+                    <EditText
+                        android:id="@+id/jiancharenEv"
+                        android:textSize="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:layout_weight="1" />
+                </LinearLayout>
+                
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

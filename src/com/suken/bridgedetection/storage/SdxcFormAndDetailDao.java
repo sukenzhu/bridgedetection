@@ -119,7 +119,7 @@ public class SdxcFormAndDetailDao {
 			if(type == R.drawable.qiaoliangxuncha){
 				map.put("localId", Long.parseLong(id));
 			} else {
-				map.put("qhid", id);
+				map.put("sdid", id);
 			}
 			map.put("status", status);
 			map.put("type", type);

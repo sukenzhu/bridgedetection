@@ -20,7 +20,7 @@ public class Constants {
 	public static final int REQUEST_CODE_EDIT_IMG = 2;
 	public static final int REQUEST_CODE_VIDEO = 3;
 
-	public static final String[] qlformDetailItemTexts = new String[] { "缺损类型：", "缺损范围：", "保养措施意见" };
+	public static final String[] qlformDetailItemTexts = new String[] { "缺损类型：", "缺损范围：", "保养措施意见：" };
 
 	public static final String[] qlformDetailNames = new String[] { "翼墙", "锥坡、护坡", "桥台及基础", "桥墩及基础", "地基冲刷", "支座", "上部结构异常变形", "桥与路连接", "伸缩缝, 桥面铺装", "人行道、缘石",
 			"栏杆、护栏", "标志、标线", "排水设施", "照明系统", "桥面清洁", "调治结构物", "其他" };

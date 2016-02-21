@@ -63,6 +63,16 @@ public class QLBaseData implements Serializable{
 	private String ytfl;
 	@DatabaseField
 	private String zxzh;
+	@DatabaseField
+	private String qlkjfl;
+
+	public String getQlkjfl() {
+		return qlkjfl;
+	}
+
+	public void setQlkjfl(String qlkjfl) {
+		this.qlkjfl = qlkjfl;
+	}
 
 	public String getCreateBy() {
 		return createBy;

@@ -14,9 +14,14 @@ import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.fragment.FormItemController;
 import com.suken.bridgedetection.fragment.FormItemController.ImageDesc;
 import com.suken.bridgedetection.fragment.FormItemController.VideoDesc;
+import com.suken.bridgedetection.location.LocationManager;
+import com.suken.bridgedetection.location.LocationResult;
+import com.suken.bridgedetection.location.OnLocationFinishedListener;
 import com.suken.bridgedetection.storage.CheckDetail;
 import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
 import com.suken.bridgedetection.storage.CheckFormData;
+import com.suken.bridgedetection.storage.GpsData;
+import com.suken.bridgedetection.storage.GpsDataDao;
 import com.suken.bridgedetection.storage.HDBaseData;
 import com.suken.bridgedetection.storage.QHYHZeRenInfoDao;
 import com.suken.bridgedetection.storage.QHYangHuZeRenInfo;
@@ -32,7 +37,6 @@ import com.suken.bridgedetection.storage.YWDictionaryInfo;
 import com.suken.bridgedetection.util.UiUtil;
 import com.suken.imageditor.ImageditorActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -51,7 +55,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class BridgeFormActivity extends Activity implements OnClickListener {
+public class BridgeFormActivity extends BaseActivity implements OnClickListener {
 
 	private String[] detailNames = null;
 	private String[] mItemTexts = null;
@@ -96,6 +100,12 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 	private View mOperateLayout = null;
 	private boolean mIsHanDong = false;
 	private RadioGroup mRadioGroup = null;
+	//仅为桥梁巡查
+	private EditText mDealWithEv = null;
+	
+	private EditText mJcrEv = null;
+	
+	private TextView mGpsTv = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +157,78 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 		} else {
 			initQhjc();
 		}
+		mGpsTv = (TextView) findViewById(R.id.gps_text);
+
+		LocationManager.getInstance().syncLocation(new OnLocationFinishedListener() {
+			
+			@Override
+			public void onLocationFinished(LocationResult result) {
+				if(!result.isSuccess){
+					mGpsTv.setText("gps定位失败");
+					mGpsTv.setTextColor(Color.RED);
+				} else {
+					if (bean != null && mType == R.drawable.qiaoliangjiancha) {
+
+						String qhlx = "b";
+						double baseX = -1d;
+						double baseY = -1d;
+						
+						if(bean instanceof QLBaseData){
+							qhlx = "b";
+							baseX = ((QLBaseData) bean).getGpsX();
+							baseY = ((QLBaseData) bean).getGpsY();
+							boolean needUpdateGps = false;
+							String kjfl = ((QLBaseData) bean).getQlkjfl();
+							int kjflInt = 4;
+							if(!TextUtils.isEmpty(kjfl)){
+								kjflInt = Integer.parseInt(kjfl);
+							}
+							double distance = 50;
+							switch (kjflInt) {
+							case 1:
+								distance = 1000;
+								break;
+							case 2:
+								distance = 350;
+								break;
+							case 3:
+								distance = 100;
+								break;
+							case 4:
+								distance = 50;
+								break;
+							default:
+								break;
+							}
+							
+							if(baseX <= 0 || baseY <= 0){
+								needUpdateGps = true;
+							} else {
+								double distance1 = UiUtil.getDistance(baseX, baseY, result.latitude, result.longitude);
+								if(distance1 > distance){
+									needUpdateGps = true;
+									toast("当前误差为：" + distance1 + "米，允许误差范围为：" + distance + "米");
+								}
+							}
+							if(needUpdateGps){
+								GpsData gpsData = new GpsData();
+								gpsData.setId(Long.parseLong(qhId));
+								gpsData.setQhlx(qhlx);
+								gpsData.setGpsX(result.latitude);
+								gpsData.setGpsY(result.longitude);
+								new GpsDataDao().create(gpsData);
+							}
+						}
+					}
+				}
+			}
+		});
+	
+		
+		if(mType == R.drawable.suidaojiancha){
+			TextView fzrTv = (TextView) findViewById(R.id.fzrtv);
+			fzrTv.setText("检查人员：");
+		}
 	}
 	
 	private void initQhxc(){
@@ -154,7 +236,7 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 		mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 		mRadioGroup.setVisibility(View.VISIBLE);
 		extraLayout.setVisibility(View.VISIBLE);
-		extra1Tv.setText("处理意见：");
+		extra1Tv.setText("巡查人员：");
 		mFormTitle.setText("桥涵日常巡查记录表");
 		qlhz.setVisibility(View.GONE);
 		detailNames = new String[] { "桥涵桩号："};
@@ -163,6 +245,11 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 		findViewById(R.id.form_lxbh).setVisibility(View.GONE);
 		findViewById(R.id.form_zxzh).setVisibility(View.GONE);
 		findViewById(R.id.pddj_layout).setVisibility(View.GONE);
+		findViewById(R.id.lastEditLayout).setVisibility(View.GONE);
+		findViewById(R.id.qlxcLayout).setVisibility(View.VISIBLE);
+		mDealWithEv = (EditText) findViewById(R.id.dealwithEv);
+		mJcrEv = (EditText) findViewById(R.id.jiancharenEv);
+		
 	}
 	
 	private void initQhjc(){
@@ -219,8 +306,8 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 				mFormTitle.setText("隧道日常巡查记录表");
 				qlhz.setVisibility(View.GONE);
 			}
-			qlbhTv.setText("隧道编号");
-			qlmcTv.setText("隧道名称");
+			qlbhTv.setText("隧道编号：");
+			qlmcTv.setText("隧道名称：");
 			qhId = ((SDBaseData) bean).getId();
 			qlbhEv.setText(((SDBaseData) bean).getSdbh());
 			qlmcEv.setText(((SDBaseData) bean).getSdmc());
@@ -340,13 +427,14 @@ public class BridgeFormActivity extends Activity implements OnClickListener {
 				data.setSdzh(zxzhEv.getText().toString());
 				data.setLxmc(lxmcEv.getText().toString());
 				data.setZxzh(zxzhEv.getText().toString());
+				data.setLxbh(lxbhEv.getText().toString());
 			} else {
 				data.setGydwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
 				data.setGydwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
 				data.setQhlx(mRadioGroup.getCheckedRadioButtonId() == R.id.radioql ? "b" : "c");
-				data.setXcry(jlr.getText().toString());
-				data.setJcry(fzr.getText().toString());
-				data.setDealWith(extra1Ev.getText().toString());
+				data.setXcry(extra1Ev.getText().toString());
+				data.setJcry(mJcrEv.getText().toString());
+				data.setDealWith(mDealWithEv.getText().toString());
 				data.setWeather(weatherEv.getText().toString());
 			}
 			data.setJcsj(UiUtil.formatNowTime());

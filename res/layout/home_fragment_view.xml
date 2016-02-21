@@ -203,6 +203,7 @@
                                     android:textSize="12dp" />
 
                                 <TextView
+                                    android:id="@+id/syncLocationTv"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="定位正常"
@@ -429,10 +430,11 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/home_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="6dp"
+                android:layout_marginRight="16dp"
                 android:text="2015年1月22日   200:33 "
                 android:textSize="9dp" />
         </FrameLayout>

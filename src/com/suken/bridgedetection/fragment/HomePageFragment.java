@@ -9,7 +9,10 @@ import com.suken.bridgedetection.storage.SharePreferenceManager;
 import com.suken.bridgedetection.util.UiUtil;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,8 +35,17 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 	private TextView mWeidu;
 	private TextView mDeviceId;
 	private TextView mLastLogin = null;
+	private TextView time = null;
 
 	private View mContentView = null;
+	private Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			time.setText(UiUtil.formatNowTime());
+			sendEmptyMessageDelayed(0, 1000);
+		}
+	};
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +62,9 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 		mDeviceId.setText("设备号:" + UiUtil.genDeviceId());
 		mLastLogin = (TextView) view.findViewById(R.id.last_login);
 		mLastLogin.setText("上次登录:" + SharePreferenceManager.getInstance().readString("上次登录", UiUtil.formatNowTime("yyyy-MM-dd")));
+		time = (TextView) view.findViewById(R.id.home_time);
+		time.setText(UiUtil.formatNowTime());
+		handler.sendEmptyMessageDelayed(0, 1000);
 
 		mRiChangYangHu = new HomeFragmentItemController(this, mContentView, R.drawable.richangyanghu, "日常养护");
 		mZhiLiangChouJian = new HomeFragmentItemController(this, mContentView, R.drawable.zhiliangchoujian, "质量抽检");
@@ -61,6 +76,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 		mLuZXunShi = new HomeFragmentItemController(this, mContentView, R.drawable.luzhengxunshi, "路政巡视");
 		mJiDianXunCha = new HomeFragmentItemController(this, mContentView, R.drawable.jidianxuncha, "机电巡查");
 		mYingJiShiJian = new HomeFragmentItemController(this, mContentView, R.drawable.yingjishijian, "应急事件");
+		
 		LocationManager.getInstance().syncLocation(this);
 	}
 
@@ -81,6 +97,10 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 		if (result.isSuccess) {
 			mjingdu.setText("经度:" + result.latitude);
 			mWeidu.setText("纬度:" + result.longitude);
+		} else {
+			TextView tv =  (TextView) getActivity().findViewById(R.id.syncLocationTv);
+			tv.setText("定位失败");
+			tv.setTextColor(Color.RED);
 		}
 	}
 }

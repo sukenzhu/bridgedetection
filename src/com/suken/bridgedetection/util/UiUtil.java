@@ -25,6 +25,8 @@ import com.suken.bridgedetection.storage.CheckFormData;
 import com.suken.bridgedetection.storage.FileDesc;
 import com.suken.bridgedetection.storage.GXLuXianInfo;
 import com.suken.bridgedetection.storage.GXLuXianInfoDao;
+import com.suken.bridgedetection.storage.GpsData;
+import com.suken.bridgedetection.storage.GpsDataDao;
 import com.suken.bridgedetection.storage.HDBaseData;
 import com.suken.bridgedetection.storage.HDBaseDataDao;
 import com.suken.bridgedetection.storage.QHYHZeRenInfoDao;
@@ -60,6 +62,24 @@ public class UiUtil {
 			DP = dm.density;
 		}
 		return DP;
+	}
+	
+	
+	private static final double EARTH_RADIUS = 6378.137;
+
+	private static double rad(double d) {
+		return d * Math.PI / 180.0;
+	}
+
+	public static double getDistance(double lat1, double lng1, double lat2, double lng2) {
+		double radLat1 = rad(lat1);
+		double radLat2 = rad(lat2);
+		double a = radLat1 - radLat2;
+		double b = rad(lng1) - rad(lng2);
+		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+		s = s * EARTH_RADIUS;
+		s = Math.round(s * 10000) / 10000;
+		return s;
 	}
 
 	public static void syncData(final BaseActivity activity) {
@@ -205,25 +225,29 @@ public class UiUtil {
 		return hash + "";
 	}
 
+	public static void updateSingleNotPost(final String qhId, final int type, final boolean handleDialog, final BaseActivity activity) {
+		if (handleDialog) {
+			activity.showLoading("上传中...");
+		}
+		List<NameValuePair> list = new ArrayList<NameValuePair>();
+		BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
+		list.add(pair);
+		pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
+		list.add(pair);
+		if (type == R.drawable.suidaoxuncha || type == R.drawable.qiaoliangxuncha) {
+			updateXunchaData(qhId, type, list, activity);
+		} else {
+			updateCheckData(qhId, type, list, activity);
+		}
+		if (handleDialog) {
+			activity.dismissLoading();
+		}
+	}
+
 	public static void updateSingle(final String qhId, final int type, final boolean handleDialog, final BaseActivity activity) {
 		BackgroundExecutor.execute(new Runnable() {
 			public void run() {
-				if(handleDialog){
-					activity.showLoading("上传中...");
-				}
-				List<NameValuePair> list = new ArrayList<NameValuePair>();
-				BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
-				list.add(pair);
-				pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
-				list.add(pair);
-				if (type == R.drawable.suidaoxuncha || type == R.drawable.qiaoliangxuncha) {
-					updateXunchaData(qhId, type, list, activity);
-				} else {
-					updateCheckData(qhId, type, list, activity);
-				}
-				if(handleDialog){
-					activity.dismissLoading();
-				}
+				updateSingleNotPost(qhId, type, handleDialog, activity);
 			}
 		});
 	}
@@ -310,7 +334,7 @@ public class UiUtil {
 						public void run() {
 							if (activity instanceof BridgeDetectionListActivity) {
 								String dataId = data.getLocalId() + "";
-								if(type == R.drawable.suidaoxuncha){
+								if (type == R.drawable.suidaoxuncha) {
 									dataId = data.getSdid();
 								}
 								((BridgeDetectionListActivity) activity).updateStatus(dataId, Constants.STATUS_AGAIN);
@@ -326,6 +350,7 @@ public class UiUtil {
 				}
 			};
 			data.setStatus("2");
+			data.setTjsj(UiUtil.formatNowTime());
 			String json = new String(JSON.toJSONString(data));
 			list.add(new BasicNameValuePair("json", json));
 			new HttpTask(listener, type == R.drawable.suidaoxuncha ? RequestType.updatesdxcInfo : RequestType.updateqhxcInfo).executePost(list);
@@ -344,28 +369,42 @@ public class UiUtil {
 
 				@Override
 				public void onRequestSuccess(RequestType type1, String result) {
-					new CheckFormAndDetailDao().create(data);
-					activity.runOnUiThread(new Runnable() {
-						public void run() {
-							if(activity instanceof BridgeDetectionListActivity){
-								String dataId = data.getQhid();
-								if(type == R.drawable.suidaojiancha){
-									dataId = data.getSdid();
+					if(type1 != RequestType.updateGps){
+						new CheckFormAndDetailDao().create(data);
+						activity.runOnUiThread(new Runnable() {
+							public void run() {
+								if (activity instanceof BridgeDetectionListActivity) {
+									String dataId = data.getQhid();
+									if (type == R.drawable.suidaojiancha) {
+										dataId = data.getSdid();
+									}
+									((BridgeDetectionListActivity) activity).updateStatus(dataId, Constants.STATUS_AGAIN);
 								}
-								((BridgeDetectionListActivity) activity).updateStatus(dataId, Constants.STATUS_AGAIN);
 							}
-						}
-					});
-					activity.toast("上传成功");
+						});
+						activity.toast("上传成功");
+					}
 				}
 
 				@Override
 				public void onRequestFail(RequestType type, String resultCode, String result) {
-					activity.toast(result);
+					if(type != RequestType.updateGps){
+						activity.toast(result);
+					}
 				}
 			};
 			data.setStatus("2");
+			data.setTjsj(UiUtil.formatNowTime());
 			String json = new String(JSON.toJSONString(data));
+			if(type == R.drawable.qiaoliangjiancha){
+				GpsData gpsData = new GpsDataDao().queryGpsData(Long.parseLong(qhId), data.getQhlx());
+				if(gpsData != null){
+					BasicNameValuePair jsonPair = new BasicNameValuePair("json", JSON.toJSONString(gpsData));
+					list.add(jsonPair);
+					new HttpTask(listener, RequestType.updateGps).executePost(list);
+					list.remove(jsonPair);
+				}
+			}
 			list.add(new BasicNameValuePair("json", json));
 			new HttpTask(listener, type == R.drawable.suidaojiancha ? RequestType.updatesdjcInfo : RequestType.updateqhjcInfo).executePost(list);
 		}

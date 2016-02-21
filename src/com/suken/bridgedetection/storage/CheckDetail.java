@@ -11,7 +11,7 @@ public class CheckDetail implements Serializable {
 	@DatabaseField
 	private String bjmc;
 	@DatabaseField
-	private String bycsyj;
+	private String blcsyj;
 	@DatabaseField
 	private String bycsyjblank;
 	@DatabaseField
@@ -90,12 +90,12 @@ public class CheckDetail implements Serializable {
 		this.bjmc = bjmc;
 	}
 
-	public String getBycsyj() {
-		return bycsyj;
+	public String getBlcsyj() {
+		return blcsyj;
 	}
 
-	public void setBycsyj(String bycsyj) {
-		this.bycsyj = bycsyj;
+	public void setBlcsyj(String blcsyj) {
+		this.blcsyj = blcsyj;
 	}
 
 	public String getBycsyjblank() {
@@ -341,7 +341,7 @@ public class CheckDetail implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CheckDetail [bjmc=" + bjmc + ", bycsyj=" + bycsyj + ", bycsyjblank=" + bycsyjblank + ", createBy=" + createBy + ", createtime=" + createtime
+		return "CheckDetail [bjmc=" + bjmc + ", bycsyj=" + blcsyj + ", bycsyjblank=" + bycsyjblank + ", createBy=" + createBy + ", createtime=" + createtime
 				+ ", creator=" + creator + ", flag=" + flag + ", id=" + id + ", orgid=" + orgid + ", picattachment=" + picattachment + ", qhId=" + qhId
 				+ ", qkms=" + qkms + ", qkmsblank=" + qkmsblank + ", qsfw=" + qsfw + ", qsfwblank=" + qsfwblank + ", qslx=" + qslx + ", qslxblank=" + qslxblank
 				+ ", remark=" + remark + ", remarkblank=" + remarkblank + ", updateBy=" + updateBy + ", updatetime=" + updatetime + ", updator=" + updator

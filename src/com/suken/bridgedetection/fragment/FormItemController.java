@@ -8,8 +8,9 @@ import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.activity.BridgeFormActivity;
 import com.suken.bridgedetection.storage.CheckDetail;
 import com.suken.bridgedetection.storage.SdxcFormDetail;
+import com.suken.bridgedetection.util.UiUtil;
 
-import android.app.Activity;
+import android.app.Activity;import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -85,6 +86,10 @@ public class FormItemController implements OnClickListener {
 	private EditText byyjEv = null;
 	private EditText item4Ev = null;
 	private EditText item5Ev = null;
+	
+	private Spinner item4Spinner = null;
+	
+	private Spinner item5Spinner = null;
 
 	public static class ImageDesc {
 		public String name;
@@ -148,6 +153,18 @@ public class FormItemController implements OnClickListener {
 			mFormItem.findViewById(R.id.item5_layout).setVisibility(View.VISIBLE);
 			item4Ev = (EditText) mFormItem.findViewById(R.id.item4_edit);
 			item5Ev = (EditText) mFormItem.findViewById(R.id.item5_edit);
+			item4Spinner = (Spinner) mFormItem.findViewById(R.id.item4_spinner);
+			item5Spinner = (Spinner) mFormItem.findViewById(R.id.item5_spinner);
+			if(type == R.drawable.suidaojiancha){
+				item4Ev.setVisibility(View.GONE);
+				item5Ev.setVisibility(View.GONE);
+				item4Spinner.setVisibility(View.VISIBLE);
+				item5Spinner.setVisibility(View.VISIBLE);
+				item4Spinner.setAdapter(new TextSpinnerAdapter(new String[]{"正常","一般异常","严重异常"}));
+				item5Spinner.setAdapter(new TextSpinnerAdapter(new String[]{"跟踪监测","维修处置","定期或专项检查"}));
+				item4Spinner.setSelection(0);
+				item5Spinner.setSelection(0);
+			}
 		}
 
 		if (!mIsHandong && (type == R.drawable.qiaoliangjiancha)) {
@@ -161,8 +178,8 @@ public class FormItemController implements OnClickListener {
 			} else {
 				qsfwEv.setHint(blank1);
 			}
-			if (formDetail != null && !TextUtils.isEmpty(formDetail.getBycsyj())) {
-				byyjEv.setText(formDetail.getBycsyj());
+			if (formDetail != null && !TextUtils.isEmpty(formDetail.getBlcsyj())) {
+				byyjEv.setText(formDetail.getBlcsyj());
 			} else {
 				byyjEv.setHint(blank2);
 			}
@@ -173,8 +190,8 @@ public class FormItemController implements OnClickListener {
 			} else {
 				qslxEv.setText(mDefaultValue);
 			}
-			if (formDetail != null && !TextUtils.isEmpty(formDetail.getBycsyj())) {
-				qsfwEv.setText(formDetail.getBycsyj());
+			if (formDetail != null && !TextUtils.isEmpty(formDetail.getBlcsyj())) {
+				qsfwEv.setText(formDetail.getBlcsyj());
 			} else {
 				qsfwEv.setHint(blank1);
 			}
@@ -184,6 +201,11 @@ public class FormItemController implements OnClickListener {
 				byyjEv.setHint(blank2);
 			}
 		
+		}
+		if(type == R.drawable.suidaoxuncha){
+			byyjEv.setText(UiUtil.formatNowTime());
+			byyjEv.setEnabled(false);
+			byyjEv.setTextColor(Color.BLACK);
 		}
 	
 		xiangji = (ImageView) mImgVideoLayout.findViewById(R.id.xiangji);
@@ -282,19 +304,19 @@ public class FormItemController implements OnClickListener {
 		CheckDetail detail = new CheckDetail();
 		detail.setBjmc(mTitle);
 		if (!mIsHandong && (type == R.drawable.qiaoliangjiancha || type == R.drawable.qiaoliangxuncha)) {
-			detail.setBycsyj(byyjEv.getText().toString());
+			detail.setBlcsyj(byyjEv.getText().toString());
 			detail.setQsfw(qsfwEv.getText().toString());
 			detail.setQslx(qslxEv.getText().toString());
 		} else if(mIsHandong){
 			detail.setQkms(qslxEv.getText().toString());
-			detail.setBycsyj(qsfwEv.getText().toString());
+			detail.setBlcsyj(qsfwEv.getText().toString());
 			detail.setRemark(byyjEv.getText().toString());
 		} else if(type == R.drawable.suidaojiancha){
 			detail.setYcwz(qslxEv.getText().toString());
 			detail.setQsnr(qsfwEv.getText().toString());
 			detail.setYcms(byyjEv.getText().toString());
-			detail.setPd(item4Ev.getText().toString());
-			detail.setYhcsyj(item5Ev.getText().toString());
+			detail.setPd(item4Spinner.getSelectedItem().toString());
+			detail.setYhcsyj(item5Spinner.getSelectedItem().toString());
 			detail.setJgmc(mTitle);
 		}
 		StringBuilder builder = new StringBuilder();
@@ -312,6 +334,42 @@ public class FormItemController implements OnClickListener {
 	
 	public View getItemView(){
 		return mFormItem;
+	}
+	
+	
+	private class TextSpinnerAdapter extends BaseAdapter{
+		
+		private String[] array = null;
+
+		public TextSpinnerAdapter(String[] array) {
+			super();
+			this.array = array;
+		}
+
+		@Override
+		public int getCount() {
+			return array.length;
+		}
+
+		@Override
+		public String getItem(int position) {
+			return array[position];
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			TextView view = new TextView(mContext);
+			view.setPadding(5, 0, 0, 0);
+			view.setText(getItem(position));
+			view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
+			return view;
+		}
+		
 	}
 
 }
