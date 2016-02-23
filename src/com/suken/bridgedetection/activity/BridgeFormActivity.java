@@ -102,11 +102,11 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private RadioGroup mRadioGroup = null;
 	//仅为桥梁巡查
 	private EditText mDealWithEv = null;
-	
+
 	private EditText mJcrEv = null;
-	
+
 	private TextView mGpsTv = null;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -160,7 +160,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		mGpsTv = (TextView) findViewById(R.id.gps_text);
 
 		LocationManager.getInstance().syncLocation(new OnLocationFinishedListener() {
-			
+
 			@Override
 			public void onLocationFinished(LocationResult result) {
 				if(!result.isSuccess){
@@ -172,7 +172,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 						String qhlx = "b";
 						double baseX = -1d;
 						double baseY = -1d;
-						
+
 						if(bean instanceof QLBaseData){
 							qhlx = "b";
 							baseX = ((QLBaseData) bean).getGpsX();
@@ -200,14 +200,14 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 							default:
 								break;
 							}
-							
+
 							if(baseX <= 0 || baseY <= 0){
 								needUpdateGps = true;
 							} else {
 								double distance1 = UiUtil.getDistance(baseX, baseY, result.latitude, result.longitude);
 								if(distance1 > distance){
 									needUpdateGps = true;
-									toast("当前误差为：" + distance1 + "米，允许误差范围为：" + distance + "米");
+									toast("当前误差为：" + distance1 + "千米，允许误差范围为：" + distance + "米");
 								}
 							}
 							if(needUpdateGps){
@@ -223,21 +223,21 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				}
 			}
 		});
-	
-		
+
+
 		if(mType == R.drawable.suidaojiancha){
 			TextView fzrTv = (TextView) findViewById(R.id.fzrtv);
 			fzrTv.setText("检查人员：");
 		}
 	}
-	
+
 	private void initQhxc(){
 		mOperateLayout.setVisibility(View.VISIBLE);
 		mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 		mRadioGroup.setVisibility(View.VISIBLE);
 		extraLayout.setVisibility(View.VISIBLE);
 		extra1Tv.setText("巡查人员：");
-		mFormTitle.setText("桥涵日常巡查记录表");
+		mFormTitle.setText("桥梁日常巡查记录表");
 		qlhz.setVisibility(View.GONE);
 		detailNames = new String[] { "桥涵桩号："};
 		mItemTexts = Constants.qhxcformDetailItemTexts;
@@ -249,9 +249,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		findViewById(R.id.qlxcLayout).setVisibility(View.VISIBLE);
 		mDealWithEv = (EditText) findViewById(R.id.dealwithEv);
 		mJcrEv = (EditText) findViewById(R.id.jiancharenEv);
-		
+
 	}
-	
+
 	private void initQhjc(){
 		formData = (CheckFormData) getIntent().getSerializableExtra("formData");
 		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId("10000001160070");
@@ -528,7 +528,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			setResult(1, intent);
 			finish();
 		}
-		
+
 	}
 
 	private Uri mOutPutFileUri = null;
