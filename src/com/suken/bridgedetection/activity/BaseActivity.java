@@ -19,6 +19,10 @@ import android.widget.Toast;
 public class BaseActivity extends FragmentActivity {
 
 	private Dialog mLoadingDialog = null;
+	
+	public void back(View view){
+		finish();
+	}
 
 	public void toast(final String msg) {
 		runOnUiThread(new Runnable() {
