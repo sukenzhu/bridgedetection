@@ -3,7 +3,10 @@ package com.suken.bridgedetection.activity;
 import com.suken.bridgedetection.R;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,10 +23,6 @@ public class BaseActivity extends FragmentActivity {
 
 	private Dialog mLoadingDialog = null;
 	
-	public void back(View view){
-		finish();
-	}
-
 	public void toast(final String msg) {
 		runOnUiThread(new Runnable() {
 			

@@ -1,9 +1,16 @@
 package com.suken.bridgedetection.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -81,12 +88,13 @@ public class UiUtil {
 		s = Math.round(s * 10000) / 10000;
 		return s;
 	}
-
+	
 	public static void syncData(final BaseActivity activity) {
 		syncData(activity, false);
 	}
+	
+	public static void syncData(final BaseActivity activity, final boolean isJustLastUpdate, final OnSyncDataFinishedListener syncListener){
 
-	public static void syncData(final BaseActivity activity, final boolean isJustLastUpdate) {
 		ConnectType type = NetWorkUtil.getConnectType(activity);
 		if (type == ConnectType.CONNECT_TYPE_DISCONNECT) {
 			activity.toast("当前无网络，无法同步数据");
@@ -96,6 +104,7 @@ public class UiUtil {
 			activity.toast("当前网络不是WiFi，不同步数据");
 			return;
 		}
+		final AtomicInteger flagInt = new AtomicInteger();
 		final StringBuilder builder = new StringBuilder();
 		final OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
@@ -152,6 +161,29 @@ public class UiUtil {
 					}
 					break;
 				}
+				case syncData:{
+//					桥梁  bridges 后面就是之前的data
+//					culverts 涵洞的key
+//					tunnels  隧道
+//					dictionarys 系统字典的
+//					brgengineers 桥涵工程师的  tunengineers 隧道的
+					
+					List<GXLuXianInfo> list = JSON.parseArray(obj.getString("luxians"), GXLuXianInfo.class);
+					new GXLuXianInfoDao().create(list);
+					List<QLBaseData> list1 = JSON.parseArray(obj.getString("bridges"), QLBaseData.class);
+					new QLBaseDataDao().create(list1);
+					List<HDBaseData> list2 = JSON.parseArray(obj.getString("culverts"), HDBaseData.class);
+					new HDBaseDataDao().create(list2);
+					List<SDBaseData> list3 = JSON.parseArray(obj.getString("tunnels"), SDBaseData.class);
+					new SDBaseDataDao().create(list3);
+					List<QHYangHuZeRenInfo> list4 = JSON.parseArray(obj.getString("brgengineers"), QHYangHuZeRenInfo.class);
+					new QHYHZeRenInfoDao().create(list4);
+					List<SDYangHuZeRenInfo> list5 = JSON.parseArray(obj.getString("tunengineers"), SDYangHuZeRenInfo.class);
+					new SDYHZeRenInfoDao().create(list5);
+					List<YWDictionaryInfo> list6 = JSON.parseArray(obj.getString("dictionarys"), YWDictionaryInfo.class);
+					new YWDictionaryDao().create(list6);
+					break;
+				}
 
 				default:
 					break;
@@ -175,28 +207,46 @@ public class UiUtil {
 				list.add(pair);
 				pair = new BasicNameValuePair("did", BridgeDetectionApplication.mDeviceId);
 				list.add(pair);
-				if (!isJustLastUpdate) {
-					new HttpTask(listener, RequestType.gxlxInfo).executePost(list);
-					new HttpTask(listener, RequestType.qlBaseData).executePost(list);
-					new HttpTask(listener, RequestType.hdBaseData).executePost(list);
-					new HttpTask(listener, RequestType.sdBaseData).executePost(list);
-					new HttpTask(listener, RequestType.qhyhzrInfo).executePost(list);
-					new HttpTask(listener, RequestType.sdyhzrInfo).executePost(list);
-					new HttpTask(listener, RequestType.ywzddmInfo).executePost(list);
+//				if (!isJustLastUpdate) {
+//					new HttpTask(listener, RequestType.gxlxInfo).executePost(list);
+//					new HttpTask(listener, RequestType.qlBaseData).executePost(list);
+//					new HttpTask(listener, RequestType.hdBaseData).executePost(list);
+//					new HttpTask(listener, RequestType.sdBaseData).executePost(list);
+//					new HttpTask(listener, RequestType.qhyhzrInfo).executePost(list);
+//					new HttpTask(listener, RequestType.sdyhzrInfo).executePost(list);
+//					new HttpTask(listener, RequestType.ywzddmInfo).executePost(list);
+//				}
+//				new HttpTask(listener, RequestType.lastqhjcInfo).executePost(list);
+//				new HttpTask(listener, RequestType.lastsdjcInfo).executePost(list);
+				if(isJustLastUpdate){
+					new HttpTask(listener, RequestType.lastqhjcInfo).executePost(list);
+					new HttpTask(listener, RequestType.lastsdjcInfo).executePost(list);
+				} else {
+					new HttpTask(listener, RequestType.syncData).executePost(list);
 				}
-				new HttpTask(listener, RequestType.lastqhjcInfo).executePost(list);
-				new HttpTask(listener, RequestType.lastsdjcInfo).executePost(list);
 				String msg = builder.toString();
 				if (TextUtils.isEmpty(msg)) {
 					SharePreferenceManager.getInstance().updateString("lastSyncTime", System.currentTimeMillis() + "");
 					activity.toast("数据同步成功");
+					if(syncListener != null){
+						syncListener.onSyncFinished(true);
+					}
 				} else {
 					msg = msg.substring(0, msg.length() - 1);
 					activity.toast(msg + "数据同步失败，请在设置中重试同步！");
+					if(syncListener != null){
+						syncListener.onSyncFinished(false);
+					}
 				}
 				activity.dismissLoading();
 			}
 		});
+	
+	}
+	
+
+	public static void syncData(final BaseActivity activity, final boolean isJustLastUpdate) {
+		syncData(activity, isJustLastUpdate, null);
 	}
 
 	public static String formatNowTime() {
@@ -408,6 +458,56 @@ public class UiUtil {
 			list.add(new BasicNameValuePair("json", json));
 			new HttpTask(listener, type == R.drawable.suidaojiancha ? RequestType.updatesdjcInfo : RequestType.updateqhjcInfo).executePost(list);
 		}
+	}
+	
+	
+	public static byte[] toGzip(byte[] content) throws IOException {
+		byte[] re = null;
+		try {
+			ByteArrayInputStream bais = new ByteArrayInputStream(
+					content);
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			GZIPOutputStream gzip = new GZIPOutputStream(bos);
+			byte[] buf = new byte[4096];
+			int num = -1;
+			while ((num = bais.read(buf)) != -1) {
+				gzip.write(buf, 0, num);
+			}
+			gzip.flush();
+			gzip.finish();
+			re = bos.toByteArray();
+			bais.close();
+			bos.close();
+			gzip.close();
+		} catch (IOException e) {
+			throw e;
+		}
+		return re;
+	}
+
+	public static byte[] unGZip(byte[] data) throws IOException {
+		byte[] re = null;
+		try {
+			ByteArrayInputStream bis = new ByteArrayInputStream(data);
+			GZIPInputStream gzip = new GZIPInputStream(bis);
+			byte[] buf = new byte[4096];
+			int num = -1;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			while ((num = gzip.read(buf, 0, buf.length)) != -1) {
+				baos.write(buf, 0, num);
+			}
+			re = baos.toByteArray();
+			baos.flush();
+			baos.close();
+			gzip.close();
+			bis.close();
+		} catch (UnsupportedEncodingException e) {
+			throw e;
+		} catch (IOException e) {
+			throw e;
+		}
+
+		return re;
 	}
 
 }

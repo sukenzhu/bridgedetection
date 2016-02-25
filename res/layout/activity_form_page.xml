@@ -17,6 +17,7 @@
             android:background="#95323d4b"
             android:gravity="center"
             android:text="返回"
+            android:clickable="true"
             android:onClick="back"
             android:textColor="#ffffff"
             android:textSize="10dp" />

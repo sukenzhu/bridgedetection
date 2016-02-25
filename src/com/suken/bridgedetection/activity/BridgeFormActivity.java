@@ -37,6 +37,8 @@ import com.suken.bridgedetection.storage.YWDictionaryInfo;
 import com.suken.bridgedetection.util.UiUtil;
 import com.suken.imageditor.ImageditorActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -44,6 +46,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -106,6 +109,8 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private EditText mJcrEv = null;
 
 	private TextView mGpsTv = null;
+	
+	private boolean mIsGpsSuccess = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +172,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 					mGpsTv.setText("gps定位失败");
 					mGpsTv.setTextColor(Color.RED);
 				} else {
+					mIsGpsSuccess = true;
 					if (bean != null && mType == R.drawable.qiaoliangjiancha) {
 
 						String qhlx = "b";
@@ -396,7 +402,23 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	@Override
 	public void onClick(View view) {
 		if (view.getId() == R.id.save1 || view.getId() == R.id.save2) {
-			saveToLocal();
+			if(mIsGpsSuccess){
+				saveToLocal();
+				toast("Gps定位成功，保存成功！");
+			} else {
+				LocationManager.getInstance().syncLocation(new OnLocationFinishedListener() {
+					
+					@Override
+					public void onLocationFinished(LocationResult result) {
+						if(result.isSuccess){
+							saveToLocal();
+							toast("Gps定位成功，保存成功！");
+						} else {
+							toast("Gps定位失败，不能离开！");
+						}
+					}
+				});
+			}
 			return;
 		}
 		for (FormItemController fic : mDetailMaps) {
@@ -621,6 +643,37 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				mDetailMaps.get(mDetailMaps.size() - 1).performArrowImgClick();
 			}
 		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			back(null);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	public void back(View view){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("提醒");
+		builder.setMessage("返回将丢失当前未保存信息");
+		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				finish();
+			}
+		});
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.create().show();
 	}
 
 }

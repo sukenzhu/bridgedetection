@@ -12,6 +12,7 @@ import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.RequestType;
+import com.suken.bridgedetection.fragment.HomePageFragment;
 import com.suken.bridgedetection.fragment.LeftFragment;
 import com.suken.bridgedetection.http.HttpTask;
 import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
@@ -38,7 +39,7 @@ import android.text.TextUtils;
 
 public class HomePageActivity extends BaseActivity implements DialogInterface.OnClickListener, OnReceivedHttpResponseListener {
 
-	private Fragment mHomeFragment;
+	private HomePageFragment mHomeFragment;
 	private Fragment mGpsFragment;
 	private Fragment mIpFragment;
 	private FragmentManager mFragManager = null;
@@ -55,13 +56,15 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 				needSync = false;
 			}
 		}
-		if (flag && needSync) {
-			UiUtil.syncData(this);
-		}
 		mFragManager = getSupportFragmentManager();
-		mHomeFragment = mFragManager.findFragmentById(R.id.home_fragment);
+		mHomeFragment = (HomePageFragment) mFragManager.findFragmentById(R.id.home_fragment);
 		mGpsFragment = mFragManager.findFragmentById(R.id.gps_fragment);
 		mIpFragment = mFragManager.findFragmentById(R.id.ip_fragment);
+		if (flag && needSync) {
+			UiUtil.syncData(this, false, mHomeFragment);
+		} else {
+			mHomeFragment.onSyncFinished(true);
+		}
 		FragmentTransaction ft = mFragManager.beginTransaction();
 		ft.hide(mGpsFragment);
 		ft.hide(mIpFragment);

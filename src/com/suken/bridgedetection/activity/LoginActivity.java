@@ -120,6 +120,7 @@ public class LoginActivity extends BaseActivity {
 		intent.putExtra("userInfo", info);
 		intent.putExtra("isOnline", isOnline);
 		startActivity(intent);
+		finish();
 	}
 
 	private void login(final String name, final String pwd) {

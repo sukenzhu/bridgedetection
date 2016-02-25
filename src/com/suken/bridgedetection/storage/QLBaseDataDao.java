@@ -4,11 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.suken.bridgedetection.BridgeDetectionApplication;
-import com.suken.bridgedetection.Constants;
-
-import android.util.Log;
 
 public class QLBaseDataDao {
 
@@ -31,8 +27,7 @@ public class QLBaseDataDao {
 
 	public void create(QLBaseData info) {
 		try {
-			CreateOrUpdateStatus status = mGXLuXianInfoDao.createOrUpdate(info);
-			Log.i(Constants.SQLTAG, " status : " + (status.isCreated() || status.isUpdated()) + " info : " + info.toString());
+			mGXLuXianInfoDao.createOrUpdate(info);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

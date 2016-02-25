@@ -14,7 +14,7 @@ public enum RequestType {
 																			"/bpmp/m/check/inspect/uploadTun.ht"), updateGpsgjInfo("上传GPS轨迹信息",
 																					"/bpmp/m/gps/subGPSDatas.ht"), uploadFile("上传附件",
 																							"/bpmp/m/file/upload.ht"), updateGps("更新gps",
-																									"/bpmp/m/base/updateGPS.ht");
+																									"/bpmp/m/base/updateGPS.ht"), syncData("同步基础数据", "/bpmp/m/base/synBaseData.ht");
 
 	private String desc;
 	private String url;
