@@ -25,7 +25,7 @@
         android:id="@+id/home_frag_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#687e8f"
+        android:textColor="@drawable/home_item_text_selector"
         android:textSize="12dp"
         android:layout_gravity="center_horizontal"
         android:text="日常养护" />

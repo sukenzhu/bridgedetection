@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.BridgeDetectionApplication;
@@ -164,12 +163,11 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 	}
 
 	@Override
-	public void onRequestSuccess(RequestType type, String result) {
+	public void onRequestSuccess(RequestType type, JSONObject obj) {
 		if (type == RequestType.exit) {
 			toast("注销成功！");
 			finish();
 		} else if (type == RequestType.update) {
-			JSONObject obj = JSON.parseObject(result);
 			int versioncode = obj.getInteger("versioncode");
 			final String url = obj.getString("apkurl");
 			try {

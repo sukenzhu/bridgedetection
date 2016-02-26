@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -248,14 +249,12 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 	}
 
 	@Override
-	public void onRequestSuccess(RequestType type, String result) {
-		// TODO Auto-generated method stub
+	public void onRequestSuccess(RequestType type, JSONObject result) {
 
 	}
 
 	@Override
 	public void onRequestFail(RequestType type, String resultCode, String result) {
-		// TODO Auto-generated method stub
 
 	}
 }

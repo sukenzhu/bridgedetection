@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.BridgeDetectionApplication;
@@ -127,8 +126,7 @@ public class LoginActivity extends BaseActivity {
 		final OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
 			@Override
-			public void onRequestSuccess(RequestType type, String result) {
-				JSONObject obj = JSON.parseObject(result);
+			public void onRequestSuccess(RequestType type, JSONObject obj) {
 				UserInfo info = obj.getObject("userInfo", UserInfo.class);
 				info.setPassword(pwd);
 				mUserDao.create(info);

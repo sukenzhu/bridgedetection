@@ -109,8 +109,7 @@ public class UiUtil {
 		final OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
 			@Override
-			public void onRequestSuccess(RequestType type, String result) {
-				JSONObject obj = JSON.parseObject(result);
+			public void onRequestSuccess(RequestType type, JSONObject obj) {
 				switch (type) {
 				case gxlxInfo: {
 					List<GXLuXianInfo> list = JSON.parseArray(obj.getString("datas"), GXLuXianInfo.class);
@@ -308,8 +307,7 @@ public class UiUtil {
 		OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
 			@Override
-			public void onRequestSuccess(RequestType type, String result) {
-				JSONObject obj = JSON.parseObject(result);
+			public void onRequestSuccess(RequestType type, JSONObject obj) {
 				String re = obj.getString("datas");
 				List<FileDesc> files = JSON.parseArray(re, FileDesc.class);
 				String[] pics = new String[] {};
@@ -376,7 +374,7 @@ public class UiUtil {
 			OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
 				@Override
-				public void onRequestSuccess(RequestType type1, String result) {
+				public void onRequestSuccess(RequestType type1, JSONObject obj) {
 					new SdxcFormAndDetailDao().create(data);
 					activity.runOnUiThread(new Runnable() {
 
@@ -418,7 +416,7 @@ public class UiUtil {
 			OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
 
 				@Override
-				public void onRequestSuccess(RequestType type1, String result) {
+				public void onRequestSuccess(RequestType type1, JSONObject obj) {
 					if(type1 != RequestType.updateGps){
 						new CheckFormAndDetailDao().create(data);
 						activity.runOnUiThread(new Runnable() {

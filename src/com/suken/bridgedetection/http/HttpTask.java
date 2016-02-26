@@ -27,7 +27,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class HttpTask {
-//	public static String REQUEST_IP = "binglee.wicp.net";
+	// public static String REQUEST_IP = "binglee.wicp.net";
 
 	public static String REQUEST_IP = "121.28.74.58";
 
@@ -36,15 +36,15 @@ public class HttpTask {
 	private RequestType mRequestType = null;
 
 	private OnReceivedHttpResponseListener mResponseListener;
-	
-	private String getUrl(String suffix){
+
+	private String getUrl(String suffix) {
 		String ip = SharePreferenceManager.getInstance().readString("ip", REQUEST_IP);
 		String port = SharePreferenceManager.getInstance().readString("port", REQUEST_PORT);
 		String portStr = "";
-		if(!TextUtils.isEmpty(port)){
-			portStr = ":"+ port;
+		if (!TextUtils.isEmpty(port)) {
+			portStr = ":" + port;
 		}
-		return  "http://" + ip + portStr + suffix;
+		return "http://" + ip + portStr + suffix;
 	}
 
 	public HttpTask(OnReceivedHttpResponseListener listener, RequestType type) {
@@ -61,13 +61,13 @@ public class HttpTask {
 			HttpPost postMethod = new HttpPost(getUrl(mRequestType.getUrl()));
 			MultipartEntity entity = new MultipartEntity();
 			for (String s : files) {
-				if(!TextUtils.isEmpty(s)){
+				if (!TextUtils.isEmpty(s)) {
 					File f = new File(s);
 					ContentBody cbFile = new FileBody(new File(s));
 					entity.addPart(f.getName(), cbFile);
 				}
 			}
-			for(NameValuePair pair : parameters){
+			for (NameValuePair pair : parameters) {
 				entity.addPart(pair.getName(), new StringBody(pair.getValue()));
 			}
 			postMethod.setEntity(entity);
@@ -79,7 +79,7 @@ public class HttpTask {
 				String errorCode = obj.getString(Constants.ERRORCODE);
 				String errorMsg = obj.getString(Constants.ERRORMSG);
 				if (TextUtils.equals(errorCode, "200")) {
-					mResponseListener.onRequestSuccess(mRequestType, result);
+					mResponseListener.onRequestSuccess(mRequestType, obj);
 				} else {
 					mResponseListener.onRequestFail(mRequestType, errorCode, errorMsg);
 				}
@@ -93,12 +93,11 @@ public class HttpTask {
 		}
 
 	}
-	
-	
-	public void executePostBackground(final List<NameValuePair> parameters){
-		
+
+	public void executePostBackground(final List<NameValuePair> parameters) {
+
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				executePost(parameters);
@@ -107,14 +106,14 @@ public class HttpTask {
 	}
 
 	public void executePost(List<NameValuePair> parameters) {
-		
+
 		long start = System.currentTimeMillis();
 		// 和GET方式一样，先将参数放入List
 		HttpClient httpClient = new DefaultHttpClient();
 		try {
-			 // 请求超时
+			// 请求超时
 			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 30000);
-            // 读取超时
+			// 读取超时
 			httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 60000);
 			HttpPost postMethod = new HttpPost(getUrl(mRequestType.getUrl()));
 			postMethod.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
@@ -124,7 +123,7 @@ public class HttpTask {
 			Log.i("time", "RequestType : " + mRequestType.getDesc() + " : postTime " + (postTime - start));
 			int resultCode = response.getStatusLine().getStatusCode();
 			String result = "";
-			if(mRequestType == RequestType.syncData){
+			if (mRequestType == RequestType.syncData) {
 				byte[] reArray = EntityUtils.toByteArray(response.getEntity());
 				reArray = UiUtil.unGZip(reArray);
 				reArray = Base64.decode(new String(reArray, "utf-8"));
@@ -132,16 +131,19 @@ public class HttpTask {
 			} else {
 				result = EntityUtils.toString(response.getEntity(), "utf-8");
 			}
+			Log.i("httptask", "result : " + result);
+
 			if (resultCode == 200) {
-				if(mRequestType == RequestType.update){
-					mResponseListener.onRequestSuccess(mRequestType, result);
+				JSONObject obj = JSON.parseObject(result);
+				Log.i("time", "RequestType : " + mRequestType.getDesc() + " : parseObject " + (System.currentTimeMillis() - postTime));
+				if (mRequestType == RequestType.update) {
+					mResponseListener.onRequestSuccess(mRequestType, obj);
 					return;
 				}
-				JSONObject obj = JSON.parseObject(result);
 				String errorCode = obj.getString(Constants.ERRORCODE);
 				String errorMsg = obj.getString(Constants.ERRORMSG);
 				if (TextUtils.equals(errorCode, "200")) {
-					mResponseListener.onRequestSuccess(mRequestType, result);
+					mResponseListener.onRequestSuccess(mRequestType, obj);
 				} else {
 					mResponseListener.onRequestFail(mRequestType, errorCode, errorMsg);
 				}
@@ -149,7 +151,8 @@ public class HttpTask {
 				mResponseListener.onRequestFail(mRequestType, resultCode + "", result);
 			}
 			Log.i("time", "RequestType : " + mRequestType.getDesc() + " : handleResultTime " + (System.currentTimeMillis() - postTime));
-		} catch (Exception e) {e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 			mResponseListener.onRequestFail(mRequestType, "-100", e.getMessage());
 		} finally {
 			httpClient.getConnectionManager().shutdown();
