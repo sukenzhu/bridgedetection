@@ -534,8 +534,9 @@ public class UiUtil {
 							DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
 							request.setDestinationInExternalPublicDir("bridgedetection",  "bridgedetection.apk");
 							final long downloadId = downloadManager.enqueue(request);
+							activity.toast("下载中...");
 							IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-							BroadcastReceiver receiver = new BroadcastReceiver() {
+							final BroadcastReceiver receiver = new BroadcastReceiver() {
 								@Override
 								public void onReceive(Context context, Intent intent) {
 									long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
