@@ -91,7 +91,7 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		case R.id.left_frag_video:
 			break;
 		case R.id.left_frag_update:
-			update();
+			UiUtil.update(this);
 			break;
 		case R.id.left_frag_exit: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -112,22 +112,7 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		}
 	}
 
-	private void update() {
-		BackgroundExecutor.execute(new Runnable() {
-
-			@Override
-			public void run() {
-				showLoading("检查更新中...");
-				List<NameValuePair> list = new ArrayList<NameValuePair>();
-				BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
-				list.add(pair);
-				pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
-				list.add(pair);
-				new HttpTask(HomePageActivity.this, RequestType.update).executePost(list);
-				dismissLoading();
-			}
-		});
-	}
+	
 
 	private void exit() {
 		showLoading("正在注销登录...");
@@ -157,7 +142,7 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		}
 	}
 
-	private void selectHome() {
+	public void selectHome() {
 		LeftFragment fragment = (LeftFragment) mFragManager.findFragmentById(R.id.left_fragment);
 		fragment.selectHome();
 	}
@@ -167,63 +152,10 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		if (type == RequestType.exit) {
 			toast("注销成功！");
 			finish();
-		} else if (type == RequestType.update) {
-			int versioncode = obj.getInteger("versioncode");
-			final String url = obj.getString("apkurl");
-			try {
-				PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
-				if (versioncode > info.versionCode) {
-					todownload(url);
-				}
-			} catch (NameNotFoundException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
-	private void todownload(final String url) {
-		runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				AlertDialog.Builder builder = new AlertDialog.Builder(HomePageActivity.this);
-				OnClickListener listener = new OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						if (which == Dialog.BUTTON_POSITIVE) {
-							// 下载
-							final DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-							DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-							request.setDestinationInExternalPublicDir("bridgedetection",  "bridgedetection.apk");
-							final long downloadId = downloadManager.enqueue(request);
-							IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-							BroadcastReceiver receiver = new BroadcastReceiver() {
-								@Override
-								public void onReceive(Context context, Intent intent) {
-									long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-									if (downloadId == reference) {
-										Uri uri = downloadManager.getUriForDownloadedFile(downloadId);
-										Intent a = new Intent();
-										a.setAction(Intent.ACTION_VIEW);
-										a.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-										a.setDataAndType(uri, "application/vnd.android.package-archive");
-										startActivity(a);
-									}
-								}
-							};
-							registerReceiver(receiver, filter);
-						} else {
-							dialog.dismiss();
-							selectHome();
-						}
-					}
-				};
-				builder.setTitle("更新").setMessage("检测到新版本，是否更新？").setPositiveButton("确定", listener).setNegativeButton("取消", listener).show();
-			}
-		});
-
-	}
+	
 
 	@Override
 	public void onRequestFail(RequestType type, String resultCode, String result) {
@@ -238,7 +170,7 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							if (which == Dialog.BUTTON_POSITIVE) {
-								update();
+								UiUtil.update(HomePageActivity.this);
 							} else {
 								dialog.dismiss();
 								selectHome();

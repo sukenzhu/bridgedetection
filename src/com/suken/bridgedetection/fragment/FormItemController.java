@@ -1,25 +1,32 @@
 package com.suken.bridgedetection.fragment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.activity.BridgeFormActivity;
+import com.suken.bridgedetection.activity.BridgeFormActivity.FormBaseDetail;
 import com.suken.bridgedetection.storage.CheckDetail;
 import com.suken.bridgedetection.storage.SdxcFormDetail;
 import com.suken.bridgedetection.util.UiUtil;
 
-import android.app.Activity;import android.content.res.ColorStateList;
+import android.app.Activity;
 import android.graphics.Color;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -37,15 +44,17 @@ public class FormItemController implements OnClickListener {
 	private String mQhId;
 	private boolean mIsHandong;
 	private EditText xczh;
+	private FormBaseDetail mFormBaseDetail;
 
 	public FormItemController(Activity context, View view, OnClickListener listener, String text, int type, String defaultValue, String[] itemTexts,
-			CheckDetail formDetail, String blank1, String blank2, String qhId, boolean isHandong) {
+			CheckDetail formDetail, String blank1, String blank2, String qhId, boolean isHandong, FormBaseDetail detail) {
 		this.mIsHandong = isHandong;
+		mFormBaseDetail = detail;
 		mContext = (BridgeFormActivity) context;
 		mFormItem = view;
 		mQhId = qhId;
 		xczh = (EditText) view.findViewById(R.id.form_qlzh);
-		if(type == R.drawable.qiaoliangxuncha){
+		if (type == R.drawable.qiaoliangxuncha) {
 			xczh.setVisibility(View.VISIBLE);
 		}
 		mImgVideoLayout = mFormItem.findViewById(R.id.img_video_layout);
@@ -58,7 +67,7 @@ public class FormItemController implements OnClickListener {
 		qslxText.setText(itemTexts[0]);
 		qsfwText.setText(itemTexts[1]);
 		byyjText.setText(itemTexts[2]);
-		if(type == R.drawable.suidaojiancha || type == R.drawable.qiaoliangxuncha){
+		if (type == R.drawable.suidaojiancha || type == R.drawable.qiaoliangxuncha) {
 			TextView item4 = (TextView) mFormItem.findViewById(R.id.item4_title);
 			item4.setText(itemTexts[3]);
 			TextView item5 = (TextView) mFormItem.findViewById(R.id.item5_title);
@@ -86,10 +95,10 @@ public class FormItemController implements OnClickListener {
 	private EditText byyjEv = null;
 	private EditText item4Ev = null;
 	private EditText item5Ev = null;
-	
-	private Spinner item4Spinner = null;
-	
-	private Spinner item5Spinner = null;
+
+	private RadioGroup item4Rg = null;
+
+	private LinearLayout item5Ll = null;
 
 	public static class ImageDesc {
 		public String name;
@@ -125,10 +134,11 @@ public class FormItemController implements OnClickListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = new TextView(mFormItem.getContext());
 			ImageDesc desc = getItem(position);
-			view.setText(mTitle + "-" + desc.name);
+			view.setText(mTitle + "-" + (position + 1));
 			view.setTag(desc);
 			view.setTextColor(Color.RED);
 			view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
+			view.setHeight((int)(15 * UiUtil.getDp(mContext))); 
 			view.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -148,24 +158,6 @@ public class FormItemController implements OnClickListener {
 		qslxEv = (EditText) mFormItem.findViewById(R.id.qslx_edit);
 		qsfwEv = (EditText) mFormItem.findViewById(R.id.qsfw_edit);
 		byyjEv = (EditText) mFormItem.findViewById(R.id.byyj_edit);
-		if(type == R.drawable.suidaojiancha || type == R.drawable.qiaoliangxuncha){
-			mFormItem.findViewById(R.id.item4_layout).setVisibility(View.VISIBLE);
-			mFormItem.findViewById(R.id.item5_layout).setVisibility(View.VISIBLE);
-			item4Ev = (EditText) mFormItem.findViewById(R.id.item4_edit);
-			item5Ev = (EditText) mFormItem.findViewById(R.id.item5_edit);
-			item4Spinner = (Spinner) mFormItem.findViewById(R.id.item4_spinner);
-			item5Spinner = (Spinner) mFormItem.findViewById(R.id.item5_spinner);
-			if(type == R.drawable.suidaojiancha){
-				item4Ev.setVisibility(View.GONE);
-				item5Ev.setVisibility(View.GONE);
-				item4Spinner.setVisibility(View.VISIBLE);
-				item5Spinner.setVisibility(View.VISIBLE);
-				item4Spinner.setAdapter(new TextSpinnerAdapter(new String[]{"正常","一般异常","严重异常"}));
-				item5Spinner.setAdapter(new TextSpinnerAdapter(new String[]{"跟踪监测","维修处置","定期或专项检查"}));
-				item4Spinner.setSelection(0);
-				item5Spinner.setSelection(0);
-			}
-		}
 
 		if (!mIsHandong && (type == R.drawable.qiaoliangjiancha)) {
 			if (formDetail != null && !TextUtils.isEmpty(formDetail.getQslx())) {
@@ -183,7 +175,7 @@ public class FormItemController implements OnClickListener {
 			} else {
 				byyjEv.setHint(blank2);
 			}
-		} else if(mIsHandong){
+		} else if (mIsHandong) {
 
 			if (formDetail != null && !TextUtils.isEmpty(formDetail.getQkms())) {
 				qslxEv.setText(formDetail.getQkms());
@@ -200,23 +192,116 @@ public class FormItemController implements OnClickListener {
 			} else {
 				byyjEv.setHint(blank2);
 			}
-		
+
 		}
-		if(type == R.drawable.suidaoxuncha){
+		if (type == R.drawable.suidaoxuncha) {
 			byyjEv.setText(UiUtil.formatNowTime());
 			byyjEv.setEnabled(false);
 			byyjEv.setTextColor(Color.BLACK);
 		}
-	
+
+		if (mFormBaseDetail != null) {
+			if (!TextUtils.isEmpty(mFormBaseDetail.item1)) {
+				qslxEv.setText(mFormBaseDetail.item1);
+			}
+			if (!TextUtils.isEmpty(mFormBaseDetail.item2)) {
+				qsfwEv.setText(mFormBaseDetail.item2);
+			}
+			if (!TextUtils.isEmpty(mFormBaseDetail.item1)) {
+				byyjEv.setText(mFormBaseDetail.item3);
+			}
+		}
+
+		if (type == R.drawable.suidaojiancha || type == R.drawable.qiaoliangxuncha) {
+			mFormItem.findViewById(R.id.item4_layout).setVisibility(View.VISIBLE);
+			mFormItem.findViewById(R.id.item5_layout).setVisibility(View.VISIBLE);
+			item4Ev = (EditText) mFormItem.findViewById(R.id.item4_edit);
+			item5Ev = (EditText) mFormItem.findViewById(R.id.item5_edit);
+			item4Rg = (RadioGroup) mFormItem.findViewById(R.id.item4Rg);
+			item5Ll = (LinearLayout) mFormItem.findViewById(R.id.item5_ll);
+			if (type == R.drawable.suidaojiancha) {
+				item4Ev.setVisibility(View.GONE);
+				item5Ev.setVisibility(View.GONE);
+				item4Rg.setVisibility(View.VISIBLE);
+				item5Ll.setVisibility(View.VISIBLE);
+				RadioButton rb1 = (RadioButton) item4Rg.findViewById(R.id.item4_1);
+				rb1.setChecked(true);
+				RadioButton rb2 = (RadioButton) item4Rg.findViewById(R.id.item4_2);
+				RadioButton rb3 = (RadioButton) item4Rg.findViewById(R.id.item4_3);
+				if (mFormBaseDetail != null) {
+					if (!TextUtils.isEmpty(mFormBaseDetail.item4)) {
+						if (TextUtils.equals(mFormBaseDetail.item4, "一般异常")) {
+							rb2.setChecked(true);
+						} else if (TextUtils.equals(mFormBaseDetail.item4, "严重异常")) {
+							rb3.setChecked(true);
+						}
+					}
+					CheckBox cb1 = (CheckBox) item5Ll.findViewById(R.id.item5_1);
+					CheckBox cb2 = (CheckBox) item5Ll.findViewById(R.id.item5_2);
+					CheckBox cb3 = (CheckBox) item5Ll.findViewById(R.id.item5_3);
+					if (!TextUtils.isEmpty(mFormBaseDetail.item5)) {
+						if (TextUtils.indexOf(mFormBaseDetail.item5, "跟踪检查") > 0) {
+							cb1.setChecked(true);
+						}
+						if (TextUtils.indexOf(mFormBaseDetail.item5, "维修处理") > 0) {
+							cb2.setChecked(true);
+						}
+						if (TextUtils.indexOf(mFormBaseDetail.item5, "定期或专项检测") > 0) {
+							cb3.setChecked(true);
+						}
+					}
+				}
+			} else if (type == R.drawable.qiaoliangxuncha) {
+				if (mFormBaseDetail != null) {
+					if(!TextUtils.isEmpty(mFormBaseDetail.item1)){
+						xczh.setText(mFormBaseDetail.item1);
+					}
+					if (!TextUtils.isEmpty(mFormBaseDetail.item4)) {
+						item4Ev.setText(mFormBaseDetail.item4);
+					}
+					if (!TextUtils.isEmpty(mFormBaseDetail.item5)) {
+						item5Ev.setText(mFormBaseDetail.item5);
+					}
+				}
+			}
+		}
+
 		xiangji = (ImageView) mImgVideoLayout.findViewById(R.id.xiangji);
 		imageNum = (TextView) mImgVideoLayout.findViewById(R.id.img_num);
-		imageNum.setText("0");
 		spinner = (Spinner) mImgVideoLayout.findViewById(R.id.img_spinner);
 		sxj = (ImageView) mImgVideoLayout.findViewById(R.id.video);
 		sxjNum = (TextView) mImgVideoLayout.findViewById(R.id.video_num);
+		imageNum.setText("0");
 		sxjNum.setText("0");
+		if (mFormBaseDetail != null) {
+			String picAttach = mFormBaseDetail.picAttach;
+			if (!TextUtils.isEmpty(picAttach)) {
+				String[] strs = picAttach.split(",");
+				if (strs != null) {
+					imageNum.setText(strs.length + "");
+					String[] names = mFormBaseDetail.picAttachNames.split(",");
+					if (names != null) {
+						for (int i = 0; i < names.length; i++) {
+							ImageDesc imgDesc = new ImageDesc();
+							imgDesc.name = mTitle + "-" + (i + 1);
+							imgDesc.path = names[i];
+							mImages.add(imgDesc);
+						}
+					}
+				}
+			}
+
+			String vdoAttach = mFormBaseDetail.vdoAttach;
+			if (!TextUtils.isEmpty(vdoAttach)) {
+				String[] strs = vdoAttach.split(",");
+				if (strs != null) {
+					sxjNum.setText(strs.length + "");
+				}
+			}
+
+		}
 		mAdapter = new SpinnerAdapter();
-		spinner.setAdapter(new SpinnerAdapter());
+		spinner.setAdapter(mAdapter);
 		xiangji.setOnClickListener(this);
 		sxj.setOnClickListener(this);
 	}
@@ -231,8 +316,8 @@ public class FormItemController implements OnClickListener {
 		mImgVideoLayout.setVisibility(View.VISIBLE);
 		mArrowImgView.setImageResource(R.drawable.shang);
 	}
-	
-	public void performArrowImgClick(){
+
+	public void performArrowImgClick() {
 		mArrowImgView.performClick();
 	}
 
@@ -271,10 +356,13 @@ public class FormItemController implements OnClickListener {
 			mContext.jumpToMedia(this, Constants.REQUEST_CODE_VIDEO, null);
 		}
 	}
-	
-	public SdxcFormDetail packageSxDetail(){
+
+	public SdxcFormDetail packageSxDetail() {
 		SdxcFormDetail detail = new SdxcFormDetail();
-		if(type == R.drawable.suidaoxuncha){
+		if (mFormBaseDetail != null) {
+			detail.setLocalId(mFormBaseDetail.localId);
+		}
+		if (type == R.drawable.suidaoxuncha) {
 			detail.setJcnr(mTitle);
 			detail.setQkms(qslxEv.getText().toString());
 			detail.setDealwith(qsfwEv.getText().toString());
@@ -292,84 +380,60 @@ public class FormItemController implements OnClickListener {
 			builder.append(desc.path + ",");
 		}
 		detail.setPicattachment(builder.toString());
+		detail.setPicattachmentNames(builder.toString());
 		builder = new StringBuilder();
 		for (VideoDesc desc : mVedios) {
 			builder.append(desc.path + ",");
 		}
 		detail.setVidattachment(builder.toString());
+		detail.setVidattachmentNames(builder.toString());
 		return detail;
 	}
 
 	public CheckDetail packageCheckDetail() {
 		CheckDetail detail = new CheckDetail();
+		if (mFormBaseDetail != null) {
+			detail.setLocalId(mFormBaseDetail.localId);
+		}
 		detail.setBjmc(mTitle);
-		if (!mIsHandong && (type == R.drawable.qiaoliangjiancha || type == R.drawable.qiaoliangxuncha)) {
+		if (!mIsHandong && (type == R.drawable.qiaoliangjiancha)) {
 			detail.setBlcsyj(byyjEv.getText().toString());
 			detail.setQsfw(qsfwEv.getText().toString());
 			detail.setQslx(qslxEv.getText().toString());
-		} else if(mIsHandong){
+		} else if (mIsHandong) {
 			detail.setQkms(qslxEv.getText().toString());
 			detail.setBlcsyj(qsfwEv.getText().toString());
 			detail.setRemark(byyjEv.getText().toString());
-		} else if(type == R.drawable.suidaojiancha){
+		} else if (type == R.drawable.suidaojiancha) {
 			detail.setYcwz(qslxEv.getText().toString());
 			detail.setQsnr(qsfwEv.getText().toString());
 			detail.setYcms(byyjEv.getText().toString());
-			detail.setPd(item4Spinner.getSelectedItem().toString());
-			detail.setYhcsyj(item5Spinner.getSelectedItem().toString());
+			int id = item4Rg.getCheckedRadioButtonId();
+			RadioButton rb = (RadioButton) item4Rg.findViewById(id);
+			detail.setPd(rb.getText().toString());
+			CheckBox cb1 = (CheckBox) item5Ll.findViewById(R.id.item5_1);
+			CheckBox cb2 = (CheckBox) item5Ll.findViewById(R.id.item5_2);
+			CheckBox cb3 = (CheckBox) item5Ll.findViewById(R.id.item5_3);
+			detail.setYhcsyj(
+					(cb1.isChecked() ? cb1.getText() + "," : "") + (cb2.isChecked() ? cb2.getText() + "," : "") + (cb3.isChecked() ? cb1.getText() : ""));
 			detail.setJgmc(mTitle);
 		}
 		StringBuilder builder = new StringBuilder();
 		for (ImageDesc desc : mImages) {
 			builder.append(desc.path + ",");
 		}
+		detail.setPicattachmentNames(builder.toString());
 		detail.setPicattachment(builder.toString());
 		builder = new StringBuilder();
 		for (VideoDesc desc : mVedios) {
 			builder.append(desc.path + ",");
 		}
+		detail.setVidattachmentNames(builder.toString());
 		detail.setVidattachment(builder.toString());
 		return detail;
 	}
-	
-	public View getItemView(){
+
+	public View getItemView() {
 		return mFormItem;
 	}
-	
-	
-	private class TextSpinnerAdapter extends BaseAdapter{
-		
-		private String[] array = null;
-
-		public TextSpinnerAdapter(String[] array) {
-			super();
-			this.array = array;
-		}
-
-		@Override
-		public int getCount() {
-			return array.length;
-		}
-
-		@Override
-		public String getItem(int position) {
-			return array[position];
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView view = new TextView(mContext);
-			view.setPadding(5, 0, 0, 0);
-			view.setText(getItem(position));
-			view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
-			return view;
-		}
-		
-	}
-
 }

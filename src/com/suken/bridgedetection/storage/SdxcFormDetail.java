@@ -20,10 +20,13 @@ public class SdxcFormDetail implements Serializable {
 	private String createtime;
 	@DatabaseField
 	private String creator;
-	@DatabaseField(id = true)
+	@DatabaseField
 	private String id;
 	@DatabaseField
 	private String picattachment;
+	@DatabaseField
+	private String picattachmentNames;
+	@DatabaseField
 	private String updateBy;
 	@DatabaseField
 	private String updatetime;
@@ -31,6 +34,8 @@ public class SdxcFormDetail implements Serializable {
 	private String updator;
 	@DatabaseField
 	private String vidattachment;
+	@DatabaseField
+	private String vidattachmentNames;
 	@DatabaseField
 	private long formId; 
 	@DatabaseField
@@ -45,6 +50,9 @@ public class SdxcFormDetail implements Serializable {
 	private String dx; 
 	@DatabaseField
 	private String ys; 
+	
+	@DatabaseField(generatedId = true)
+	private long localId;
 //	"qhzh": "23.23", //桥梁桩号
 //    "fx": "上行", //方向
 //    "fxbh": "暂无", //发现病害
@@ -52,8 +60,17 @@ public class SdxcFormDetail implements Serializable {
 //    "dx": "无", //尺寸大小
 //    "ys": "无", //病害原因
 
+	
 	public String getCreatetime() {
 		return createtime;
+	}
+
+	public long getLocalId() {
+		return localId;
+	}
+
+	public void setLocalId(long localId) {
+		this.localId = localId;
 	}
 
 	public String getQhzh() {
@@ -217,4 +234,21 @@ public class SdxcFormDetail implements Serializable {
 		this.jcsj = jcsj;
 	}
 
+	public String getPicattachmentNames() {
+		return picattachmentNames;
+	}
+
+	public void setPicattachmentNames(String picattachmentNames) {
+		this.picattachmentNames = picattachmentNames;
+	}
+
+	public String getVidattachmentNames() {
+		return vidattachmentNames;
+	}
+
+	public void setVidattachmentNames(String vidattachmentNames) {
+		this.vidattachmentNames = vidattachmentNames;
+	}
+	
+	
 }

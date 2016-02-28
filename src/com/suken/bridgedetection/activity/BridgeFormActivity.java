@@ -1,9 +1,11 @@
 package com.suken.bridgedetection.activity;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -103,14 +106,22 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private View mOperateLayout = null;
 	private boolean mIsHanDong = false;
 	private RadioGroup mRadioGroup = null;
-	//仅为桥梁巡查
+	// 仅为桥梁巡查
 	private EditText mDealWithEv = null;
 
 	private EditText mJcrEv = null;
 
 	private TextView mGpsTv = null;
-	
+
 	private boolean mIsGpsSuccess = false;
+
+	private Object lastEditForm = null;
+	private LastEditBaseClass lastEditBaseClass;
+
+	private long localId = -1l;
+
+	private boolean isEdit = false;
+	private Map<String, FormBaseDetail> mFormBaseDetails = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -155,20 +166,49 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		save1.setOnClickListener(this);
 		save2.setOnClickListener(this);
 		mFormContent = (LinearLayout) findViewById(R.id.form_content);
+		isEdit = getIntent().getBooleanExtra("isEdit", false);
 		bean = getIntent().getSerializableExtra("qhInfo");
 		mType = getIntent().getIntExtra("type", R.drawable.qiaoliangjiancha);
-		if(mType == R.drawable.qiaoliangxuncha){
+		mGpsTv = (TextView) findViewById(R.id.gps_text);
+		syncLocation();
+		if (mType == R.drawable.suidaojiancha) {
+			TextView fzrTv = (TextView) findViewById(R.id.fzrtv);
+			fzrTv.setText("检查人员：");
+		}
+		if (isEdit) {
+			localId = getIntent().getLongExtra("localId", -1l);
+			switch (mType) {
+			case R.drawable.qiaoliangjiancha:
+			case R.drawable.suidaojiancha: {
+				lastEditForm = new CheckFormAndDetailDao().queryByLocalId(localId);
+				break;
+			}
+			case R.drawable.suidaoxuncha:
+			case R.drawable.qiaoliangxuncha: {
+				lastEditForm = new SdxcFormAndDetailDao().queryByLocalId(localId);
+				break;
+			}
+			default:
+				break;
+			}
+			lastEditBaseClass = getBaseDataFromLastEdit();
+		}
+		mFormBaseDetails = getFormBaseDetail();
+
+		if (mType == R.drawable.qiaoliangxuncha) {
 			initQhxc();
 		} else {
 			initQhjc();
 		}
-		mGpsTv = (TextView) findViewById(R.id.gps_text);
 
+	}
+
+	private void syncLocation() {
 		LocationManager.getInstance().syncLocation(new OnLocationFinishedListener() {
 
 			@Override
 			public void onLocationFinished(LocationResult result) {
-				if(!result.isSuccess){
+				if (!result.isSuccess) {
 					mGpsTv.setText("gps定位失败");
 					mGpsTv.setTextColor(Color.RED);
 				} else {
@@ -179,14 +219,14 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 						double baseX = -1d;
 						double baseY = -1d;
 
-						if(bean instanceof QLBaseData){
+						if (bean instanceof QLBaseData) {
 							qhlx = "b";
 							baseX = ((QLBaseData) bean).getGpsX();
 							baseY = ((QLBaseData) bean).getGpsY();
 							boolean needUpdateGps = false;
 							String kjfl = ((QLBaseData) bean).getQlkjfl();
 							int kjflInt = 4;
-							if(!TextUtils.isEmpty(kjfl)){
+							if (!TextUtils.isEmpty(kjfl)) {
 								kjflInt = Integer.parseInt(kjfl);
 							}
 							double distance = 50;
@@ -207,16 +247,16 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 								break;
 							}
 
-							if(baseX <= 0 || baseY <= 0){
+							if (baseX <= 0 || baseY <= 0) {
 								needUpdateGps = true;
 							} else {
 								double distance1 = UiUtil.getDistance(baseX, baseY, result.latitude, result.longitude);
-								if(distance1 > distance){
+								if (distance1 > distance) {
 									needUpdateGps = true;
 									toast("当前误差为：" + distance1 + "千米，允许误差范围为：" + distance + "米");
 								}
 							}
-							if(needUpdateGps){
+							if (needUpdateGps) {
 								GpsData gpsData = new GpsData();
 								gpsData.setId(Long.parseLong(qhId));
 								gpsData.setQhlx(qhlx);
@@ -229,15 +269,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				}
 			}
 		});
-
-
-		if(mType == R.drawable.suidaojiancha){
-			TextView fzrTv = (TextView) findViewById(R.id.fzrtv);
-			fzrTv.setText("检查人员：");
-		}
 	}
 
-	private void initQhxc(){
+	private void initQhxc() {
 		mOperateLayout.setVisibility(View.VISIBLE);
 		mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 		mRadioGroup.setVisibility(View.VISIBLE);
@@ -245,7 +279,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		extra1Tv.setText("巡查人员：");
 		mFormTitle.setText("桥梁日常巡查记录表");
 		qlhz.setVisibility(View.GONE);
-		detailNames = new String[] { "桥涵桩号："};
+		detailNames = new String[] { "桥涵桩号：" };
 		mItemTexts = Constants.qhxcformDetailItemTexts;
 		findViewById(R.id.form_qlbh).setVisibility(View.GONE);
 		findViewById(R.id.form_lxbh).setVisibility(View.GONE);
@@ -255,12 +289,142 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		findViewById(R.id.qlxcLayout).setVisibility(View.VISIBLE);
 		mDealWithEv = (EditText) findViewById(R.id.dealwithEv);
 		mJcrEv = (EditText) findViewById(R.id.jiancharenEv);
+		if (isEdit && lastEditBaseClass != null) {
+			extra1Ev.setText(lastEditBaseClass.xcry);
+			mDealWithEv.setText(lastEditBaseClass.dealwith);
+			mJcrEv.setText(lastEditBaseClass.jcr);
+			weatherEv.setText(lastEditBaseClass.weather);
+			if (TextUtils.equals("b", lastEditBaseClass.qhlx)) {
+				RadioButton rb = (RadioButton) findViewById(R.id.radioql);
+				rb.setChecked(true);
+			} else {
+				RadioButton rb = (RadioButton) findViewById(R.id.radiohd);
+				rb.setChecked(true);
+			}
+		}
+
+		if (mFormBaseDetails != null) {
+			for (int i = 0; i < mFormBaseDetails.size(); i++) {
+				generateController(i, null, mIsHanDong);
+			}
+		}
 
 	}
 
-	private void initQhjc(){
-		formData = (CheckFormData) getIntent().getSerializableExtra("formData");
-		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId("10000001160070");
+	private class LastEditBaseClass {
+		String fzr;
+		String jlr;
+		String prepddj;
+		String pddj;
+		String sdfx;
+		String weather;
+		String qhlx;
+		String xcry;
+		String dealwith;
+		String jcr;
+
+	}
+
+	private LastEditBaseClass getBaseDataFromLastEdit() {
+		LastEditBaseClass data = new LastEditBaseClass();
+		if (lastEditForm != null) {
+			if (lastEditForm instanceof CheckFormData) {
+				data.fzr = ((CheckFormData) lastEditForm).getFzry();
+				data.jlr = ((CheckFormData) lastEditForm).getJlry();
+				data.prepddj = ((CheckFormData) lastEditForm).getPrePddj();
+				data.pddj = ((CheckFormData) lastEditForm).getPddj();
+				data.sdfx = ((CheckFormData) lastEditForm).getSdfx();
+				data.weather = ((CheckFormData) lastEditForm).getWeather();
+			} else if (lastEditForm instanceof SdxcFormData) {
+				data.fzr = ((SdxcFormData) lastEditForm).getFzry();
+				data.jlr = ((SdxcFormData) lastEditForm).getJlry();
+				data.qhlx = ((SdxcFormData) lastEditForm).getQhlx();
+				data.xcry = ((SdxcFormData) lastEditForm).getXcry();
+				data.dealwith = ((SdxcFormData) lastEditForm).getDealwith();
+				data.jcr = ((SdxcFormData) lastEditForm).getJcry();
+				data.weather = ((SdxcFormData) lastEditForm).getWeather();
+			}
+			return data;
+		}
+		return null;
+	}
+
+	public class FormBaseDetail {
+		public String picAttach = null;
+		public String vdoAttach = null;
+		public String picAttachNames = null;
+		public String vdoAttachNames = null;
+		public String item1;
+		public String item2;
+		public String item3;
+		public String item4;
+		public String item5;
+		public String item6;
+		public String title;
+		public long localId;
+	}
+
+	private Map<String, FormBaseDetail> getFormBaseDetail() {
+		Map<String, FormBaseDetail> maps = new HashMap<String, BridgeFormActivity.FormBaseDetail>();
+		if (isEdit && lastEditForm != null) {
+			if (lastEditForm instanceof CheckFormData) {
+				List<CheckDetail> details = ((CheckFormData) lastEditForm).getOftenCheckDetailList();
+				for (CheckDetail detail : details) {
+					FormBaseDetail baseDetail = new FormBaseDetail();
+					baseDetail.picAttach = detail.getPicattachment();
+					baseDetail.vdoAttach = detail.getVidattachment();
+					baseDetail.picAttachNames = detail.getPicattachmentNames();
+					baseDetail.vdoAttachNames = detail.getVidattachmentNames();
+					baseDetail.localId = detail.getLocalId();
+					if (mType == R.drawable.qiaoliangjiancha) {
+						baseDetail.title = detail.getBjmc();
+						baseDetail.item1 = detail.getQslx();
+						baseDetail.item2 = detail.getQsfw();
+						baseDetail.item3 = detail.getBlcsyj();
+					} else if (mType == R.drawable.suidaojiancha) {
+						baseDetail.title = detail.getJgmc();
+						baseDetail.item1 = detail.getYcwz();
+						baseDetail.item2 = detail.getQsnr();
+						baseDetail.item3 = detail.getYcms();
+						baseDetail.item4 = detail.getPd();
+						baseDetail.item5 = detail.getBlcsyj();
+					}
+					maps.put(baseDetail.title, baseDetail);
+
+				}
+				return maps;
+			} else if (lastEditForm instanceof SdxcFormData) {
+				List<SdxcFormDetail> details = ((SdxcFormData) lastEditForm).getInspectLogDetailList();
+				for (SdxcFormDetail detail : details) {
+					FormBaseDetail baseDetail = new FormBaseDetail();
+					baseDetail.picAttach = detail.getPicattachment();
+					baseDetail.vdoAttach = detail.getCreatetime();
+					baseDetail.localId = detail.getLocalId();
+					if (mType == R.drawable.suidaoxuncha) {
+						baseDetail.title = detail.getJcnr();
+						baseDetail.item1 = detail.getQkms();
+						baseDetail.item2 = detail.getDealwith();
+						baseDetail.item3 = detail.getJcsj();
+					} else if (mType == R.drawable.qiaoliangxuncha) {
+						baseDetail.item1 = detail.getQhzh();
+						baseDetail.item2 = detail.getFx();
+						baseDetail.item3 = detail.getFxbh();
+						baseDetail.item4 = detail.getShwz();
+						baseDetail.item5 = detail.getDx();
+						baseDetail.item6 = detail.getYs();
+					}
+					maps.put(baseDetail.title, baseDetail);
+				}
+				return maps;
+			}
+		}
+		return null;
+	}
+
+	private void initQhjc() {
+		if (!isEdit) {
+			formData = (CheckFormData) getIntent().getSerializableExtra("formData");
+		}
 		if (bean instanceof QLBaseData) {
 			if (mType == R.drawable.qiaoliangjiancha) {
 				mFormTitle.setText("桥梁经常检查记录表");
@@ -332,18 +496,25 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			if (sdyhzrInfo != null) {
 				fzr.setText(sdyhzrInfo.getYhgcs());
 			}
+		}
+
+		if (mType != R.drawable.qiaoliangjiancha) {
 			findViewById(R.id.pddj_layout).setVisibility(View.GONE);
 		}
 		jlr.setText(BridgeDetectionApplication.mCurrentUser.getUserName());
+		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId("10000001160070");
 		lastPddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
 		pddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
 		Map<String, CheckDetail> mLastFormDetails = new HashMap<String, CheckDetail>();
 		if (formData != null) {
 			if (mType == R.drawable.qiaoliangjiancha) {
 				for (YWDictionaryInfo info : dinfos) {
-					if (TextUtils.equals(info.getType() + "", formData.getPrePddj())) {
+					if (!TextUtils.isEmpty(formData.getPrePddj()) && TextUtils.equals(info.getItemValue() + "", formData.getPrePddj())) {
 						int index = dinfos.indexOf(info);
 						lastPddj.setSelection(index);
+					}
+					if (!TextUtils.isEmpty(formData.getPddj()) && TextUtils.equals(info.getItemValue() + "", formData.getPddj())) {
+						int index = dinfos.indexOf(info);
 						pddj.setSelection(index);
 					}
 				}
@@ -352,6 +523,33 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				for (CheckDetail cd : formData.getOftenCheckDetailList()) {
 					mLastFormDetails.put(cd.getBjmc(), cd);
 				}
+			}
+		}
+
+		if (isEdit && lastEditBaseClass != null) {
+			if (!TextUtils.isEmpty(lastEditBaseClass.fzr)) {
+				fzr.setText(lastEditBaseClass.fzr);
+			}
+			if (!TextUtils.isEmpty(lastEditBaseClass.jlr)) {
+				jlr.setText(lastEditBaseClass.jlr);
+			}
+			if (mType == R.drawable.suidaojiancha) {
+				extra1Ev.setText(lastEditBaseClass.sdfx);
+				weatherEv.setText(lastEditBaseClass.weather);
+			} else {
+				if (mType == R.drawable.qiaoliangjiancha) {
+					for (YWDictionaryInfo info : dinfos) {
+						if (!TextUtils.isEmpty(lastEditBaseClass.prepddj) && TextUtils.equals(info.getItemValue() + "", lastEditBaseClass.prepddj)) {
+							int index = dinfos.indexOf(info);
+							lastPddj.setSelection(index);
+						}
+						if (!TextUtils.isEmpty(lastEditBaseClass.pddj) && TextUtils.equals(info.getItemValue() + "", lastEditBaseClass.pddj)) {
+							int index = dinfos.indexOf(info);
+							pddj.setSelection(index);
+						}
+					}
+				}
+
 			}
 		}
 
@@ -379,17 +577,26 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			}
 		}
 		CheckDetail cd = null;
-		if (mLastFormDetails != null) {
-			cd = mLastFormDetails.get(detailNames[index]);
+		FormBaseDetail fbd = null;
+		if (isEdit && mFormBaseDetails != null) {
+			if (mType == R.drawable.qiaoliangxuncha) {
+				fbd = (FormBaseDetail) (mFormBaseDetails.values().toArray())[index];
+			} else {
+				fbd = mFormBaseDetails.get(detailNames[index]);
+			}
+		} else {
+			if (mLastFormDetails != null) {
+				cd = mLastFormDetails.get(detailNames[index]);
+			}
 		}
 		String detailName = "";
-		if(mType == R.drawable.qiaoliangxuncha){
+		if (mType == R.drawable.qiaoliangxuncha) {
 			detailName = detailNames[0];
 		} else {
 			detailName = detailNames[index];
 		}
-		FormItemController con = new FormItemController(this, view, this, detailName, mType, detailValues != null ? detailValues[index] : "",
-				mItemTexts, cd, et1blanks != null ? et1blanks[index] : "", blank2, qhId, mIsHanDong);
+		FormItemController con = new FormItemController(this, view, this, detailName, mType, detailValues != null ? detailValues[index] : "", mItemTexts, cd,
+				et1blanks != null ? et1blanks[index] : "", blank2, qhId, mIsHanDong, fbd);
 		if (index == 0) {
 			con.show();
 		} else {
@@ -402,15 +609,15 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	@Override
 	public void onClick(View view) {
 		if (view.getId() == R.id.save1 || view.getId() == R.id.save2) {
-			if(mIsGpsSuccess){
+			if (mIsGpsSuccess) {
 				saveToLocal();
 				toast("Gps定位成功，保存成功！");
 			} else {
 				LocationManager.getInstance().syncLocation(new OnLocationFinishedListener() {
-					
+
 					@Override
 					public void onLocationFinished(LocationResult result) {
-						if(result.isSuccess){
+						if (result.isSuccess) {
 							saveToLocal();
 							toast("Gps定位成功，保存成功！");
 						} else {
@@ -433,8 +640,12 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	}
 
 	private void saveToLocal() {
+		long savedId = -1l;
 		if (mType == R.drawable.suidaoxuncha || mType == R.drawable.qiaoliangxuncha) {
 			SdxcFormData data = new SdxcFormData();
+			if (isEdit) {
+				data.setLocalId(localId);
+			}
 			if (bean instanceof SDBaseData) {
 				data.setGldwId(((SDBaseData) bean).getGydwId());
 				data.setGldwName(((SDBaseData) bean).getGydwName());
@@ -467,7 +678,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			data.setStatus(Constants.STATUS_UPDATE);
 			data.setCreator(BridgeDetectionApplication.mCurrentUser.getUserName());
 			SdxcFormAndDetailDao dao = new SdxcFormAndDetailDao();
-			if(mType == R.drawable.suidaoxuncha){
+			if (mType == R.drawable.suidaoxuncha && !isEdit) {
 				dao.deleteByQhId(qhId, mType);
 			}
 			dao.create(data);
@@ -477,14 +688,18 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				detail.setFormId(data.getLocalId());
 				dao.create(detail);
 			}
-			if(mType == R.drawable.qiaoliangxuncha){
+			if (mType == R.drawable.qiaoliangxuncha) {
 				Intent intent = new Intent();
 				intent.putExtra("id", data.getLocalId());
-				setResult(2, intent);
+				savedId = data.getLocalId();
+				setResult(isEdit ? 2 : 1, intent);
 				finish();
 			}
 		} else {
 			CheckFormData data = new CheckFormData();
+			if (isEdit) {
+				data.setLocalId(localId);
+			}
 			if (mType == R.drawable.qiaoliangjiancha) {
 				if (bean instanceof QLBaseData) {
 					data.setGldwId(((QLBaseData) bean).getGydwId());
@@ -535,8 +750,11 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			data.setJcsj(UiUtil.formatNowTime());
 			data.setCreator(BridgeDetectionApplication.mCurrentUser.getUserName());
 			CheckFormAndDetailDao dao = new CheckFormAndDetailDao();
-			dao.deleteByQhId(qhId, mType);
+			if (!isEdit) {
+				dao.deleteByQhId(qhId, mType);
+			}
 			dao.create(data);
+			savedId = data.getLocalId();
 			for (int i = 0; i < mDetailMaps.size(); i++) {
 				FormItemController con = mDetailMaps.get(i);
 				CheckDetail detail = con.packageCheckDetail();
@@ -544,9 +762,10 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				dao.create(detail);
 			}
 		}
-		if(mType != R.drawable.qiaoliangxuncha){
+		if (mType != R.drawable.qiaoliangxuncha) {
 			Intent intent = new Intent();
 			intent.putExtra("id", qhId);
+			intent.putExtra("localId", savedId);
 			setResult(1, intent);
 			finish();
 		}
@@ -595,7 +814,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		File f = null;
 		try {
 			f = new File(new URI(mOutPutFileUri.toString()));
-			if(!f.exists()){
+			if (!f.exists()) {
 				return;
 			}
 		} catch (URISyntaxException e) {
@@ -637,37 +856,37 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		} else if (view.getId() == R.id.operateDelete) {
 			FormItemController controller = mDetailMaps.remove(mDetailMaps.size() - 1);
 			mFormContent.removeView(controller.getItemView());
-			if(mDetailMaps.size() == 0){
+			if (mDetailMaps.size() == 0) {
 				findViewById(R.id.operateDelete).setEnabled(false);
 			} else {
 				mDetailMaps.get(mDetailMaps.size() - 1).performArrowImgClick();
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		
-		if(keyCode == KeyEvent.KEYCODE_BACK){
+
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			back(null);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
-	public void back(View view){
+
+	public void back(View view) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("提醒");
 		builder.setMessage("返回将丢失当前未保存信息");
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-			
+
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				finish();
 			}
 		});
 		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-			
+
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();

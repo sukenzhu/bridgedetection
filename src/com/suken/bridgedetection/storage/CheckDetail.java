@@ -39,6 +39,8 @@ public class CheckDetail implements Serializable {
 	@DatabaseField
 	private String picattachment;
 	@DatabaseField
+	private String picattachmentNames;
+	@DatabaseField
 	private String qhId;
 	@DatabaseField
 	private String qkms;
@@ -66,6 +68,8 @@ public class CheckDetail implements Serializable {
 	private String versionno;
 	@DatabaseField
 	private String vidattachment;
+	@DatabaseField
+	private String vidattachmentNames;
 	@DatabaseField
 	private long formId;
 
@@ -337,6 +341,23 @@ public class CheckDetail implements Serializable {
 
 	public void setLocalId(long localId) {
 		this.localId = localId;
+	}
+	
+
+	public String getPicattachmentNames() {
+		return picattachmentNames;
+	}
+
+	public void setPicattachmentNames(String picattachmentNames) {
+		this.picattachmentNames = picattachmentNames;
+	}
+
+	public String getVidattachmentNames() {
+		return vidattachmentNames;
+	}
+
+	public void setVidattachmentNames(String vidattachmentNames) {
+		this.vidattachmentNames = vidattachmentNames;
 	}
 
 	@Override

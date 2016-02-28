@@ -114,11 +114,12 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		bean.status = Constants.STATUS_CHECK;
 		boolean has1 = false;
 		boolean has2 = false;
-		if(mType != R.drawable.suidaoxuncha){
+		if (mType != R.drawable.suidaoxuncha) {
 			List<CheckFormData> savedFormDatas = mFormDao.queryByQHId(bean.id, type);
 			if (savedFormDatas != null && savedFormDatas.size() > 0) {
 				for (CheckFormData cfd : savedFormDatas) {
 					if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_UPDATE)) {
+						bean.lastEditLocalId = cfd.getLocalId();
 						has1 = true;
 						break;
 					} else if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_AGAIN)) {
@@ -132,13 +133,14 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 				for (SdxcFormData cfd : savedFormDatas) {
 					if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_UPDATE)) {
 						has1 = true;
+						bean.lastEditLocalId = cfd.getLocalId();
 						break;
 					} else if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_AGAIN)) {
 						has2 = true;
 					}
 				}
 			}
-			
+
 		}
 		if (has1) {
 			bean.status = Constants.STATUS_UPDATE;
@@ -180,14 +182,15 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 					bean.qhzh = bd.getJcsj();
 					bean.type = mType;
 					bean.status = bd.getStatus();
-					if(!TextUtils.equals(bd.getQhlx(), "b")){
+					bean.lastEditLocalId = bd.getLocalId();
+					if (!TextUtils.equals(bd.getQhlx(), "b")) {
 						hdData.add(bean);
-						if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
-							mHdCurrentNum ++;
+						if (TextUtils.equals(bean.status, Constants.STATUS_UPDATE)) {
+							mHdCurrentNum++;
 						}
 					} else {
-						if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
-							mCurrentNum ++;
+						if (TextUtils.equals(bean.status, Constants.STATUS_UPDATE)) {
+							mCurrentNum++;
 						}
 						data.add(bean);
 					}
@@ -268,7 +271,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		LocationManager.getInstance().syncLocation(this);
 		syncBtn = (ImageView) findViewById(R.id.tongbu_btn);
 		syncBtn.setOnClickListener(this);
-		if(mType == R.drawable.qiaoliangxuncha){
+		if (mType == R.drawable.qiaoliangxuncha) {
 			syncBtn.setImageResource(R.drawable.jiahao);
 		}
 		mList.setAdapter(new ListPageAdapter(this, data, mType));
@@ -310,7 +313,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == syncBtn.getId()) {
-			if(mType == R.drawable.qiaoliangxuncha){
+			if (mType == R.drawable.qiaoliangxuncha) {
 				Intent intent = new Intent(this, BridgeFormActivity.class);
 				intent.putExtra("type", mType);
 				startActivityForResult(intent, 2);
@@ -344,62 +347,88 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		super.onActivityResult(arg0, arg1, arg2);
 		if (arg0 == 1 && arg2 != null) {
 			String id = arg2.getStringExtra("id");
-			updateStatus(id, Constants.STATUS_UPDATE);
-		} else if(arg0 == 2 && arg2 != null){
+			long localId = arg2.getLongExtra("localId", -1l);
+			updateStatus(id, localId, Constants.STATUS_UPDATE);
+		} else if (arg0 == 2 && arg2 != null) {
 			long id = arg2.getLongExtra("id", -1);
-			if(id != -1){
+			if (id != -1) {
 				SdxcFormData bd = new SdxcFormAndDetailDao().queryByLocalId(id);
-				if(bd == null){
+				if (bd == null) {
 					return;
 				}
-				ListBean bean = new ListBean();
-				bean.id = bd.getLocalId() + "";
-				bean.lxmc = bd.getJcry();
-				bean.lxbm = bd.getGydwName();
-				bean.qhbs = bd.getWeather();
-				bean.qhmc = bd.getXcry();
-				bean.qhzh = bd.getJcsj();
-				bean.type = mType;
-				bean.status = bd.getStatus();
-				
-				if(!TextUtils.equals(bd.getQhlx(), "b")){
-					if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
-						ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
-						adapter.addData(bean);
-						mHdCurrentNum ++;
-						mHdListTitleText.setText(" 涵洞(" + mHdCurrentNum + "/" + adapter.getCount() + ")");
-						
+				if (arg1 == 2) {
+					ListPageAdapter adapter = null;
+					if (mList.getVisibility() == View.VISIBLE) {
+						adapter = (ListPageAdapter) mList.getAdapter();
+					} else if (mHdList.getVisibility() == View.VISIBLE) {
+						adapter = (ListPageAdapter) mHdList.getAdapter();
+					}
+					List<ListBean> list = adapter.getSourceData();
+					for(ListBean bean : list){
+						if(bean.id.equals(bd.getLocalId() + "")){
+							bean.id = bd.getLocalId() + "";
+							bean.lxmc = bd.getJcry();
+							bean.lxbm = bd.getGydwName();
+							bean.qhbs = bd.getWeather();
+							bean.qhmc = bd.getXcry();
+							bean.qhzh = bd.getJcsj();
+							bean.type = mType;
+							bean.status = bd.getStatus();
+							bean.lastEditLocalId = id;
+							adapter.notifyDataSetChanged();
+						}
 					}
 				} else {
-					if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
-						ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
-						adapter.addData(bean);
-						mCurrentNum ++;
-						mQlListTitleText.setText(" 桥梁(" + mCurrentNum + "/" + adapter.getCount() + ")");
+					ListBean bean = new ListBean();
+					bean.id = bd.getLocalId() + "";
+					bean.lxmc = bd.getJcry();
+					bean.lxbm = bd.getGydwName();
+					bean.qhbs = bd.getWeather();
+					bean.qhmc = bd.getXcry();
+					bean.qhzh = bd.getJcsj();
+					bean.type = mType;
+					bean.status = bd.getStatus();
+					bean.lastEditLocalId = id;
+
+					if (!TextUtils.equals(bd.getQhlx(), "b")) {
+						if (TextUtils.equals(bean.status, Constants.STATUS_UPDATE)) {
+							ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
+							adapter.addData(bean);
+							mHdCurrentNum++;
+							mHdListTitleText.setText(" 涵洞(" + mHdCurrentNum + "/" + adapter.getCount() + ")");
+
+						}
+					} else {
+						if (TextUtils.equals(bean.status, Constants.STATUS_UPDATE)) {
+							ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
+							adapter.addData(bean);
+							mCurrentNum++;
+							mQlListTitleText.setText(" 桥梁(" + mCurrentNum + "/" + adapter.getCount() + ")");
+						}
 					}
 				}
-			
+
 			}
-		} else if(arg0 == 3){
+		} else if (arg0 == 3) {
 			init(true);
 		}
 	}
 
-	public void updateStatus(String id, String status) {
+	public void updateStatus(String id, long localId, String status) {
 		if (mList.getVisibility() == View.VISIBLE) {
 			ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
-			adapter.updateStatus(id, status);
+			adapter.updateStatus(id, localId, status);
 			mQlListTitleText.setText(" 桥梁(" + (mCurrentNum + 1) + "/" + adapter.getCount() + ")");
 		} else if (mHdList.getVisibility() == View.VISIBLE) {
 			ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
-			adapter.updateStatus(id, status);
+			adapter.updateStatus(id, localId, status);
 			mHdListTitleText.setText(" 涵洞(" + (mHdCurrentNum + 1) + "/" + adapter.getCount() + ")");
 		}
 	}
 
 	private void updateAll() {
 		Intent intent = new Intent(this, UpdateAllActivity.class);
-		String[] array = new String[]{};
+		String[] array = new String[] {};
 		if (mList.getVisibility() == View.VISIBLE) {
 			ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
 			List<ListBean> data = adapter.getSourceData();
@@ -409,7 +438,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			}
 		}
 
-		String[] hdArray = new String[]{};
+		String[] hdArray = new String[] {};
 		if (mType == R.drawable.qiaoliangjiancha) {
 			ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
 			List<ListBean> data = adapter.getSourceData();

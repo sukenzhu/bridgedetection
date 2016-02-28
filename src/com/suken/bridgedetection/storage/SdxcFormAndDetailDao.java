@@ -12,7 +12,7 @@ import com.suken.bridgedetection.R;
 
 public class SdxcFormAndDetailDao {
 
-	private Dao<SdxcFormData, String> mFormDao = null;
+	private Dao<SdxcFormData, Long> mFormDao = null;
 	private Dao<SdxcFormDetail, String> mDetailDao = null;
 
 	public SdxcFormAndDetailDao() {
@@ -66,7 +66,7 @@ public class SdxcFormAndDetailDao {
 		try {
 			List<SdxcFormData> datas = mFormDao.queryForEq("type", type);
 			for (SdxcFormData data : datas) {
-				data.setInspectLogDetailList(queryByFormId(data.getLocalId(), type));
+				data.setInspectLogDetailList(queryByFormId(data.getLocalId()));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -75,7 +75,7 @@ public class SdxcFormAndDetailDao {
 		return null;
 	}
 
-	public List<SdxcFormDetail> queryByFormId(long id, int type) {
+	public List<SdxcFormDetail> queryByFormId(long id) {
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("formId", id);
@@ -91,7 +91,7 @@ public class SdxcFormAndDetailDao {
 		try {
 			List<SdxcFormData> datas = mFormDao.queryForAll();
 			for (SdxcFormData data : datas) {
-				data.setInspectLogDetailList(queryByFormId(data.getLocalId(), type));
+				data.setInspectLogDetailList(queryByFormId(data.getLocalId()));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -104,7 +104,7 @@ public class SdxcFormAndDetailDao {
 		try {
 			List<SdxcFormData> datas = mFormDao.queryForEq("sdid", id);
 			for (SdxcFormData data : datas) {
-				data.setInspectLogDetailList(queryByFormId(data.getLocalId(), type));
+				data.setInspectLogDetailList(queryByFormId(data.getLocalId()));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -126,7 +126,7 @@ public class SdxcFormAndDetailDao {
 			List<SdxcFormData> datas = mFormDao.queryForFieldValues(map);
 			if (datas != null && datas.size() > 0) {
 				SdxcFormData data = datas.get(0);
-				data.setInspectLogDetailList(queryByFormId(data.getLocalId(), type));
+				data.setInspectLogDetailList(queryByFormId(data.getLocalId()));
 				return data;
 			}
 		} catch (SQLException e) {
@@ -178,10 +178,9 @@ public class SdxcFormAndDetailDao {
 	
 	public SdxcFormData queryByLocalId(long localId){
 		try {
-			List<SdxcFormData> list = mFormDao.queryForEq("localId", localId);
-			if(list != null && list.size() > 0){
-				return list.get(0);
-			}
+			SdxcFormData data = mFormDao.queryForId(localId);
+			data.setInspectLogDetailList(queryByFormId(localId));
+			return data;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -12,8 +12,8 @@ import com.suken.bridgedetection.R;
 
 public class CheckFormAndDetailDao {
 
-	private Dao<CheckFormData, String> mFormDao = null;
-	private Dao<CheckDetail, String> mDetailDao = null;
+	private Dao<CheckFormData, Long> mFormDao = null;
+	private Dao<CheckDetail, Long> mDetailDao = null;
 
 	public CheckFormAndDetailDao() {
 		try {
@@ -62,7 +62,7 @@ public class CheckFormAndDetailDao {
 
 	}
 
-	public List<CheckDetail> queryByFormId(long id, int type) {
+	public List<CheckDetail> queryByFormId(long id) {
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("formId", id);
@@ -85,7 +85,7 @@ public class CheckFormAndDetailDao {
 			map.put("lastUpdate", false);
 			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);
 			for (CheckFormData data : datas) {
-				data.setOftenCheckDetailList(queryByFormId(data.getLocalId(), type));
+				data.setOftenCheckDetailList(queryByFormId(data.getLocalId()));
 			}
 			return datas;
 		} catch (SQLException e) {
@@ -93,6 +93,32 @@ public class CheckFormAndDetailDao {
 		}
 		return null;
 	}
+	
+	
+	
+	public CheckFormData queryByQHIdAndType(String id, int type) {
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(type == R.drawable.suidaojiancha){
+				map.put("sdid", id);
+			} else {
+				map.put("qhid", id);
+			}
+			map.put("type", type);
+			map.put("lastUpdate", false);
+			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);
+			if (datas != null && datas.size() > 0) {
+				CheckFormData data = datas.get(0);
+				data.setOftenCheckDetailList(queryByFormId(data.getLocalId()));
+				return data;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 
 	public CheckFormData queryByQHIdAndStatus(String id, String status, int type) {
 		try {
@@ -108,7 +134,7 @@ public class CheckFormAndDetailDao {
 			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);
 			if (datas != null && datas.size() > 0) {
 				CheckFormData data = datas.get(0);
-				data.setOftenCheckDetailList(queryByFormId(data.getLocalId(), type));
+				data.setOftenCheckDetailList(queryByFormId(data.getLocalId()));
 				return data;
 			}
 		} catch (SQLException e) {
@@ -187,6 +213,19 @@ public class CheckFormAndDetailDao {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	
+	public CheckFormData queryByLocalId(long localId){
+		CheckFormData formData;
+		try {
+			formData = mFormDao.queryForId(localId);
+			formData.setOftenCheckDetailList(queryByFormId(formData.getLocalId()));
+			return formData;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

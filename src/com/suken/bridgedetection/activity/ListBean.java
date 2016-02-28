@@ -16,5 +16,6 @@ public class ListBean {
 	
 	public Object realBean;
 	public CheckFormData mLastFormData;
+	public long lastEditLocalId = -1l;
 
 }

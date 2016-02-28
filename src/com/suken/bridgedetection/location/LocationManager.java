@@ -201,7 +201,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 				sb.append("\ndescribe : ");
 				sb.append("离线定位成功，离线定位结果也是有效的");
 				result.message = "离线定位成功，离线定位结果也是有效的";
-				result.isSuccess = false;
+				result.isSuccess = true;
 			} else if (location.getLocType() == BDLocation.TypeServerError) {
 				sb.append("\ndescribe : ");
 				sb.append("服务端网络定位失败，可以反馈IMEI号和大体定位时间到loc-bugs@baidu.com，会有人追查原因");

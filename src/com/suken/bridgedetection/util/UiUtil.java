@@ -24,12 +24,14 @@ import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.RequestType;
 import com.suken.bridgedetection.activity.BaseActivity;
 import com.suken.bridgedetection.activity.BridgeDetectionListActivity;
+import com.suken.bridgedetection.activity.HomePageActivity;
 import com.suken.bridgedetection.http.HttpTask;
 import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
 import com.suken.bridgedetection.storage.CheckDetail;
 import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
 import com.suken.bridgedetection.storage.CheckFormData;
 import com.suken.bridgedetection.storage.FileDesc;
+import com.suken.bridgedetection.storage.FileDescDao;
 import com.suken.bridgedetection.storage.GXLuXianInfo;
 import com.suken.bridgedetection.storage.GXLuXianInfoDao;
 import com.suken.bridgedetection.storage.GpsData;
@@ -53,7 +55,18 @@ import com.suken.bridgedetection.storage.YWDictionaryInfo;
 import com.suken.bridgedetection.util.NetWorkUtil.ConnectType;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -317,11 +330,11 @@ public class UiUtil {
 					StringBuilder sb = new StringBuilder();
 					for (String s : pics) {
 						if (!TextUtils.isEmpty(s)) {
-							sb.append(files.get(i).fileId);
+							sb.append(files.get(i).fileId + ",");
 							i++;
 						}
 					}
-					strs[0] = sb.toString();
+					strs[0] = sb.toString().substring(0, sb.length() - 1);
 				}
 				String[] vdos = new String[] {};
 				if (!TextUtils.isEmpty(vidattach)) {
@@ -329,15 +342,13 @@ public class UiUtil {
 					StringBuilder sb = new StringBuilder();
 					for (String s : vdos) {
 						if (!TextUtils.isEmpty(s)) {
-							if (!TextUtils.isEmpty(s)) {
-								sb.append(files.get(i).fileId);
-								i++;
-							}
+							sb.append(files.get(i).fileId + ",");
+							i++;
 						}
 					}
-					strs[1] = sb.toString();
+					strs[1] = sb.toString().substring(0, sb.length() - 1);
 				}
-
+				new FileDescDao().create(files);
 			}
 
 			@Override
@@ -385,7 +396,7 @@ public class UiUtil {
 								if (type == R.drawable.suidaoxuncha) {
 									dataId = data.getSdid();
 								}
-								((BridgeDetectionListActivity) activity).updateStatus(dataId, Constants.STATUS_AGAIN);
+								((BridgeDetectionListActivity) activity).updateStatus(dataId, data.getLocalId(), Constants.STATUS_AGAIN);
 							}
 						}
 					});
@@ -426,7 +437,7 @@ public class UiUtil {
 									if (type == R.drawable.suidaojiancha) {
 										dataId = data.getSdid();
 									}
-									((BridgeDetectionListActivity) activity).updateStatus(dataId, Constants.STATUS_AGAIN);
+									((BridgeDetectionListActivity) activity).updateStatus(dataId, data.getLocalId(), Constants.STATUS_AGAIN);
 								}
 							}
 						});
@@ -504,8 +515,97 @@ public class UiUtil {
 		} catch (IOException e) {
 			throw e;
 		}
-
 		return re;
+	}
+	
+	private static void todownload(final String url, final BaseActivity activity) {
+		activity.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+				OnClickListener listener = new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if (which == Dialog.BUTTON_POSITIVE) {
+							// 下载
+							final DownloadManager downloadManager = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
+							DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+							request.setDestinationInExternalPublicDir("bridgedetection",  "bridgedetection.apk");
+							final long downloadId = downloadManager.enqueue(request);
+							IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+							BroadcastReceiver receiver = new BroadcastReceiver() {
+								@Override
+								public void onReceive(Context context, Intent intent) {
+									long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+									if (downloadId == reference) {
+										Uri uri = downloadManager.getUriForDownloadedFile(downloadId);
+										Intent a = new Intent();
+										a.setAction(Intent.ACTION_VIEW);
+										a.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+										a.setDataAndType(uri, "application/vnd.android.package-archive");
+										activity.startActivity(a);
+									}
+								}
+							};
+							activity.registerReceiver(receiver, filter);
+						} else {
+							dialog.dismiss();
+							if(activity instanceof HomePageActivity){
+								((HomePageActivity) activity).selectHome();
+							}
+						}
+					}
+				};
+				builder.setTitle("更新").setMessage("检测到新版本，是否更新？").setPositiveButton("确定", listener).setNegativeButton("取消", listener).show();
+			}
+		});
+
+	}
+	
+	
+	public static  void update(final BaseActivity activity) {
+		BackgroundExecutor.execute(new Runnable() {
+
+			@Override
+			public void run() {
+				OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
+					
+					@Override
+					public void onRequestSuccess(RequestType type, JSONObject result) {
+
+						int versioncode = result.getInteger("versioncode");
+						final String url = result.getString("apkurl");
+						try {
+							PackageInfo info = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+							if (versioncode > info.versionCode) {
+								todownload(url, activity);
+							} else {
+								activity.toast("当前版本为最新版本，无需更新");
+							}
+						} catch (NameNotFoundException e) {
+							e.printStackTrace();
+						}
+					}
+					
+					@Override
+					public void onRequestFail(RequestType type, String resultCode, String result) {
+						
+					}
+				};
+				activity.showLoading("检查更新中...");
+				List<NameValuePair> list = new ArrayList<NameValuePair>();
+				if(BridgeDetectionApplication.mCurrentUser != null){
+					BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
+					list.add(pair);
+					pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
+					list.add(pair);
+				}
+				new HttpTask(listener, RequestType.update).executePost(list);
+				activity.dismissLoading();
+			}
+		});
 	}
 
 }

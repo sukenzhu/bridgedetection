@@ -21,8 +21,8 @@
             <TextView
                 android:id="@+id/form_column"
                 android:layout_width="100dp"
-                android:gravity="right"
                 android:layout_height="match_parent"
+                android:gravity="right"
                 android:text="桥梁桩号："
                 android:textSize="10dp" />
 
@@ -232,12 +232,35 @@
                 android:gravity="top"
                 android:padding="5dp"
                 android:textSize="9dp" />
-            
-            <Spinner
-                android:id="@+id/item4_spinner"
-                android:visibility="gone"
+
+            <RadioGroup
+                android:id="@+id/item4Rg"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone" >
+
+                <RadioButton
+                    android:id="@+id/item4_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="正常"
+                    android:textSize="10dp" />
+
+                <RadioButton
+                    android:id="@+id/item4_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="一般异常"
+                    android:textSize="10dp" />
+
+                <RadioButton
+                    android:id="@+id/item4_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="严重异常"
+                    android:textSize="10dp" />
+            </RadioGroup>
 
             <ImageView
                 android:id="@+id/item4_menu"
@@ -274,11 +297,34 @@
                 android:padding="5dp"
                 android:textSize="9dp" />
 
-            <Spinner
-                android:id="@+id/item5_spinner"
+            <LinearLayout
+                android:id="@+id/item5_ll"
                 android:visibility="gone"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/item5_1"
+                    android:textSize="10dp"
+                    android:text="跟踪检查"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/item5_2"
+                    android:textSize="10dp"
+                    android:text="维修处理"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                
+                <CheckBox
+                    android:id="@+id/item5_3"
+                    android:textSize="10dp"
+                    android:text="定期或专项检测"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/item5_menu"

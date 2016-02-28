@@ -10,11 +10,14 @@ import com.suken.bridgedetection.storage.QLBaseData;
 import com.suken.bridgedetection.storage.SDBaseData;
 import com.suken.bridgedetection.util.UiUtil;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -33,6 +36,47 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 	public List<ListBean> getSourceData(){
 		return mUnfilteredData;
 	}
+	
+	private OnLongClickListener mItemLongClickListener = new OnLongClickListener() {
+		
+		@Override
+		public boolean onLongClick(View v) {
+			ViewHolder holder = (ViewHolder) v.getTag();
+			final ListBean bean = holder.bean;
+			String status = bean.status;
+			if (TextUtils.equals(status, "1") && bean.lastEditLocalId != -1l) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setItems(new String[] {"编辑", "取消"}, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if(which == 0){
+							Intent intent = new Intent(mContext, BridgeFormActivity.class);
+							intent.putExtra("localId", bean.lastEditLocalId);
+							intent.putExtra("isEdit", true);
+							intent.putExtra("type", mType);
+							if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
+								if (bean.realBean instanceof QLBaseData) {
+									intent.putExtra("qhInfo", (QLBaseData) bean.realBean);
+								} else if (bean.realBean instanceof HDBaseData) {
+									intent.putExtra("qhInfo", (HDBaseData) bean.realBean);
+								}
+							} else {
+								intent.putExtra("qhInfo", (SDBaseData) bean.realBean);
+							}
+							mContext.startActivityForResult(intent, mType == R.drawable.qiaoliangxuncha ? 2 : 1);
+						} else {
+							dialog.cancel();
+						}
+					}
+				});
+				builder.create().show();
+				return true;
+			}
+			return false;
+		}
+	};
+	
 	private OnClickListener mItemClickListener = new OnClickListener() {
 
 		@Override
@@ -155,6 +199,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 		view.setOnClickListener(mItemClickListener);
 		holder.operate.setTag(holder.bean);
 		holder.operate.setOnClickListener(mItemClickListener);
+		view.setOnLongClickListener(mItemLongClickListener);
 		if (!TextUtils.equals(holder.bean.status, "0")) {
 			changeView(holder.bean.status, holder);
 		} else {
@@ -164,10 +209,11 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 		return view;
 	}
 
-	public void updateStatus(String id, String status) {
+	public void updateStatus(String id, long localId, String status) {
 		for (ListBean bean : mSourceData) {
 			if (TextUtils.equals(bean.id, id)) {
 				bean.status = status;
+				bean.lastEditLocalId = localId;
 				notifyDataSetChanged();
 			}
 		}

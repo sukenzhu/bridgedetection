@@ -18,6 +18,8 @@ import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.storage.SharePreferenceManager;
 import com.suken.bridgedetection.storage.UserInfo;
 import com.suken.bridgedetection.storage.UserInfoDao;
+import com.suken.bridgedetection.util.NetWorkUtil;
+import com.suken.bridgedetection.util.NetWorkUtil.ConnectType;
 import com.suken.bridgedetection.util.UiUtil;
 
 import android.content.Intent;
@@ -59,6 +61,10 @@ public class LoginActivity extends BaseActivity {
 			mTextView.setText("当前版本：" + versionName + "   " + "设备号：" + UiUtil.genDeviceId());
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
+		}
+		
+		if(NetWorkUtil.getConnectType(this) == ConnectType.CONNECT_TYPE_WIFI){
+			UiUtil.update(this);
 		}
 	}
 
