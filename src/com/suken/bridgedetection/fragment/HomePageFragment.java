@@ -1,10 +1,14 @@
 package com.suken.bridgedetection.fragment;
 
+import com.googlecode.androidannotations.api.BackgroundExecutor;
+import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.activity.BridgeDetectionListActivity;
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.location.LocationResult;
 import com.suken.bridgedetection.location.OnLocationFinishedListener;
+import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
+import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
 import com.suken.bridgedetection.storage.SharePreferenceManager;
 import com.suken.bridgedetection.util.OnSyncDataFinishedListener;
 import com.suken.bridgedetection.util.UiUtil;
@@ -31,6 +35,15 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 	private TextView mDeviceId;
 	private TextView mLastLogin = null;
 	private TextView time = null;
+	private TextView tipsNum1 = null;
+	private TextView tipsNum2 = null;
+	private TextView tipsNum3 = null;
+	private TextView tipsNum4 = null;
+	private View tipLayout1 = null;
+	private View tipLayout2 = null;
+	private View tipLayout3 = null;
+	private View tipLayout4 = null;
+	
 
 	private View mContentView = null;
 	private boolean mIsGpsSuccess = false;
@@ -55,6 +68,14 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 		mjingdu = (TextView) view.findViewById(R.id.home_jingdu);
 		mWeidu = (TextView) view.findViewById(R.id.home_weidu);
 		mDeviceId = (TextView) view.findViewById(R.id.home_deviceId);
+		tipsNum1 = (TextView) view.findViewById(R.id.left_frag_item_num1);
+		tipsNum2 = (TextView) view.findViewById(R.id.left_frag_item_num2);
+		tipsNum3 = (TextView) view.findViewById(R.id.left_frag_item_num3);
+		tipsNum4 = (TextView) view.findViewById(R.id.left_frag_item_num4);
+		tipLayout1 = view.findViewById(R.id.left_frag_item_layout1);
+		tipLayout2 = view.findViewById(R.id.left_frag_item_layout2);
+		tipLayout3 = view.findViewById(R.id.left_frag_item_layout3);
+		tipLayout4 = view.findViewById(R.id.left_frag_item_layout4);
 		mDeviceId.setText("设备号:" + UiUtil.genDeviceId());
 		mLastLogin = (TextView) view.findViewById(R.id.last_login);
 		mLastLogin.setText("上次登录:" + SharePreferenceManager.getInstance().readString("上次登录", UiUtil.formatNowTime("yyyy-MM-dd")));
@@ -110,18 +131,60 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 			mContentView.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if(!getActivity().isFinishing()){
+					if (!getActivity().isFinishing()) {
 						LocationManager.getInstance().syncLocation(HomePageFragment.this);
 					}
 				}
 			}, 200);
 		}
+
+		BackgroundExecutor.execute(new Runnable() {
+
+			@Override
+			public void run() {
+				
+				final int count1 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangjiancha, Constants.STATUS_UPDATE);
+				final int count2 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_UPDATE);
+				final int count3 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangxuncha, Constants.STATUS_UPDATE);
+				final int count4 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_UPDATE);
+				getActivity().runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						if(count1 > 0){
+							tipsNum1.setText(count1 + "");
+							tipLayout1.setVisibility(View.VISIBLE);
+						} else {
+							tipLayout1.setVisibility(View.GONE);
+						}
+						if(count2 > 0){
+							tipsNum2.setText(count2 + "");
+							tipLayout2.setVisibility(View.VISIBLE);
+						} else {
+							tipLayout2.setVisibility(View.GONE);
+						}
+						if(count3 > 0){
+							tipsNum3.setText(count3 + "");
+							tipLayout3.setVisibility(View.VISIBLE);
+						} else {
+							tipLayout3.setVisibility(View.GONE);
+						}
+						if(count4 > 0){
+							tipsNum4.setText(count4 + "");
+							tipLayout4.setVisibility(View.VISIBLE);
+						} else {
+							tipLayout4.setVisibility(View.GONE);
+						}
+					}
+				});
+			}
+		});
 	}
 
 	@Override
 	public void onSyncFinished(boolean isSuccess) {
 		getActivity().runOnUiThread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				initGPS();

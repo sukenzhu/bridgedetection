@@ -165,7 +165,7 @@
                                 android:id="@+id/form_qlbh_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:background="@null"
+                                android:background="@drawable/line"
                                 android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
@@ -186,7 +186,7 @@
                                 android:id="@+id/form_qlmc_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:background="@null"
+                                android:background="@drawable/line"
                                 android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
@@ -215,7 +215,7 @@
                                 android:id="@+id/form_lxbh_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:background="@null"
+                                android:background="@drawable/line"
                                 android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
@@ -236,7 +236,7 @@
                                 android:id="@+id/form_lxmc_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:background="@null"
+                                android:background="@drawable/line"
                                 android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
@@ -265,7 +265,7 @@
                                 android:id="@+id/form_zxzh_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:background="@null"
+                                android:background="@drawable/line"
                                 android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
@@ -286,7 +286,7 @@
                                 android:id="@+id/form_yhdw_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:background="@null"
+                                android:background="@drawable/line"
                                 android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
@@ -316,7 +316,7 @@
                                 android:id="@+id/form_extra1_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:background="@null"
+                                android:background="@drawable/line"
                                 android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
@@ -337,7 +337,7 @@
                                 android:id="@+id/form_weather_ev"
                                 android:layout_width="200dp"
                                 android:layout_height="20dp"
-                                android:background="@null"
+                                android:background="@drawable/line"
                                 android:textColor="#333333"
                                 android:textSize="9dp" />
                         </LinearLayout>
@@ -466,7 +466,7 @@
                         android:id="@+id/form_fzr_tv"
                         android:layout_width="100dp"
                         android:layout_height="20dp"
-                        android:background="@null"
+                        android:background="@drawable/line"
                         android:textSize="9dp" />
                 </LinearLayout>
 
@@ -487,7 +487,7 @@
                         android:id="@+id/form_jlr_spinner"
                         android:layout_width="100dp"
                         android:layout_height="20dp"
-                        android:background="@null"
+                        android:background="@drawable/line"
                         android:textSize="9dp" />
                 </LinearLayout>
             </LinearLayout>
@@ -518,7 +518,7 @@
                         android:textSize="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@null"
+                        android:background="@drawable/line"
                         android:layout_weight="1" />
                 </LinearLayout>
                 
@@ -542,7 +542,7 @@
                         android:textSize="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@null"
+                        android:background="@drawable/line"
                         android:layout_weight="1" />
                 </LinearLayout>
                 

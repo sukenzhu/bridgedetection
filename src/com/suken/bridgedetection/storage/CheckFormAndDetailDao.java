@@ -171,6 +171,22 @@ public class CheckFormAndDetailDao {
 		return true;
 	}
 	
+	public int countTypeAndStatus(int type, String status){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", type);
+		map.put("status", status);
+		map.put("lastUpdate", false);
+		try {
+			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
+			if(list != null){
+				return list.size();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	public List<CheckFormData> queryLastUpdate(int type){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);

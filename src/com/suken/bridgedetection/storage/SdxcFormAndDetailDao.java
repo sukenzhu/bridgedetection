@@ -89,7 +89,7 @@ public class SdxcFormAndDetailDao {
 
 	public List<SdxcFormData> queryAll(int type) {
 		try {
-			List<SdxcFormData> datas = mFormDao.queryForAll();
+			List<SdxcFormData> datas = mFormDao.queryForEq("type", type);
 			for (SdxcFormData data : datas) {
 				data.setInspectLogDetailList(queryByFormId(data.getLocalId()));
 			}
@@ -185,6 +185,23 @@ public class SdxcFormAndDetailDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	
+	public int countTypeAndStatus(int type, String status){
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", type);
+		map.put("status", status);
+		try {
+			List<SdxcFormData> list = mFormDao.queryForFieldValues(map);
+			if(list != null){
+				return list.size();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }

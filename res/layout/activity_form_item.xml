@@ -30,7 +30,7 @@
                 android:id="@+id/form_qlzh"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:background="@null"
+                android:background="@drawable/line"
                 android:ems="9"
                 android:inputType="number"
                 android:textSize="10dp"

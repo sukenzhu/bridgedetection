@@ -326,39 +326,17 @@
                         android:orientation="vertical"
                         android:paddingRight="5dp"
                         android:paddingBottom="3dp"
+                        android:paddingTop="3dp"
                         android:background="@drawable/home_right_item_light_half_bg" >
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_marginTop="5dp"
-                            android:layout_height="wrap_content" >
-
-                            <TextView
-                                android:id="@+id/left_frag_item_num"
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:background="@drawable/circle_text_view_bg"
-                                android:gravity="center"
-                                android:text="2"
-                                android:textColor="#ffffff"
-                                android:textSize="6dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:lineSpacingExtra="2dp"
-                                android:text="份《桥梁经常检查记录表》未上传"
-                                android:textColor="#ffffff"
-                                android:textSize="8dp" />
-                        </LinearLayout>
-                        <LinearLayout
+                            android:id="@+id/left_frag_item_layout1"
                             android:layout_width="match_parent"
                             android:layout_marginTop="2dp"
                             android:layout_height="wrap_content" >
 
                             <TextView
+                                android:id="@+id/left_frag_item_num1"
                                 android:layout_width="12dp"
                                 android:layout_height="12dp"
                                 android:layout_marginLeft="5dp"
@@ -370,19 +348,22 @@
                                 android:textSize="6dp" />
 
                             <TextView
+                                android:id="@+id/left_frag_item_tv1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="份《桥梁经常检查记录表》未上传"
                                 android:lineSpacingExtra="2dp"
+                                android:text="份《桥梁检查记录表》未上传"
                                 android:textColor="#ffffff"
                                 android:textSize="8dp" />
                         </LinearLayout>
                         <LinearLayout
+                            android:id="@+id/left_frag_item_layout2"
                             android:layout_width="match_parent"
                             android:layout_marginTop="2dp"
                             android:layout_height="wrap_content" >
 
                             <TextView
+                                android:id="@+id/left_frag_item_num2"
                                 android:layout_width="12dp"
                                 android:layout_height="12dp"
                                 android:layout_marginLeft="5dp"
@@ -394,10 +375,66 @@
                                 android:textSize="6dp" />
 
                             <TextView
+                                android:id="@+id/left_frag_item_tv2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="份《隧道检查记录表》未上传"
+                                android:lineSpacingExtra="2dp"
+                                android:textColor="#ffffff"
+                                android:textSize="8dp" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/left_frag_item_layout3"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="2dp"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/left_frag_item_num3"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/circle_text_view_bg"
+                                android:gravity="center"
+                                android:text=""
+                                android:textColor="#ffffff"
+                                android:textSize="6dp" />
+
+                            <TextView
+                                android:id="@+id/left_frag_item_tv3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:lineSpacingExtra="2dp"
-                                android:text="份《桥梁经常检查记录表》未上传"
+                                android:text="份《桥梁巡查日志表》未上传"
+                                android:textColor="#ffffff"
+                                android:textSize="8dp" />
+                        </LinearLayout>
+                        
+                        <LinearLayout
+                            android:id="@+id/left_frag_item_layout4"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="2dp"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:id="@+id/left_frag_item_num4"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/circle_text_view_bg"
+                                android:gravity="center"
+                                android:text=""
+                                android:textColor="#ffffff"
+                                android:textSize="6dp" />
+
+                            <TextView
+                                android:id="@+id/left_frag_item_tv4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:lineSpacingExtra="2dp"
+                                android:text="份《隧道巡查日志表》未上传"
                                 android:textColor="#ffffff"
                                 android:textSize="8dp" />
                         </LinearLayout>
