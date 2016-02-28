@@ -277,7 +277,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		mRadioGroup.setVisibility(View.VISIBLE);
 		extraLayout.setVisibility(View.VISIBLE);
 		extra1Tv.setText("巡查人员：");
-		mFormTitle.setText("桥梁日常巡查记录表");
+		mFormTitle.setText("高速公路桥梁巡查日志");
 		qlhz.setVisibility(View.GONE);
 		detailNames = new String[] { "桥涵桩号：" };
 		mItemTexts = Constants.qhxcformDetailItemTexts;
