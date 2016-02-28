@@ -583,6 +583,9 @@ public class UiUtil {
 								todownload(url, activity);
 							} else {
 								activity.toast("当前版本为最新版本，无需更新");
+								if(activity instanceof HomePageActivity){
+									((HomePageActivity) activity).selectHome();
+								}
 							}
 						} catch (NameNotFoundException e) {
 							e.printStackTrace();

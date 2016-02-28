@@ -64,7 +64,11 @@ public class LoginActivity extends BaseActivity {
 		}
 		
 		if(NetWorkUtil.getConnectType(this) == ConnectType.CONNECT_TYPE_WIFI){
-			UiUtil.update(this);
+			long lastTime = Long.parseLong(SharePreferenceManager.getInstance().readString("updateCheckTime", "-1"));
+			if(System.currentTimeMillis() - lastTime > 24 * 60 * 60 *1000){
+				UiUtil.update(this);
+			}
+			SharePreferenceManager.getInstance().updateString("updateCheckTime", System.currentTimeMillis() + "");
 		}
 	}
 

@@ -352,7 +352,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:lineSpacingExtra="2dp"
-                                android:text="份《桥梁检查记录表》未上传"
+                                android:text="份《桥梁检查表》未上传"
                                 android:textColor="#ffffff"
                                 android:textSize="8dp" />
                         </LinearLayout>
@@ -378,7 +378,7 @@
                                 android:id="@+id/left_frag_item_tv2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="份《隧道检查记录表》未上传"
+                                android:text="份《隧道检查表》未上传"
                                 android:lineSpacingExtra="2dp"
                                 android:textColor="#ffffff"
                                 android:textSize="8dp" />
@@ -406,7 +406,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:lineSpacingExtra="2dp"
-                                android:text="份《桥梁巡查日志表》未上传"
+                                android:text="份《桥梁巡查表》未上传"
                                 android:textColor="#ffffff"
                                 android:textSize="8dp" />
                         </LinearLayout>
@@ -434,7 +434,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:lineSpacingExtra="2dp"
-                                android:text="份《隧道巡查日志表》未上传"
+                                android:text="份《隧道巡查表》未上传"
                                 android:textColor="#ffffff"
                                 android:textSize="8dp" />
                         </LinearLayout>

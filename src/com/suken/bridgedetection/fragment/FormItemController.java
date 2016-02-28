@@ -240,13 +240,13 @@ public class FormItemController implements OnClickListener {
 					CheckBox cb2 = (CheckBox) item5Ll.findViewById(R.id.item5_2);
 					CheckBox cb3 = (CheckBox) item5Ll.findViewById(R.id.item5_3);
 					if (!TextUtils.isEmpty(mFormBaseDetail.item5)) {
-						if (TextUtils.indexOf(mFormBaseDetail.item5, "跟踪检查") > 0) {
+						if (mFormBaseDetail.item5.contains("跟踪检查")) {
 							cb1.setChecked(true);
 						}
-						if (TextUtils.indexOf(mFormBaseDetail.item5, "维修处理") > 0) {
+						if (mFormBaseDetail.item5.contains("维修处理")) {
 							cb2.setChecked(true);
 						}
-						if (TextUtils.indexOf(mFormBaseDetail.item5, "定期或专项检测") > 0) {
+						if (mFormBaseDetail.item5.contains("定期或专项检测")) {
 							cb3.setChecked(true);
 						}
 					}
@@ -415,7 +415,7 @@ public class FormItemController implements OnClickListener {
 			CheckBox cb2 = (CheckBox) item5Ll.findViewById(R.id.item5_2);
 			CheckBox cb3 = (CheckBox) item5Ll.findViewById(R.id.item5_3);
 			detail.setYhcsyj(
-					(cb1.isChecked() ? cb1.getText() + "," : "") + (cb2.isChecked() ? cb2.getText() + "," : "") + (cb3.isChecked() ? cb1.getText() : ""));
+					(cb1.isChecked() ? cb1.getText() + "," : "") + (cb2.isChecked() ? cb2.getText() + "," : "") + (cb3.isChecked() ? cb3.getText() : ""));
 			detail.setJgmc(mTitle);
 		}
 		StringBuilder builder = new StringBuilder();

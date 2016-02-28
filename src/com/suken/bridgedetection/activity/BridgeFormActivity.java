@@ -274,22 +274,29 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private void initQhxc() {
 		mOperateLayout.setVisibility(View.VISIBLE);
 		mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-		mRadioGroup.setVisibility(View.VISIBLE);
+		mRadioGroup.setVisibility(View.GONE);
 		extraLayout.setVisibility(View.VISIBLE);
 		extra1Tv.setText("巡查人员：");
 		mFormTitle.setText("高速公路桥梁巡查日志");
 		qlhz.setVisibility(View.GONE);
-		detailNames = new String[] { "桥涵桩号：" };
+		detailNames = new String[] { "桥梁桩号：" };
 		mItemTexts = Constants.qhxcformDetailItemTexts;
 		findViewById(R.id.form_qlbh).setVisibility(View.GONE);
 		findViewById(R.id.form_lxbh).setVisibility(View.GONE);
-		findViewById(R.id.form_zxzh).setVisibility(View.GONE);
+//		findViewById(R.id.form_zxzh).setVisibility(View.GONE);
+		zxzhTv.setText("管养单位：");
+		zxzhEv.setText(BridgeDetectionApplication.mCurrentUser.getDefgqName());
+		yhdwTv.setText("检查时间：");
+		yhdwEv.setText(UiUtil.formatNowTime());
+		yhdwEv.setEnabled(false);
+		zxzhEv.setEnabled(false);
 		findViewById(R.id.pddj_layout).setVisibility(View.GONE);
 		findViewById(R.id.lastEditLayout).setVisibility(View.GONE);
 		findViewById(R.id.qlxcLayout).setVisibility(View.VISIBLE);
 		mDealWithEv = (EditText) findViewById(R.id.dealwithEv);
 		mJcrEv = (EditText) findViewById(R.id.jiancharenEv);
 		if (isEdit && lastEditBaseClass != null) {
+			qlhz.setChecked(TextUtils.equals(lastEditBaseClass.qlhz, "1"));
 			extra1Ev.setText(lastEditBaseClass.xcry);
 			mDealWithEv.setText(lastEditBaseClass.dealwith);
 			mJcrEv.setText(lastEditBaseClass.jcr);
@@ -304,8 +311,11 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		}
 
 		if (mFormBaseDetails != null) {
+			if(mFormBaseDetails.size() > 0){
+				findViewById(R.id.operateDelete).setEnabled(true);
+			}
 			for (int i = 0; i < mFormBaseDetails.size(); i++) {
-				generateController(i, null, mIsHanDong);
+				generateController(i, null, mIsHanDong, false);
 			}
 		}
 
@@ -322,6 +332,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		String xcry;
 		String dealwith;
 		String jcr;
+		String qlhz = "0";
 
 	}
 
@@ -335,6 +346,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.pddj = ((CheckFormData) lastEditForm).getPddj();
 				data.sdfx = ((CheckFormData) lastEditForm).getSdfx();
 				data.weather = ((CheckFormData) lastEditForm).getWeather();
+				data.qlhz = ((CheckFormData) lastEditForm).getHzf();
 			} else if (lastEditForm instanceof SdxcFormData) {
 				data.fzr = ((SdxcFormData) lastEditForm).getFzry();
 				data.jlr = ((SdxcFormData) lastEditForm).getJlry();
@@ -387,7 +399,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 						baseDetail.item2 = detail.getQsnr();
 						baseDetail.item3 = detail.getYcms();
 						baseDetail.item4 = detail.getPd();
-						baseDetail.item5 = detail.getBlcsyj();
+						baseDetail.item5 = detail.getYhcsyj();
 					}
 					maps.put(baseDetail.title, baseDetail);
 
@@ -527,6 +539,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		}
 
 		if (isEdit && lastEditBaseClass != null) {
+			qlhz.setChecked(TextUtils.equals(lastEditBaseClass.qlhz, "1"));
 			if (!TextUtils.isEmpty(lastEditBaseClass.fzr)) {
 				fzr.setText(lastEditBaseClass.fzr);
 			}
@@ -554,11 +567,11 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		}
 
 		for (int index = 0; index < detailNames.length; index++) {
-			generateController(index, mLastFormDetails, mIsHanDong);
+			generateController(index, mLastFormDetails, mIsHanDong, true);
 		}
 	}
 
-	private void generateController(int index, Map<String, CheckDetail> mLastFormDetails, boolean mIsHanDong) {
+	private void generateController(int index, Map<String, CheckDetail> mLastFormDetails, boolean mIsHanDong, boolean isNew) {
 
 		View view = LayoutInflater.from(this).inflate(R.layout.activity_form_item, null);
 		LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(-1, -1);
@@ -580,7 +593,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		FormBaseDetail fbd = null;
 		if (isEdit && mFormBaseDetails != null) {
 			if (mType == R.drawable.qiaoliangxuncha) {
-				fbd = (FormBaseDetail) (mFormBaseDetails.values().toArray())[index];
+				if(!isNew){
+					fbd = (FormBaseDetail) (mFormBaseDetails.values().toArray())[index];
+				}
 			} else {
 				fbd = mFormBaseDetails.get(detailNames[index]);
 			}
@@ -688,10 +703,10 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				detail.setFormId(data.getLocalId());
 				dao.create(detail);
 			}
+			savedId = data.getLocalId();
 			if (mType == R.drawable.qiaoliangxuncha) {
 				Intent intent = new Intent();
 				intent.putExtra("id", data.getLocalId());
-				savedId = data.getLocalId();
 				setResult(isEdit ? 2 : 1, intent);
 				finish();
 			}
@@ -850,7 +865,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	public void operate(View view) {
 		if (view.getId() == R.id.operateAdd) {
-			generateController(mDetailMaps.size(), null, mIsHanDong);
+			generateController(mDetailMaps.size(), null, mIsHanDong, true);
 			findViewById(R.id.operateDelete).setEnabled(true);
 			mDetailMaps.get(mDetailMaps.size() - 1).performArrowImgClick();
 		} else if (view.getId() == R.id.operateDelete) {
