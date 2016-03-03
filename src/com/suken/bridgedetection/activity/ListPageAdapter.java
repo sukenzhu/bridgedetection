@@ -88,6 +88,10 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 					
 					// 去检查
 					Intent intent = new Intent(mContext, BridgeFormActivity.class);
+					if(TextUtils.equals(status, "2")){
+						intent.putExtra("localId", bean.lastEditLocalId);
+						intent.putExtra("isCheckAgain", true);
+					}
 					if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
 						if (bean.realBean instanceof QLBaseData) {
 							intent.putExtra("qhInfo", (QLBaseData) bean.realBean);

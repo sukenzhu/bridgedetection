@@ -7,15 +7,21 @@
 
     <CheckBox
         android:id="@+id/checkbox"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="asdfasdfasd" />
+        android:text="" />
+
+    <TextView
+        android:id="@+id/textview"
+        android:layout_width="0dp"
+        android:textSize="10dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
     <ImageView
-        android:src="@drawable/jiantou"
-        android:layout_margin="5dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:src="@drawable/jiantou" />
 
 </LinearLayout>

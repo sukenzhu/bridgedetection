@@ -1,6 +1,5 @@
 package com.suken.bridgedetection.fragment;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import com.suken.bridgedetection.util.UiUtil;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
@@ -45,9 +43,10 @@ public class FormItemController implements OnClickListener {
 	private boolean mIsHandong;
 	private EditText xczh;
 	private FormBaseDetail mFormBaseDetail;
+	private boolean mIsCheckAgain = false;
 
 	public FormItemController(Activity context, View view, OnClickListener listener, String text, int type, String defaultValue, String[] itemTexts,
-			CheckDetail formDetail, String blank1, String blank2, String qhId, boolean isHandong, FormBaseDetail detail) {
+			CheckDetail formDetail, String blank1, String blank2, String qhId, boolean isHandong, FormBaseDetail detail,boolean isCheckAgain) {
 		this.mIsHandong = isHandong;
 		mFormBaseDetail = detail;
 		mContext = (BridgeFormActivity) context;
@@ -57,6 +56,7 @@ public class FormItemController implements OnClickListener {
 		if (type == R.drawable.qiaoliangxuncha) {
 			xczh.setVisibility(View.VISIBLE);
 		}
+		mIsCheckAgain = isCheckAgain;
 		mImgVideoLayout = mFormItem.findViewById(R.id.img_video_layout);
 		mArrowImgView = (ImageView) mFormItem.findViewById(R.id.arrow_img);
 		mEditLayout = mFormItem.findViewById(R.id.form_item_edit_layout);
@@ -273,7 +273,7 @@ public class FormItemController implements OnClickListener {
 		sxjNum = (TextView) mImgVideoLayout.findViewById(R.id.video_num);
 		imageNum.setText("0");
 		sxjNum.setText("0");
-		if (mFormBaseDetail != null) {
+		if (mFormBaseDetail != null && !mIsCheckAgain) {
 			String picAttach = mFormBaseDetail.picAttach;
 			if (!TextUtils.isEmpty(picAttach)) {
 				String[] strs = picAttach.split(",");
@@ -359,7 +359,7 @@ public class FormItemController implements OnClickListener {
 
 	public SdxcFormDetail packageSxDetail() {
 		SdxcFormDetail detail = new SdxcFormDetail();
-		if (mFormBaseDetail != null) {
+		if (mFormBaseDetail != null && mIsCheckAgain) {
 			detail.setLocalId(mFormBaseDetail.localId);
 		}
 		if (type == R.drawable.suidaoxuncha) {
@@ -392,7 +392,7 @@ public class FormItemController implements OnClickListener {
 
 	public CheckDetail packageCheckDetail() {
 		CheckDetail detail = new CheckDetail();
-		if (mFormBaseDetail != null) {
+		if (mFormBaseDetail != null && !mIsCheckAgain) {
 			detail.setLocalId(mFormBaseDetail.localId);
 		}
 		detail.setBjmc(mTitle);

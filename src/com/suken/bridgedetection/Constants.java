@@ -55,6 +55,8 @@ public class Constants {
 
 	public static final String[] qhxcformDetailItemTexts = new String[] { "方向：", "发现病害：", "损害位置：", "尺寸大小：", "病害原因：" };
 
+	public static final String[] weatherStrs = new String[] { "晴", "多云", "阴", "雨", "雪", "雾霾", "冰雹" };
+
 	public static final String STATUS_CHECK = "0";
 	public static final String STATUS_UPDATE = "1";
 	public static final String STATUS_AGAIN = "2";

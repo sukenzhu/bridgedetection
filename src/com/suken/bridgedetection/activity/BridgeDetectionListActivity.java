@@ -123,6 +123,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 						has1 = true;
 						break;
 					} else if (TextUtils.equals(cfd.getStatus(), Constants.STATUS_AGAIN)) {
+						bean.lastEditLocalId = cfd.getLocalId();
 						has2 = true;
 					}
 				}
@@ -403,30 +404,31 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			mHdListTitleText.setText(" 涵洞(" + (mHdCurrentNum + 1) + "/" + adapter.getCount() + ")");
 		}
 	}
+	
+	public static List<ListBean> updateAllList = null;;
 
 	private void updateAll() {
 		Intent intent = new Intent(this, UpdateAllActivity.class);
-		String[] array = new String[] {};
+		updateAllList = new ArrayList<ListBean>();
 		if (mList.getVisibility() == View.VISIBLE) {
 			ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
 			List<ListBean> data = adapter.getSourceData();
-			array = new String[data.size()];
-			for (int i = 0; i < array.length; i++) {
-				array[i] = data.get(i).id;
+			for(ListBean bean : data){
+				if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
+					updateAllList.add(bean);
+				}
 			}
 		}
 
-		String[] hdArray = new String[] {};
 		if (mType == R.drawable.qiaoliangjiancha) {
 			ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
 			List<ListBean> data = adapter.getSourceData();
-			hdArray = new String[data.size()];
-			for (int i = 0; i < hdArray.length; i++) {
-				hdArray[i] = data.get(i).id;
+			for(ListBean bean : data){
+				if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
+					updateAllList.add(bean);
+				}
 			}
 		}
-		intent.putExtra("array", array);
-		intent.putExtra("hdArray", hdArray);
 		intent.putExtra("type", mType);
 		startActivityForResult(intent, 3);
 	}

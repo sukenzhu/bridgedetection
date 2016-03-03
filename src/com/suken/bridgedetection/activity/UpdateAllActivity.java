@@ -8,6 +8,9 @@ import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
 import com.suken.bridgedetection.storage.CheckFormData;
+import com.suken.bridgedetection.storage.HDBaseData;
+import com.suken.bridgedetection.storage.QLBaseData;
+import com.suken.bridgedetection.storage.SDBaseData;
 import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
 import com.suken.bridgedetection.storage.SdxcFormData;
 import com.suken.bridgedetection.util.NetWorkUtil;
@@ -19,10 +22,9 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -37,7 +39,6 @@ public class UpdateAllActivity extends BaseActivity {
 	private List<UpdateBean> mSourceData = new ArrayList<UpdateBean>();
 	private ListView mListView = null;
 	private String mTypeStr = "";
-	private String[] arrayAll = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +67,6 @@ public class UpdateAllActivity extends BaseActivity {
 		default:
 			break;
 		}
-		String[] array = intent.getStringArrayExtra("array");
-		String[] hdArray = intent.getStringArrayExtra("hdArray");
-		if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
-			arrayAll = UiUtil.concat(array, hdArray);
-		} else {
-			arrayAll = array;
-		}
 		ImageView img = (ImageView) findViewById(R.id.image);
 		if (NetWorkUtil.getConnectType(this) == ConnectType.CONNECT_TYPE_WIFI) {
 			img.setImageResource(R.drawable.wifi_red);
@@ -88,6 +82,7 @@ public class UpdateAllActivity extends BaseActivity {
 		String sj;
 		String id;
 		int mType;
+		ListBean listBean;
 		boolean isChecked = true;
 	}
 
@@ -96,10 +91,11 @@ public class UpdateAllActivity extends BaseActivity {
 		List<UpdateBean> list = new ArrayList<UpdateBean>();
 		if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.suidaojiancha) {
 			CheckFormAndDetailDao formDao = new CheckFormAndDetailDao();
-			for (String id : arrayAll) {
-				CheckFormData data = formDao.queryByQHIdAndStatus(id, Constants.STATUS_UPDATE, mType);
+			for (ListBean listBean : BridgeDetectionListActivity.updateAllList) {
+				CheckFormData data = formDao.queryByQHIdAndStatus(listBean.id, Constants.STATUS_UPDATE, mType);
 				if (data != null) {
 					UpdateBean bean = new UpdateBean();
+					bean.listBean = listBean;
 					bean.sj = data.getJcsj();
 					if (mType == R.drawable.qiaoliangjiancha) {
 						bean.id = data.getQhid();
@@ -115,10 +111,11 @@ public class UpdateAllActivity extends BaseActivity {
 			}
 		} else {
 			SdxcFormAndDetailDao dao = new SdxcFormAndDetailDao();
-			for (String id : arrayAll) {
-				SdxcFormData data = dao.queryByQHIdAndStatus(id, Constants.STATUS_UPDATE, mType);
+			for (ListBean listBean : BridgeDetectionListActivity.updateAllList) {
+				SdxcFormData data = dao.queryByQHIdAndStatus(listBean.id, Constants.STATUS_UPDATE, mType);
 				if (data != null) {
 					UpdateBean bean = new UpdateBean();
+					bean.listBean = listBean;
 					if (mType == R.drawable.suidaoxuncha) {
 						bean.id = data.getSdid();
 						bean.mc = data.getSdmc();
@@ -141,14 +138,6 @@ public class UpdateAllActivity extends BaseActivity {
 			adapter.notifyDataSetChanged();
 		} else {
 			mListView.setAdapter(new UpdateAdapter());
-			mListView.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					UpdateBean bean = (UpdateBean) view.getTag();
-					// 跳转编辑
-				}
-			});
 		}
 
 	}
@@ -180,16 +169,41 @@ public class UpdateAllActivity extends BaseActivity {
 			}
 			CheckBox box = (CheckBox) view.findViewById(R.id.checkbox);
 			UpdateBean bean = getItem(position);
+			TextView tv = (TextView) view.findViewById(R.id.textview);
 			String text = "记录人：" + bean.jlr + "," + "时间：" + bean.sj;
 			if(bean.mType == R.drawable.qiaoliangxuncha){
-				box.setText(text);
+				tv.setText(text);
 			} else {
-				box.setText("名称：" + bean.mc + "," + text);
+				tv.setText("名称：" + bean.mc + "," + text);
 			}
 			box.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
 			box.setTag(bean);
 			box.setChecked(bean.isChecked);
 			view.setTag(bean);
+			view.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+
+					UpdateBean bean = (UpdateBean) v.getTag();
+					ListBean listBean = bean.listBean;
+					Intent intent = new Intent(UpdateAllActivity.this, BridgeFormActivity.class);
+					intent.putExtra("localId", listBean.lastEditLocalId);
+					intent.putExtra("isEdit", true);
+					intent.putExtra("type", mType);
+					if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
+						if (listBean.realBean instanceof QLBaseData) {
+							intent.putExtra("qhInfo", (QLBaseData) listBean.realBean);
+						} else if (listBean.realBean instanceof HDBaseData) {
+							intent.putExtra("qhInfo", (HDBaseData) listBean.realBean);
+						}
+					} else {
+						intent.putExtra("qhInfo", (SDBaseData) listBean.realBean);
+					}
+					startActivityForResult(intent, mType == R.drawable.qiaoliangxuncha ? 2 : 1);
+				
+				}
+			});
 			box.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 				@Override

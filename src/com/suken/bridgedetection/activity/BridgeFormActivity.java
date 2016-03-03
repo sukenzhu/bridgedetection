@@ -1,7 +1,6 @@
 package com.suken.bridgedetection.activity;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -52,6 +51,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -92,7 +92,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private EditText extra1Ev = null;
 	private View extraLayout = null;
 	private TextView weatherTv = null;
-	private EditText weatherEv = null;
+	private Spinner weatherEv = null;
 
 	private EditText fzr = null;
 	private EditText jlr = null;
@@ -121,6 +121,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private long localId = -1l;
 
 	private boolean isEdit = false;
+	private boolean isCheckAgain = false;
 	private Map<String, FormBaseDetail> mFormBaseDetails = null;
 
 	@Override
@@ -160,13 +161,16 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		extra1Tv = (TextView) findViewById(R.id.form_extra1_tv);
 		extra1Ev = (EditText) findViewById(R.id.form_extra1_ev);
 		weatherTv = (TextView) findViewById(R.id.form_weather_tv);
-		weatherEv = (EditText) findViewById(R.id.form_weather_ev);
+		weatherEv = (Spinner) findViewById(R.id.form_weather_sp);
+		weatherEv.setAdapter(new ArrayAdapter<String>(this, R.layout.spinner_item, Constants.weatherStrs));
+		weatherEv.setSelection(0);
 		save1 = (TextView) findViewById(R.id.save1);
 		save2 = (Button) findViewById(R.id.save2);
 		save1.setOnClickListener(this);
 		save2.setOnClickListener(this);
 		mFormContent = (LinearLayout) findViewById(R.id.form_content);
 		isEdit = getIntent().getBooleanExtra("isEdit", false);
+		isCheckAgain = getIntent().getBooleanExtra("isCheckAgain", false);
 		bean = getIntent().getSerializableExtra("qhInfo");
 		mType = getIntent().getIntExtra("type", R.drawable.qiaoliangjiancha);
 		mGpsTv = (TextView) findViewById(R.id.gps_text);
@@ -175,7 +179,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			TextView fzrTv = (TextView) findViewById(R.id.fzrtv);
 			fzrTv.setText("检查人员：");
 		}
-		if (isEdit) {
+		if (isEdit || isCheckAgain) {
 			localId = getIntent().getLongExtra("localId", -1l);
 			switch (mType) {
 			case R.drawable.qiaoliangjiancha:
@@ -295,12 +299,12 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		findViewById(R.id.qlxcLayout).setVisibility(View.VISIBLE);
 		mDealWithEv = (EditText) findViewById(R.id.dealwithEv);
 		mJcrEv = (EditText) findViewById(R.id.jiancharenEv);
-		if (isEdit && lastEditBaseClass != null) {
+		if ((isEdit || isCheckAgain) && lastEditBaseClass != null) {
 			qlhz.setChecked(TextUtils.equals(lastEditBaseClass.qlhz, "1"));
 			extra1Ev.setText(lastEditBaseClass.xcry);
 			mDealWithEv.setText(lastEditBaseClass.dealwith);
+			resetWeather();
 			mJcrEv.setText(lastEditBaseClass.jcr);
-			weatherEv.setText(lastEditBaseClass.weather);
 			if (TextUtils.equals("b", lastEditBaseClass.qhlx)) {
 				RadioButton rb = (RadioButton) findViewById(R.id.radioql);
 				rb.setChecked(true);
@@ -308,17 +312,24 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				RadioButton rb = (RadioButton) findViewById(R.id.radiohd);
 				rb.setChecked(true);
 			}
+			if (mFormBaseDetails != null) {
+				if(mFormBaseDetails.size() > 0){
+					findViewById(R.id.operateDelete).setEnabled(true);
+				}
+				for (int i = 0; i < mFormBaseDetails.size(); i++) {
+					generateController(i, null, mIsHanDong, false);
+				}
+			}
 		}
 
-		if (mFormBaseDetails != null) {
-			if(mFormBaseDetails.size() > 0){
-				findViewById(R.id.operateDelete).setEnabled(true);
-			}
-			for (int i = 0; i < mFormBaseDetails.size(); i++) {
-				generateController(i, null, mIsHanDong, false);
-			}
+	}
+	
+	private void resetWeather(){
+		List<String> weathes = Arrays.asList(Constants.weatherStrs);
+		int index = weathes.indexOf(lastEditBaseClass.weather);
+		if(index > 0){
+			weatherEv.setSelection(index);
 		}
-
 	}
 
 	private class LastEditBaseClass {
@@ -378,7 +389,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	private Map<String, FormBaseDetail> getFormBaseDetail() {
 		Map<String, FormBaseDetail> maps = new HashMap<String, BridgeFormActivity.FormBaseDetail>();
-		if (isEdit && lastEditForm != null) {
+		if ((isEdit || isCheckAgain) && lastEditForm != null) {
 			if (lastEditForm instanceof CheckFormData) {
 				List<CheckDetail> details = ((CheckFormData) lastEditForm).getOftenCheckDetailList();
 				for (CheckDetail detail : details) {
@@ -434,7 +445,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	}
 
 	private void initQhjc() {
-		if (!isEdit) {
+		if (!isEdit || !isCheckAgain) {
 			formData = (CheckFormData) getIntent().getSerializableExtra("formData");
 		}
 		if (bean instanceof QLBaseData) {
@@ -538,7 +549,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			}
 		}
 
-		if (isEdit && lastEditBaseClass != null) {
+		if ((isEdit || isCheckAgain) && lastEditBaseClass != null) {
 			qlhz.setChecked(TextUtils.equals(lastEditBaseClass.qlhz, "1"));
 			if (!TextUtils.isEmpty(lastEditBaseClass.fzr)) {
 				fzr.setText(lastEditBaseClass.fzr);
@@ -548,7 +559,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			}
 			if (mType == R.drawable.suidaojiancha) {
 				extra1Ev.setText(lastEditBaseClass.sdfx);
-				weatherEv.setText(lastEditBaseClass.weather);
+				resetWeather();
 			} else {
 				if (mType == R.drawable.qiaoliangjiancha) {
 					for (YWDictionaryInfo info : dinfos) {
@@ -591,7 +602,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		}
 		CheckDetail cd = null;
 		FormBaseDetail fbd = null;
-		if (isEdit && mFormBaseDetails != null) {
+		if ((isEdit || isCheckAgain) && mFormBaseDetails != null) {
 			if (mType == R.drawable.qiaoliangxuncha) {
 				if(!isNew){
 					fbd = (FormBaseDetail) (mFormBaseDetails.values().toArray())[index];
@@ -611,7 +622,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			detailName = detailNames[index];
 		}
 		FormItemController con = new FormItemController(this, view, this, detailName, mType, detailValues != null ? detailValues[index] : "", mItemTexts, cd,
-				et1blanks != null ? et1blanks[index] : "", blank2, qhId, mIsHanDong, fbd);
+				et1blanks != null ? et1blanks[index] : "", blank2, qhId, mIsHanDong, fbd, isCheckAgain);
 		if (index == 0) {
 			con.show();
 		} else {
@@ -683,7 +694,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.setXcry(extra1Ev.getText().toString());
 				data.setJcry(mJcrEv.getText().toString());
 				data.setDealWith(mDealWithEv.getText().toString());
-				data.setWeather(weatherEv.getText().toString());
+				data.setWeather(weatherEv.getSelectedItem().toString());
 			}
 			data.setJcsj(UiUtil.formatNowTime());
 			data.setJcsd(UiUtil.formatNowTime());
@@ -751,7 +762,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.setSdbm(qlbhEv.getText().toString());
 				data.setSdzh(zxzhEv.getText().toString());
 				data.setSdfx(extra1Ev.getText().toString());
-				data.setWeather(weatherEv.getText().toString());
+				data.setWeather(weatherEv.getSelectedItem().toString());
 			}
 			data.setType(mType);
 			data.setLxmc(lxmcEv.getText().toString());
