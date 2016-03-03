@@ -1,6 +1,7 @@
 package com.suken.bridgedetection.storage;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,21 @@ public class CheckFormAndDetailDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	boolean checkValid(long lastTime){
+		Calendar c1 = Calendar.getInstance();
+		c1.setTimeInMillis(lastTime);
+		
+		Calendar c2 = Calendar.getInstance();
+		c2.setTimeInMillis(System.currentTimeMillis());
+		
+		if(c2.get(Calendar.YEAR) == c1.get(Calendar.YEAR)){
+			if(c2.get(Calendar.MONTH) == c1.get(Calendar.MONTH)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public List<CheckFormData> queryByQHId(String id, int type) {
