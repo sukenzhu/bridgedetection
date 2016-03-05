@@ -50,5 +50,13 @@ public class QLBaseDataDao {
 		}
 		return null;
 	}
+	
+	public int countAll(){
+		List<QLBaseData> list = queryAll();
+		if(list != null){
+			return list.size();
+		}
+		return 0;
+	}
 
 }

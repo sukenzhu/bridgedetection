@@ -43,7 +43,6 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 
 	private ImageView gpsBtn;
 	private ImageView syncBtn;
-	private List<CheckFormData> mLastSyncData = null;
 	private View mListTitleQl;
 	private TextView mQlListTitleText;
 	private View mListTitleHd;
@@ -110,7 +109,6 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 
 	private int initStatus(ListBean bean, Object bd, int type) {
 		int a = 0;
-		CheckFormData lastFormData = findLastSyncData(bean.id);
 		bean.status = Constants.STATUS_CHECK;
 		boolean has1 = false;
 		boolean has2 = false;
@@ -151,7 +149,6 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		} else {
 			bean.status = Constants.STATUS_CHECK;
 		}
-		bean.mLastFormData = lastFormData;
 		bean.realBean = bd;
 		return a;
 	}
@@ -160,9 +157,6 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		mCurrentNum = 0;
 		mHdCurrentNum = 0;
 		List<ListBean> data = new ArrayList<ListBean>();
-		if (mType == R.drawable.qiaoliangxuncha) {
-			mLastSyncData = mFormDao.queryLastUpdate(mType);
-		}
 		switch (mType) {
 		case R.drawable.qiaoliangxuncha: {
 			row1.setText("检查时间");
@@ -293,17 +287,6 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		});
 	}
 
-	public CheckFormData findLastSyncData(String qhId) {
-		if (mLastSyncData != null && mLastSyncData.size() > 0) {
-			for (CheckFormData data : mLastSyncData) {
-				if (TextUtils.equals(data.getQhid(), qhId)) {
-					return data;
-				}
-			}
-		}
-		return null;
-	}
-
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == syncBtn.getId()) {
@@ -324,7 +307,6 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 						updateAll();
 					} else {
 						UiUtil.syncData(BridgeDetectionListActivity.this, which == 1);
-						mLastSyncData = mFormDao.queryLastUpdate(mType);
 					}
 				}
 			}).show();

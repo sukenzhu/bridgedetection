@@ -17,6 +17,14 @@ public class HDBaseDataDao {
 			e.printStackTrace();
 		}
 	}
+	
+	public int countAll(){
+		List<HDBaseData> list = queryAll();
+		if(list != null){
+			return list.size();
+		}
+		return 0;
+	}
 
 	public void create(List<HDBaseData> list) {
 		for (HDBaseData info : list) {

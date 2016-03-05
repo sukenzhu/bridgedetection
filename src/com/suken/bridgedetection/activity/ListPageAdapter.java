@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
 import com.suken.bridgedetection.storage.HDBaseData;
 import com.suken.bridgedetection.storage.QLBaseData;
 import com.suken.bridgedetection.storage.SDBaseData;
@@ -88,10 +89,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 					
 					// 去检查
 					Intent intent = new Intent(mContext, BridgeFormActivity.class);
-					if(TextUtils.equals(status, "2")){
-						intent.putExtra("localId", bean.lastEditLocalId);
-						intent.putExtra("isCheckAgain", true);
-					}
+					
 					if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
 						if (bean.realBean instanceof QLBaseData) {
 							intent.putExtra("qhInfo", (QLBaseData) bean.realBean);
@@ -101,9 +99,20 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 					} else {
 						intent.putExtra("qhInfo", (SDBaseData) bean.realBean);
 					}
-					bean.mLastFormData = mContext.findLastSyncData(bean.id);
 					intent.putExtra("type", mType);
-					intent.putExtra("formData", bean.mLastFormData);
+					boolean flag = (TextUtils.equals(status, "0") && (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.suidaojiancha));
+					if( flag){
+						bean.mLastFormData = new CheckFormAndDetailDao().queryLastUpdateByTypeAndId(bean.id, mType);
+						if(bean.mLastFormData != null){
+							intent.putExtra("localId", bean.mLastFormData.getLocalId());
+							intent.putExtra("isCheckAgain", true);
+							intent.putExtra("isLastUpdate", true);
+						}
+					} else if(TextUtils.equals(status, "2")){
+						intent.putExtra("localId", bean.lastEditLocalId);
+						intent.putExtra("isCheckAgain", true);
+						intent.putExtra("isLastUpdate", false);
+					}
 					mContext.startActivityForResult(intent, 1);
 				} else if (TextUtils.equals(status, "1")) {
 					// 去上传

@@ -51,6 +51,12 @@ public class CheckFormData implements Serializable {
 	private String lxbm;
 	@DatabaseField
 	private int type;
+	@DatabaseField
+	private String cus1;
+	@DatabaseField
+	private String cus2;
+	@DatabaseField
+	private String cus3;
 
 	public String getLxbm() {
 		return lxbm;
@@ -131,6 +137,8 @@ public class CheckFormData implements Serializable {
 	private String sdfx;
 	@DatabaseField(defaultValue = "false", dataType = DataType.BOOLEAN)
 	private boolean lastUpdate;
+	@DatabaseField
+	private long saveTime = System.currentTimeMillis();
 
 	// "status": "1", //状态 1 草稿 2 已提交，参考业务字典分类ID：10000000690004
 	// "tjsj": null, //提交时间
@@ -142,7 +150,7 @@ public class CheckFormData implements Serializable {
 	// "yhdwName": "青银高速石家庄养护工区", //养护单位名称
 	// "zxzh": 595.844 //中心桩号
 	// }
-	
+
 	public String getBno() {
 		return bno;
 	}
@@ -485,6 +493,38 @@ public class CheckFormData implements Serializable {
 
 	public void setSdfx(String sdfx) {
 		this.sdfx = sdfx;
+	}
+	
+	public String getCus1() {
+		return cus1;
+	}
+
+	public void setCus1(String cus1) {
+		this.cus1 = cus1;
+	}
+
+	public String getCus2() {
+		return cus2;
+	}
+
+	public void setCus2(String cus2) {
+		this.cus2 = cus2;
+	}
+
+	public String getCus3() {
+		return cus3;
+	}
+
+	public void setCus3(String cus3) {
+		this.cus3 = cus3;
+	}
+
+	public long getSaveTime() {
+		return saveTime;
+	}
+
+	public void setSaveTime(long saveTime) {
+		this.saveTime = saveTime;
 	}
 
 	@Override

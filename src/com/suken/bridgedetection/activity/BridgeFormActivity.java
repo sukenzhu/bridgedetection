@@ -69,7 +69,6 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private String[] et1blanks = null;
 	private String[] et2blanks = null;
 	private Object bean = null;
-	private CheckFormData formData;
 	private List<FormItemController> mDetailMaps = new ArrayList<FormItemController>();
 	private LinearLayout mFormContent;
 	private String qhId = "";
@@ -122,6 +121,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	private boolean isEdit = false;
 	private boolean isCheckAgain = false;
+	private boolean isLastUpdate = false;
 	private Map<String, FormBaseDetail> mFormBaseDetails = null;
 
 	@Override
@@ -195,6 +195,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			default:
 				break;
 			}
+		
 			lastEditBaseClass = getBaseDataFromLastEdit();
 		}
 		mFormBaseDetails = getFormBaseDetail();
@@ -317,7 +318,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 					findViewById(R.id.operateDelete).setEnabled(true);
 				}
 				for (int i = 0; i < mFormBaseDetails.size(); i++) {
-					generateController(i, null, mIsHanDong, false);
+					generateController(i, mIsHanDong, false);
 				}
 			}
 		}
@@ -445,9 +446,6 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	}
 
 	private void initQhjc() {
-		if (!isEdit || !isCheckAgain) {
-			formData = (CheckFormData) getIntent().getSerializableExtra("formData");
-		}
 		if (bean instanceof QLBaseData) {
 			if (mType == R.drawable.qiaoliangjiancha) {
 				mFormTitle.setText("桥梁经常检查记录表");
@@ -475,9 +473,14 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				detailValues = Constants.hdformDetailValues;
 				et1blanks = Constants.hdformDetailEt2Blanks;
 				et2blanks = Constants.hdformDetailEt3Blanks;
+				extraLayout.setVisibility(View.VISIBLE);
+				extra1Tv.setText("涵洞类型：");
+				extra1Ev.setEnabled(false);
+				extra1Ev.setText(((HDBaseData) bean).getHdlx());
+				findViewById(R.id.form_weather_layout).setVisibility(View.INVISIBLE);
 			}
-			qlbhTv.setText("涵洞编号");
-			qlmcTv.setText("涵洞名称");
+			qlbhTv.setText("涵洞编号：");
+			qlmcTv.setText("涵洞名称：");
 			mIsHanDong = true;
 			qhId = ((HDBaseData) bean).getId();
 			qlbhEv.setText(((HDBaseData) bean).getHdbh());
@@ -528,26 +531,6 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId("10000001160070");
 		lastPddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
 		pddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
-		Map<String, CheckDetail> mLastFormDetails = new HashMap<String, CheckDetail>();
-		if (formData != null) {
-			if (mType == R.drawable.qiaoliangjiancha) {
-				for (YWDictionaryInfo info : dinfos) {
-					if (!TextUtils.isEmpty(formData.getPrePddj()) && TextUtils.equals(info.getItemValue() + "", formData.getPrePddj())) {
-						int index = dinfos.indexOf(info);
-						lastPddj.setSelection(index);
-					}
-					if (!TextUtils.isEmpty(formData.getPddj()) && TextUtils.equals(info.getItemValue() + "", formData.getPddj())) {
-						int index = dinfos.indexOf(info);
-						pddj.setSelection(index);
-					}
-				}
-			}
-			if (formData.getOftenCheckDetailList() != null) {
-				for (CheckDetail cd : formData.getOftenCheckDetailList()) {
-					mLastFormDetails.put(cd.getBjmc(), cd);
-				}
-			}
-		}
 
 		if ((isEdit || isCheckAgain) && lastEditBaseClass != null) {
 			qlhz.setChecked(TextUtils.equals(lastEditBaseClass.qlhz, "1"));
@@ -578,11 +561,11 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		}
 
 		for (int index = 0; index < detailNames.length; index++) {
-			generateController(index, mLastFormDetails, mIsHanDong, true);
+			generateController(index, mIsHanDong, true);
 		}
 	}
 
-	private void generateController(int index, Map<String, CheckDetail> mLastFormDetails, boolean mIsHanDong, boolean isNew) {
+	private void generateController(int index, boolean mIsHanDong, boolean isNew) {
 
 		View view = LayoutInflater.from(this).inflate(R.layout.activity_form_item, null);
 		LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(-1, -1);
@@ -600,7 +583,6 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				blank2 = et2blanks[index];
 			}
 		}
-		CheckDetail cd = null;
 		FormBaseDetail fbd = null;
 		if ((isEdit || isCheckAgain) && mFormBaseDetails != null) {
 			if (mType == R.drawable.qiaoliangxuncha) {
@@ -610,10 +592,6 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			} else {
 				fbd = mFormBaseDetails.get(detailNames[index]);
 			}
-		} else {
-			if (mLastFormDetails != null) {
-				cd = mLastFormDetails.get(detailNames[index]);
-			}
 		}
 		String detailName = "";
 		if (mType == R.drawable.qiaoliangxuncha) {
@@ -621,7 +599,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		} else {
 			detailName = detailNames[index];
 		}
-		FormItemController con = new FormItemController(this, view, this, detailName, mType, detailValues != null ? detailValues[index] : "", mItemTexts, cd,
+		FormItemController con = new FormItemController(this, view, this, detailName, mType, detailValues != null ? detailValues[index] : "", mItemTexts,
 				et1blanks != null ? et1blanks[index] : "", blank2, qhId, mIsHanDong, fbd, isCheckAgain);
 		if (index == 0) {
 			con.show();
@@ -667,6 +645,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	private void saveToLocal() {
 		long savedId = -1l;
+		String time = LocationManager.getInstance().getLastLocationResult().time;
 		if (mType == R.drawable.suidaoxuncha || mType == R.drawable.qiaoliangxuncha) {
 			SdxcFormData data = new SdxcFormData();
 			if (isEdit) {
@@ -696,8 +675,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.setDealWith(mDealWithEv.getText().toString());
 				data.setWeather(weatherEv.getSelectedItem().toString());
 			}
-			data.setJcsj(UiUtil.formatNowTime());
-			data.setJcsd(UiUtil.formatNowTime());
+			
+			data.setJcsj(time);
+			data.setJcsd(time);
 			data.setType(mType);
 			data.setFzry(fzr.getText().toString());
 			data.setJlry(jlr.getText().toString());
@@ -741,12 +721,18 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 					data.setYhdwName(((HDBaseData) bean).getGydwName());
 					data.setQhlx("c");
 					data.setLxid(((HDBaseData) bean).getLxid());
+					data.setCus2(((HDBaseData) bean).getHdlx());
 				}
 				data.setQhmc(qlmcEv.getText().toString());
 				data.setQhid(qhId);
 				data.setQhbm(qlbhEv.getText().toString());
 				data.setPrePddj(((YWDictionaryInfo) lastPddj.getSelectedItem()).getItemValue() + "");
 				data.setPddj(((YWDictionaryInfo) pddj.getSelectedItem()).getItemValue() + "");
+				LocationResult re = LocationManager.getInstance().getLastLocationResult();
+				if(re != null){
+					data.setCus1(re.latitude + "");
+					data.setCus3(re.longitude + "");
+				}
 			} else if (mType == R.drawable.suidaojiancha) {
 				if (bean instanceof SDBaseData) {
 					data.setGldwId(((SDBaseData) bean).getGydwId());
@@ -773,7 +759,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			data.setJlry(jlr.getText().toString());
 			data.setStatus(Constants.STATUS_UPDATE);
 			data.setHzf(qlhz.isChecked() ? "1" : "0");
-			data.setJcsj(UiUtil.formatNowTime());
+			data.setJcsj(time);
 			data.setCreator(BridgeDetectionApplication.mCurrentUser.getUserName());
 			CheckFormAndDetailDao dao = new CheckFormAndDetailDao();
 			if (!isEdit) {
@@ -862,21 +848,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		}
 	}
 
-	public CheckDetail getCheckDetail(String title) {
-		if (formData != null) {
-			List<CheckDetail> list = formData.getOftenCheckDetailList();
-			for (CheckDetail detail : list) {
-				if (TextUtils.equals(detail.getBjmc(), title)) {
-					return detail;
-				}
-			}
-		}
-		return null;
-	}
-
 	public void operate(View view) {
 		if (view.getId() == R.id.operateAdd) {
-			generateController(mDetailMaps.size(), null, mIsHanDong, true);
+			generateController(mDetailMaps.size(), mIsHanDong, true);
 			findViewById(R.id.operateDelete).setEnabled(true);
 			mDetailMaps.get(mDetailMaps.size() - 1).performArrowImgClick();
 		} else if (view.getId() == R.id.operateDelete) {

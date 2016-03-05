@@ -50,5 +50,13 @@ public class SDBaseDataDao {
 		}
 		return null;
 	}
+	
+	public int countAll(){
+		List<SDBaseData> list = queryAll();
+		if(list != null){
+			return list.size();
+		}
+		return 0;
+	}
 
 }

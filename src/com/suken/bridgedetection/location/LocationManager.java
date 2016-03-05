@@ -168,9 +168,12 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 			sb.append(location.getLatitude());
 			sb.append("\nlontitude : ");
 			result.longitude = location.getLongitude();
+			result.time = location.getTime();
 			sb.append(location.getLongitude());
 			sb.append("\nradius : ");
 			sb.append(location.getRadius());
+			sb.append("\ntime : ");
+			sb.append(location.getTime());
 			if (location.getLocType() == BDLocation.TypeGpsLocation) {// GPS定位结果
 				sb.append("\nspeed : ");
 				sb.append(location.getSpeed());// 单位：公里每小时

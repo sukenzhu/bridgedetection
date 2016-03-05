@@ -112,6 +112,8 @@ public class SdxcFormData implements Serializable {
 	private String qhlx;
 	@DatabaseField
 	private String tjsj;
+	@DatabaseField
+	private long savedTime = System.currentTimeMillis();
 
 	public String getJcsj() {
 		return jcsj;
@@ -431,6 +433,14 @@ public class SdxcFormData implements Serializable {
 
 	public void setTjsj(String tjsj) {
 		this.tjsj = tjsj;
+	}
+
+	public long getSavedTime() {
+		return savedTime;
+	}
+
+	public void setSavedTime(long savedTime) {
+		this.savedTime = savedTime;
 	}
 
 	@Override

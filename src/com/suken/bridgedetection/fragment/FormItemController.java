@@ -46,7 +46,7 @@ public class FormItemController implements OnClickListener {
 	private boolean mIsCheckAgain = false;
 
 	public FormItemController(Activity context, View view, OnClickListener listener, String text, int type, String defaultValue, String[] itemTexts,
-			CheckDetail formDetail, String blank1, String blank2, String qhId, boolean isHandong, FormBaseDetail detail,boolean isCheckAgain) {
+			 String blank1, String blank2, String qhId, boolean isHandong, FormBaseDetail detail,boolean isCheckAgain) {
 		this.mIsHandong = isHandong;
 		mFormBaseDetail = detail;
 		mContext = (BridgeFormActivity) context;
@@ -82,7 +82,7 @@ public class FormItemController implements OnClickListener {
 		mArrowImgView.setTag(this);
 		mArrowImgView.setOnClickListener(listener);
 		this.mDefaultValue = defaultValue;
-		initImageAndVideo(formDetail, blank1, blank2);
+		initImageAndVideo(null, blank1, blank2);
 	}
 
 	private ImageView xiangji;

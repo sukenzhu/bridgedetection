@@ -27,11 +27,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class HttpTask {
-	// public static String REQUEST_IP = "binglee.wicp.net";
+	 public static String REQUEST_IP = "binglee.wicp.net";
 
-	public static String REQUEST_IP = "121.28.74.58";
+//	public static String REQUEST_IP = "121.28.74.58";
 
-	public static String REQUEST_PORT = "8080";
+	public static String REQUEST_PORT = "";
 
 	private RequestType mRequestType = null;
 

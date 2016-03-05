@@ -10,6 +10,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.util.UiUtil;
 
 public class CheckFormAndDetailDao {
 
@@ -74,21 +75,6 @@ public class CheckFormAndDetailDao {
 		return null;
 	}
 	
-	boolean checkValid(long lastTime){
-		Calendar c1 = Calendar.getInstance();
-		c1.setTimeInMillis(lastTime);
-		
-		Calendar c2 = Calendar.getInstance();
-		c2.setTimeInMillis(System.currentTimeMillis());
-		
-		if(c2.get(Calendar.YEAR) == c1.get(Calendar.YEAR)){
-			if(c2.get(Calendar.MONTH) == c1.get(Calendar.MONTH)){
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public List<CheckFormData> queryByQHId(String id, int type) {
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -203,22 +189,12 @@ public class CheckFormAndDetailDao {
 		return 0;
 	}
 	
-	public List<CheckFormData> queryLastUpdate(int type){
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("type", type);
-		map.put("lastUpdate", true);
+	public boolean deleteLastUpdateByType(int type) {
 		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("type", type);
+			map.put("lastUpdate", true);
 			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
-			return list;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public boolean deleteLastUpdate() {
-		try {
-			List<CheckFormData> list = mFormDao.queryForEq("lastUpdate", true);
 			if (list != null && list.size() > 0) {
 				for (CheckFormData data : list) {
 					deleteChecFormDataById(data);
@@ -259,5 +235,53 @@ public class CheckFormAndDetailDao {
 		}
 		return null;
 	}
+	
+	public CheckFormData queryLastUpdateByTypeAndId(String id, int type){
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(type == R.drawable.qiaoliangjiancha){
+			map.put("qhid", id);
+		} else {
+			map.put("sdid", id);
+		}
+		map.put("type", type);
+		map.put("lastUpdate", true);
+		try {
+			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
+			if(list != null && list.size() > 0){
+				CheckFormData data = list.get(0);
+				data.setOftenCheckDetailList(queryByFormId(data.getLocalId()));
+				return data;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	
+	}
+	
+	
+	public boolean deleteAllLocalData(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("lastUpdate", false);
+		map.put("status", "2");
+		try {
+			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
+			boolean isDelete = false;
+			if(list != null){
+				for(CheckFormData data : list){
+					if(!UiUtil.checkValid(data.getSaveTime())){
+						deleteChecFormDataById(data);
+						isDelete = true;
+					}
+				}
+				return isDelete;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 
 }

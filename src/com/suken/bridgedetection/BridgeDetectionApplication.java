@@ -2,6 +2,7 @@ package com.suken.bridgedetection;
 
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.storage.UserInfo;
+import com.suken.bridgedetection.util.UiUtil;
 
 import android.app.Application;
 import android.content.Context;
@@ -23,10 +24,13 @@ public class BridgeDetectionApplication extends Application {
 		super.onCreate();
 		TelephonyManager manager  = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		mDeviceId = manager.getDeviceId();
+		UiUtil.setAlarm(this);
 	}
 
 	public static BridgeDetectionApplication getInstance() {
 		return mInstance;
 	}
+	
+	
 
 }

@@ -10,5 +10,7 @@ public class LocationResult {
 
 	public double longitude;
 	
+	public String time;
+	
 
 }

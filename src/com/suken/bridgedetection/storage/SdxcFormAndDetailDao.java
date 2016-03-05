@@ -9,6 +9,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.util.UiUtil;
 
 public class SdxcFormAndDetailDao {
 
@@ -202,6 +203,27 @@ public class SdxcFormAndDetailDao {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	public boolean deleteAllLocalData(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("status", "2");
+		try {
+			List<SdxcFormData> list = mFormDao.queryForFieldValues(map);
+			if(list != null){
+				boolean isDelete = false;
+				for(SdxcFormData data : list){
+					if(UiUtil.checkValid(data.getSavedTime())){
+						deleteChecFormDataById(data);
+						isDelete = true;
+					}
+				}
+				return isDelete;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,9 +56,11 @@ import com.suken.bridgedetection.storage.YWDictionaryInfo;
 import com.suken.bridgedetection.util.NetWorkUtil.ConnectType;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -83,8 +86,7 @@ public class UiUtil {
 		}
 		return DP;
 	}
-	
-	
+
 	private static final double EARTH_RADIUS = 6378.137;
 
 	private static double rad(double d) {
@@ -101,12 +103,12 @@ public class UiUtil {
 		s = Math.round(s * 10000) / 10000;
 		return s;
 	}
-	
+
 	public static void syncData(final BaseActivity activity) {
 		syncData(activity, false);
 	}
-	
-	public static void syncData(final BaseActivity activity, final boolean isJustLastUpdate, final OnSyncDataFinishedListener syncListener){
+
+	public static void syncData(final BaseActivity activity, final boolean isJustLastUpdate, final OnSyncDataFinishedListener syncListener) {
 
 		ConnectType type = NetWorkUtil.getConnectType(activity);
 		if (type == ConnectType.CONNECT_TYPE_DISCONNECT) {
@@ -168,18 +170,18 @@ public class UiUtil {
 							data.setLastUpdate(true);
 						}
 						CheckFormAndDetailDao dao = new CheckFormAndDetailDao();
-						dao.deleteLastUpdate();
+						dao.deleteLastUpdateByType(type == RequestType.lastqhjcInfo ? R.drawable.qiaoliangjiancha : R.drawable.suidaojiancha);
 						dao.create(list);
 					}
 					break;
 				}
-				case syncData:{
-//					桥梁  bridges 后面就是之前的data
-//					culverts 涵洞的key
-//					tunnels  隧道
-//					dictionarys 系统字典的
-//					brgengineers 桥涵工程师的  tunengineers 隧道的
-					
+				case syncData: {
+					// 桥梁 bridges 后面就是之前的data
+					// culverts 涵洞的key
+					// tunnels 隧道
+					// dictionarys 系统字典的
+					// brgengineers 桥涵工程师的 tunengineers 隧道的
+
 					List<GXLuXianInfo> list = JSON.parseArray(obj.getString("luxians"), GXLuXianInfo.class);
 					new GXLuXianInfoDao().create(list);
 					List<QLBaseData> list1 = JSON.parseArray(obj.getString("bridges"), QLBaseData.class);
@@ -219,18 +221,27 @@ public class UiUtil {
 				list.add(pair);
 				pair = new BasicNameValuePair("did", BridgeDetectionApplication.mDeviceId);
 				list.add(pair);
-//				if (!isJustLastUpdate) {
-//					new HttpTask(listener, RequestType.gxlxInfo).executePost(list);
-//					new HttpTask(listener, RequestType.qlBaseData).executePost(list);
-//					new HttpTask(listener, RequestType.hdBaseData).executePost(list);
-//					new HttpTask(listener, RequestType.sdBaseData).executePost(list);
-//					new HttpTask(listener, RequestType.qhyhzrInfo).executePost(list);
-//					new HttpTask(listener, RequestType.sdyhzrInfo).executePost(list);
-//					new HttpTask(listener, RequestType.ywzddmInfo).executePost(list);
-//				}
-//				new HttpTask(listener, RequestType.lastqhjcInfo).executePost(list);
-//				new HttpTask(listener, RequestType.lastsdjcInfo).executePost(list);
-				if(isJustLastUpdate){
+				// if (!isJustLastUpdate) {
+				// new HttpTask(listener,
+				// RequestType.gxlxInfo).executePost(list);
+				// new HttpTask(listener,
+				// RequestType.qlBaseData).executePost(list);
+				// new HttpTask(listener,
+				// RequestType.hdBaseData).executePost(list);
+				// new HttpTask(listener,
+				// RequestType.sdBaseData).executePost(list);
+				// new HttpTask(listener,
+				// RequestType.qhyhzrInfo).executePost(list);
+				// new HttpTask(listener,
+				// RequestType.sdyhzrInfo).executePost(list);
+				// new HttpTask(listener,
+				// RequestType.ywzddmInfo).executePost(list);
+				// }
+				// new HttpTask(listener,
+				// RequestType.lastqhjcInfo).executePost(list);
+				// new HttpTask(listener,
+				// RequestType.lastsdjcInfo).executePost(list);
+				if (isJustLastUpdate) {
 					new HttpTask(listener, RequestType.lastqhjcInfo).executePost(list);
 					new HttpTask(listener, RequestType.lastsdjcInfo).executePost(list);
 				} else {
@@ -240,22 +251,21 @@ public class UiUtil {
 				if (TextUtils.isEmpty(msg)) {
 					SharePreferenceManager.getInstance().updateString("lastSyncTime", System.currentTimeMillis() + "");
 					activity.toast("数据同步成功");
-					if(syncListener != null){
+					if (syncListener != null) {
 						syncListener.onSyncFinished(true);
 					}
 				} else {
 					msg = msg.substring(0, msg.length() - 1);
 					activity.toast(msg + "数据同步失败，请在设置中重试同步！");
-					if(syncListener != null){
+					if (syncListener != null) {
 						syncListener.onSyncFinished(false);
 					}
 				}
 				activity.dismissLoading();
 			}
 		});
-	
+
 	}
-	
 
 	public static void syncData(final BaseActivity activity, final boolean isJustLastUpdate) {
 		syncData(activity, isJustLastUpdate, null);
@@ -428,7 +438,7 @@ public class UiUtil {
 
 				@Override
 				public void onRequestSuccess(RequestType type1, JSONObject obj) {
-					if(type1 != RequestType.updateGps){
+					if (type1 != RequestType.updateGps) {
 						new CheckFormAndDetailDao().create(data);
 						activity.runOnUiThread(new Runnable() {
 							public void run() {
@@ -447,7 +457,7 @@ public class UiUtil {
 
 				@Override
 				public void onRequestFail(RequestType type, String resultCode, String result) {
-					if(type != RequestType.updateGps){
+					if (type != RequestType.updateGps) {
 						activity.toast(result);
 					}
 				}
@@ -455,9 +465,9 @@ public class UiUtil {
 			data.setStatus("2");
 			data.setTjsj(UiUtil.formatNowTime());
 			String json = new String(JSON.toJSONString(data));
-			if(type == R.drawable.qiaoliangjiancha){
+			if (type == R.drawable.qiaoliangjiancha) {
 				GpsData gpsData = new GpsDataDao().queryGpsData(Long.parseLong(qhId), data.getQhlx());
-				if(gpsData != null){
+				if (gpsData != null) {
 					BasicNameValuePair jsonPair = new BasicNameValuePair("json", JSON.toJSONString(gpsData));
 					list.add(jsonPair);
 					new HttpTask(listener, RequestType.updateGps).executePost(list);
@@ -468,13 +478,11 @@ public class UiUtil {
 			new HttpTask(listener, type == R.drawable.suidaojiancha ? RequestType.updatesdjcInfo : RequestType.updateqhjcInfo).executePost(list);
 		}
 	}
-	
-	
+
 	public static byte[] toGzip(byte[] content) throws IOException {
 		byte[] re = null;
 		try {
-			ByteArrayInputStream bais = new ByteArrayInputStream(
-					content);
+			ByteArrayInputStream bais = new ByteArrayInputStream(content);
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			GZIPOutputStream gzip = new GZIPOutputStream(bos);
 			byte[] buf = new byte[4096];
@@ -517,7 +525,7 @@ public class UiUtil {
 		}
 		return re;
 	}
-	
+
 	private static void todownload(final String url, final BaseActivity activity) {
 		activity.runOnUiThread(new Runnable() {
 
@@ -532,7 +540,7 @@ public class UiUtil {
 							// 下载
 							final DownloadManager downloadManager = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
 							DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-							request.setDestinationInExternalPublicDir("bridgedetection",  "bridgedetection.apk");
+							request.setDestinationInExternalPublicDir("bridgedetection", "bridgedetection.apk");
 							final long downloadId = downloadManager.enqueue(request);
 							activity.toast("下载中...");
 							IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
@@ -544,7 +552,7 @@ public class UiUtil {
 										Uri uri = downloadManager.getUriForDownloadedFile(downloadId);
 										Intent a = new Intent();
 										a.setAction(Intent.ACTION_VIEW);
-										a.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+										a.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 										a.setDataAndType(uri, "application/vnd.android.package-archive");
 										activity.startActivity(a);
 									}
@@ -553,7 +561,7 @@ public class UiUtil {
 							activity.registerReceiver(receiver, filter);
 						} else {
 							dialog.dismiss();
-							if(activity instanceof HomePageActivity){
+							if (activity instanceof HomePageActivity) {
 								((HomePageActivity) activity).selectHome();
 							}
 						}
@@ -564,15 +572,14 @@ public class UiUtil {
 		});
 
 	}
-	
-	
-	public static  void update(final BaseActivity activity) {
+
+	public static void update(final BaseActivity activity) {
 		BackgroundExecutor.execute(new Runnable() {
 
 			@Override
 			public void run() {
 				OnReceivedHttpResponseListener listener = new OnReceivedHttpResponseListener() {
-					
+
 					@Override
 					public void onRequestSuccess(RequestType type, JSONObject result) {
 
@@ -584,7 +591,7 @@ public class UiUtil {
 								todownload(url, activity);
 							} else {
 								activity.toast("当前版本为最新版本，无需更新");
-								if(activity instanceof HomePageActivity){
+								if (activity instanceof HomePageActivity) {
 									((HomePageActivity) activity).selectHome();
 								}
 							}
@@ -592,15 +599,15 @@ public class UiUtil {
 							e.printStackTrace();
 						}
 					}
-					
+
 					@Override
 					public void onRequestFail(RequestType type, String resultCode, String result) {
-						
+
 					}
 				};
 				activity.showLoading("检查更新中...");
 				List<NameValuePair> list = new ArrayList<NameValuePair>();
-				if(BridgeDetectionApplication.mCurrentUser != null){
+				if (BridgeDetectionApplication.mCurrentUser != null) {
 					BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 					list.add(pair);
 					pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
@@ -610,6 +617,34 @@ public class UiUtil {
 				activity.dismissLoading();
 			}
 		});
+	}
+
+	public static void setAlarm(Context context) {
+		// 操作：发送一个广播，广播接收后Toast提示定时操作完成
+		Intent intent = new Intent(context, AlarmReceiver.class);
+		intent.setAction("android.suken.action.checkdata");
+		PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
+		// 设定一个五秒后的时间
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.add(Calendar.SECOND, 50);
+		AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+	}
+	
+	public static boolean checkValid(long lastTime){
+		Calendar c1 = Calendar.getInstance();
+		c1.setTimeInMillis(lastTime);
+		
+		Calendar c2 = Calendar.getInstance();
+		c2.setTimeInMillis(System.currentTimeMillis());
+		
+		if(c2.get(Calendar.YEAR) == c1.get(Calendar.YEAR)){
+			if(c2.get(Calendar.MONTH) == c1.get(Calendar.MONTH)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

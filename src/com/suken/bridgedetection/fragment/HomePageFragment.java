@@ -1,5 +1,7 @@
 package com.suken.bridgedetection.fragment;
 
+import java.util.Calendar;
+
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
@@ -8,12 +10,18 @@ import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.location.LocationResult;
 import com.suken.bridgedetection.location.OnLocationFinishedListener;
 import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
+import com.suken.bridgedetection.storage.HDBaseDataDao;
+import com.suken.bridgedetection.storage.QLBaseDataDao;
+import com.suken.bridgedetection.storage.SDBaseDataDao;
 import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
 import com.suken.bridgedetection.storage.SharePreferenceManager;
 import com.suken.bridgedetection.util.OnSyncDataFinishedListener;
 import com.suken.bridgedetection.util.UiUtil;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,12 +29,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HomePageFragment extends BaseFragment implements OnClickListener, OnLocationFinishedListener, OnSyncDataFinishedListener {
 
@@ -43,7 +53,6 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 	private View tipLayout2 = null;
 	private View tipLayout3 = null;
 	private View tipLayout4 = null;
-	
 
 	private View mContentView = null;
 	private boolean mIsGpsSuccess = false;
@@ -142,38 +151,80 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 
 			@Override
 			public void run() {
-				
+
 				final int count1 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangjiancha, Constants.STATUS_UPDATE);
 				final int count2 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_UPDATE);
 				final int count3 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangxuncha, Constants.STATUS_UPDATE);
 				final int count4 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_UPDATE);
+
+				final int count5 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangjiancha, Constants.STATUS_AGAIN);
+				final int count6 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_AGAIN);
+				final int count7 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_AGAIN);
+
+				final int qljxNoCount = new QLBaseDataDao().countAll() + new HDBaseDataDao().countAll() - count1 - count5;
+				final int sdjcNoCount = new SDBaseDataDao().countAll() - count2 - count6;
+				final int sdxcNoCount = new SDBaseDataDao().countAll() - count4 - count7;
+
 				getActivity().runOnUiThread(new Runnable() {
-					
+
 					@Override
 					public void run() {
-						if(count1 > 0){
+						if (count1 > 0) {
 							tipsNum1.setText(count1 + "");
 							tipLayout1.setVisibility(View.VISIBLE);
 						} else {
 							tipLayout1.setVisibility(View.GONE);
 						}
-						if(count2 > 0){
+						if (count2 > 0) {
 							tipsNum2.setText(count2 + "");
 							tipLayout2.setVisibility(View.VISIBLE);
 						} else {
 							tipLayout2.setVisibility(View.GONE);
 						}
-						if(count3 > 0){
+						if (count3 > 0) {
 							tipsNum3.setText(count3 + "");
 							tipLayout3.setVisibility(View.VISIBLE);
 						} else {
 							tipLayout3.setVisibility(View.GONE);
 						}
-						if(count4 > 0){
+						if (count4 > 0) {
 							tipsNum4.setText(count4 + "");
 							tipLayout4.setVisibility(View.VISIBLE);
 						} else {
 							tipLayout4.setVisibility(View.GONE);
+						}
+						Calendar cal = Calendar.getInstance();
+						cal.setTimeInMillis(System.currentTimeMillis());
+						int day = cal.get(Calendar.DAY_OF_MONTH);
+						int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+						if(qljxNoCount + sdjcNoCount + sdxcNoCount > 0 && maxDay - day <= 7){
+							String ns = Context.NOTIFICATION_SERVICE;
+							NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(ns);
+							// 定义通知栏展现的内容信息
+							int icon = R.drawable.ic_launcher;
+							CharSequence tickerText = "提醒";
+							long when = System.currentTimeMillis();
+							Notification notification = new Notification(icon, tickerText, when);
+	
+							// 定义下拉通知栏时要展现的内容信息
+							Context context = getActivity();
+							CharSequence contentTitle = "本月剩余未检查提醒";
+							StringBuilder sb = new StringBuilder();
+							if(qljxNoCount > 0) sb.append("桥梁检查剩余：" + qljxNoCount + "，");
+							if(sdjcNoCount > 0) sb.append("隧道检查剩余：" + sdjcNoCount + "，");
+							if(sdxcNoCount > 0) sb.append("隧道巡查剩余：" + sdxcNoCount);
+							CharSequence contentText =  sb.toString();
+							// Intent notificationIntent = new Intent(getActivity(),
+							// BootStartDemo.class);
+							// PendingIntent contentIntent =
+							// PendingIntent.getActivity(this, 0,
+							// notificationIntent, 0);
+							notification.setLatestEventInfo(context, contentTitle, contentText, null);
+							// 用mNotificationManager的notify方法通知用户生成标题栏消息通知
+							mNotificationManager.notify(1, notification);
+							Vibrator vib = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+							vib.vibrate(300);
+							Toast.makeText(getActivity(), contentText, Toast.LENGTH_LONG).show();
 						}
 					}
 				});
