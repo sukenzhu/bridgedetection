@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#465568"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="150dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="桥梁检查移动办公采集系统"
+            android:textColor="#ffffff"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BCMOA"
+            android:textColor="#ff0000"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="#323d4b"
+            android:gravity="center"
+            android:text="用户登录"
+            android:textColor="#5b9bd1"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#3a4554"
+            android:padding="20dp" >
+
+            <com.suken.bridgedetection.widget.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res/com.suken.bridgedetection"
+                android:id="@+id/left_frag_item_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/demo"
+                app:border_color="@color/dark"
+                app:border_width="0dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <EditText
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="#303a48"
+                    android:hint="账户"
+                    android:paddingLeft="5dp"
+                    android:textColor="#697687"
+                    android:textSize="12dp" />
+
+                <EditText
+                    android:id="@+id/userpwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#303a48"
+                    android:hint="密码"
+                    android:paddingLeft="5dp"
+                    android:password="true"
+                    android:textColor="#697687"
+                    android:textSize="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp" >
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="#3ea49d"
+                        android:onClick="onlineLogin"
+                        android:text="在线登录"
+                        android:textColor="#ffffff"
+                        android:textSize="12dp" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="#e76070"
+                        android:onClick="offlineLogin"
+                        android:text="离线登录"
+                        android:textColor="#ffffff"
+                        android:textSize="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/login_desc"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#323d4b"
+            android:gravity="center"
+            android:text="当前版本v1.0.0"
+            android:textColor="#697687"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+</LinearLayout>

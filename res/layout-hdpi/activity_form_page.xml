@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/list_main_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="#95323d4b"
+            android:gravity="center"
+            android:text="返回"
+            android:clickable="true"
+            android:onClick="back"
+            android:textColor="#ffffff"
+            android:textSize="13dp" />
+
+        <TextView
+            android:id="@+id/save1"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:background="#95323d4b"
+            android:gravity="center"
+            android:text="保存"
+            android:textColor="#ffffff"
+            android:textSize="13dp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/form_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#80ffffff"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="#3ea49d"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:id="@+id/form_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="桥梁经常检查纪录表"
+                        android:textColor="#ffffff"
+                        android:textSize="13dp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" >
+
+                        <TextView
+                            android:id="@+id/gps_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="GPS信号正常！"
+                            android:textColor="#ffffff"
+                            android:textSize="13dp" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/gps_text"
+                            android:src="@drawable/list_gps" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="match_parent"
+                        android:gravity="right|center_vertical"
+                        android:paddingRight="5dp" >
+
+                        <CheckBox
+                            android:id="@+id/form_qlhz"
+                            style="@android:style/Widget.CompoundButton.CheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="桥梁会诊"
+                            android:textColor="#ffffff"
+                            android:textSize="13dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical" >
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
+
+                        <RadioButton
+                            android:id="@+id/radioql"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="桥梁"
+                            android:textSize="12dp" >
+                        </RadioButton>
+
+                        <RadioButton
+                            android:id="@+id/radiohd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="涵洞"
+                            android:textSize="12dp" >
+                        </RadioButton>
+                    </RadioGroup>
+
+                    <LinearLayout
+                        android:id="@+id/form_qlbh"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_qlbh_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="桥梁编号："
+                                android:textSize="12dp" />
+
+                            <EditText
+                                android:id="@+id/form_qlbh_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="30dp"
+                                android:background="@drawable/line"
+                                android:textColor="#333333"
+                                android:textSize="12dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_qlmc_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="桥梁名称："
+                                android:textSize="12dp" />
+
+                            <EditText
+                                android:id="@+id/form_qlmc_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="30dp"
+                                android:background="@drawable/line"
+                                android:textColor="#333333"
+                                android:textSize="12dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/form_lxbh"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_lxbh_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="路线编号："
+                                android:textSize="12dp" />
+
+                            <EditText
+                                android:id="@+id/form_lxbh_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="30dp"
+                                android:background="@drawable/line"
+                                android:textColor="#333333"
+                                android:textSize="12dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_lxmc_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="路线名称："
+                                android:textSize="12dp" />
+
+                            <EditText
+                                android:id="@+id/form_lxmc_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="30dp"
+                                android:background="@drawable/line"
+                                android:textColor="#333333"
+                                android:textSize="12dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/form_zxzh"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_zxzh_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="中心桩号："
+                                android:textSize="12dp" />
+
+                            <EditText
+                                android:id="@+id/form_zxzh_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="30dp"
+                                android:background="@drawable/line"
+                                android:textColor="#333333"
+                                android:textSize="12dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_yhdw_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="养护单位："
+                                android:textSize="12dp" />
+
+                            <EditText
+                                android:id="@+id/form_yhdw_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="30dp"
+                                android:background="@drawable/line"
+                                android:textColor="#333333"
+                                android:textSize="12dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/extra_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:visibility="gone" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_extra1_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="隧道方向："
+                                android:textSize="12dp" />
+
+                            <EditText
+                                android:id="@+id/form_extra1_ev"
+                                android:layout_width="200dp"
+                                android:layout_height="30dp"
+                                android:background="@drawable/line"
+                                android:textColor="#333333"
+                                android:textSize="12dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/form_weather_layout"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/form_weather_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="天气情况："
+                                android:textSize="12dp" />
+
+                            <Spinner
+                                android:id="@+id/form_weather_sp"
+                                android:layout_width="200dp"
+                                android:layout_height="30dp"
+                                android:textColor="#333333"
+                                android:padding="0dp"
+                                android:textSize="12dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/operateLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:visibility="gone" >
+
+                    <Button
+                        android:id="@+id/operateAdd"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="10dp"
+                        android:onClick="operate"
+                        android:text="添加"
+                        android:textSize="13dp" />
+
+                    <Button
+                        android:id="@+id/operateDelete"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:enabled="false"
+                        android:onClick="operate"
+                        android:text="删除"
+                        android:textSize="13dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingTop="5dp"
+        android:background="#80ffffff"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/pddj_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="15dp" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="上次技术状况评定等级："
+                        android:textSize="12dp" />
+
+                    <Spinner
+                        android:id="@+id/form_scpd_spinner"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:padding="0dp"
+                        android:textSize="12dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="本次技术状况评定等级："
+                        android:textSize="12dp" />
+
+                    <Spinner
+                        android:id="@+id/form_bcpd_spinner"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:padding="0dp"
+                        android:textSize="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lastEditLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="15dp" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:id="@+id/fzrtv"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="负责人："
+                        android:textSize="12dp" />
+
+                    <EditText
+                        android:id="@+id/form_fzr_tv"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/line"
+                        android:textSize="12dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="记录人："
+                        android:textSize="12dp" />
+
+                    <EditText
+                        android:id="@+id/form_jlr_spinner"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/line"
+                        android:textSize="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/qlxcLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="处理意见：" />
+
+                    <EditText
+                        android:id="@+id/dealwithEv"
+                        android:textSize="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/line"
+                        android:layout_weight="1" />
+                </LinearLayout>
+                
+                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="10dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="检查人：" />
+
+                    <EditText
+                        android:id="@+id/jiancharenEv"
+                        android:textSize="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/line"
+                        android:layout_weight="1" />
+                </LinearLayout>
+                
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/save2"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#3ea49d"
+        android:text="保存"
+        android:textColor="#ffffff"
+        android:textSize="14dp" />
+
+</LinearLayout>

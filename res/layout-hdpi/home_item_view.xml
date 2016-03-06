@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/home_item_bg_selector"
+    android:gravity="center_vertical"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/home_item_icon_bg" >
+
+        <ImageView
+            android:id="@+id/home_frag_item_img"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:src="@drawable/demo" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/home_frag_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@drawable/home_item_text_selector"
+        android:textSize="15dp"
+        android:layout_gravity="center_horizontal"
+        android:text="日常养护" />
+
+</LinearLayout>

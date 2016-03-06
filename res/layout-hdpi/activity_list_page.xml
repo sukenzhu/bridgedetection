@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/list_main_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
+
+        <TextView
+            android:id="@+id/back"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:background="#95323d4b"
+            android:gravity="center"
+            android:text="返回"
+            android:textColor="#ffffff"
+            android:textSize="12dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/list_search_bg"
+                android:layout_marginRight="70dp"
+                android:paddingRight="2dp" >
+
+                <EditText
+                    android:id="@+id/search_input"
+                    android:layout_width="400dp"
+                    android:textSize="12dp"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:imeOptions="actionSearch"
+                    android:paddingLeft="5dp" />
+
+                <ImageView
+                    android:id="@+id/search_btn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/search_input"
+                    android:src="@drawable/list_search" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp" >
+
+                <ImageView
+                    android:id="@+id/gps_btn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="#95323d4b"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="2dp"
+                    android:src="@drawable/list_gps" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="#50000000" />
+
+                <ImageView
+                    android:id="@+id/tongbu_btn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="#95323d4b"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="2dp"
+                    android:src="@drawable/tongbu" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#80ffffff"
+        android:orientation="vertical" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp" >
+
+            <LinearLayout
+                android:id="@+id/qiaoliang_base_title"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/list_title_bg_selector"
+                android:gravity="center_vertical"
+                android:onClick="switchPanel" >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/list_title_ql_img_bg_selector" />
+
+                <TextView
+                    android:id="@+id/list_ql_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 桥梁[0/0]"
+                    android:textColor="@drawable/list_title_text_bg_selector"
+                    android:textSize="13dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/handong_base_title"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="120dp"
+                android:background="@drawable/list_title_bg_selector"
+                android:gravity="center_vertical"
+                android:onClick="switchPanel" >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/list_title_hd_img_bg_selector" />
+
+                <TextView
+                    android:id="@+id/list_hd_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 涵洞[0/0]"
+                    android:textColor="@drawable/list_title_text_bg_selector"
+                    android:textSize="13dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_gravity="bottom"
+                android:background="#40000000" />
+
+            <LinearLayout
+                android:id="@+id/update_all"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:background="#3ea49d"
+                android:gravity="center_vertical" >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/qbsc" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 全部上传"
+                    android:textColor="#ffffff"
+                    android:textSize="13dp" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:id="@+id/row1"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="桥涵桩号"
+                android:textSize="13dp" />
+
+            <TextView
+                android:id="@+id/row2"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="名称"
+                android:textSize="13dp" />
+
+            <TextView
+                android:id="@+id/row3"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="桥涵标识"
+                android:textSize="13dp" />
+
+            <TextView
+                android:id="@+id/row4"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="路线编码"
+                android:textSize="13dp" />
+
+            <TextView
+                android:id="@+id/row5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="30dp"
+                android:text="路线名称"
+                android:textSize="13dp" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/activity_list_ql"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="#40000000"
+            android:dividerHeight="2px"
+            android:listSelector="@null" >
+        </ListView>
+
+        <ListView
+            android:id="@+id/activity_list_hd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="#40000000"
+            android:dividerHeight="2px"
+            android:listSelector="@null" >
+        </ListView>
+    </LinearLayout>
+
+</LinearLayout>
