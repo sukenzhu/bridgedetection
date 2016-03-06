@@ -205,7 +205,7 @@
                                     android:id="@+id/syncLocationTv"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="定位正常"
+                                    android:text="定位中..."
                                     android:textColor="@android:color/white"
                                     android:textSize="12dp" />
                             </LinearLayout>
