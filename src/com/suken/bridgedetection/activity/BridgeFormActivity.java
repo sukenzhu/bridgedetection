@@ -651,11 +651,11 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			if (isEdit) {
 				data.setLocalId(localId);
 			}
+			data.setGydwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
+			data.setGydwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
+			data.setYhdwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
+			data.setYhdwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
 			if (bean instanceof SDBaseData) {
-				data.setGldwId(((SDBaseData) bean).getGydwId());
-				data.setGldwName(((SDBaseData) bean).getGydwName());
-				data.setYhdwId(((SDBaseData) bean).getGydwId());
-				data.setYhdwName(((SDBaseData) bean).getGydwName());
 				data.setLxid(((SDBaseData) bean).getLxid());
 				data.setYhjgId(((SDBaseData) bean).getGydwId());
 				data.setYhjgName(((SDBaseData) bean).getGydwName());
@@ -667,8 +667,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.setZxzh(zxzhEv.getText().toString());
 				data.setLxbh(lxbhEv.getText().toString());
 			} else {
-				data.setGydwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
-				data.setGydwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
+				
 				data.setQhlx(mRadioGroup.getCheckedRadioButtonId() == R.id.radioql ? "b" : "c");
 				data.setXcry(extra1Ev.getText().toString());
 				data.setJcry(mJcrEv.getText().toString());
