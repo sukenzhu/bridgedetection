@@ -3,6 +3,7 @@ package com.suken.bridgedetection.location;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -204,7 +205,12 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 				sb.append("\ndescribe : ");
 				sb.append("离线定位成功，离线定位结果也是有效的");
 				result.message = "离线定位成功，离线定位结果也是有效的";
-				result.isSuccess = true;
+				android.location.LocationManager locationManager = (android.location.LocationManager) BridgeDetectionApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
+				if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+					result.isSuccess = true;
+				} else {
+					result.isSuccess = false;
+				}
 			} else if (location.getLocType() == BDLocation.TypeServerError) {
 				sb.append("\ndescribe : ");
 				sb.append("服务端网络定位失败，可以反馈IMEI号和大体定位时间到loc-bugs@baidu.com，会有人追查原因");

@@ -706,19 +706,15 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			if (isEdit) {
 				data.setLocalId(localId);
 			}
+			data.setGldwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
+			data.setGldwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
+			data.setYhdwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
+			data.setYhdwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
 			if (mType == R.drawable.qiaoliangjiancha) {
 				if (bean instanceof QLBaseData) {
-					data.setGldwId(((QLBaseData) bean).getGydwId());
-					data.setGldwName(((QLBaseData) bean).getGydwName());
-					data.setYhdwId(((QLBaseData) bean).getGydwId());
-					data.setYhdwName(((QLBaseData) bean).getGydwName());
 					data.setQhlx("b");
 					data.setLxid(((QLBaseData) bean).getLxid());
 				} else if (bean instanceof HDBaseData) {
-					data.setGldwId(((HDBaseData) bean).getGydwId());
-					data.setGldwName(((HDBaseData) bean).getGydwName());
-					data.setYhdwId(((HDBaseData) bean).getGydwId());
-					data.setYhdwName(((HDBaseData) bean).getGydwName());
 					data.setQhlx("c");
 					data.setLxid(((HDBaseData) bean).getLxid());
 					data.setCus2(((HDBaseData) bean).getHdlx());
@@ -735,10 +731,6 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				}
 			} else if (mType == R.drawable.suidaojiancha) {
 				if (bean instanceof SDBaseData) {
-					data.setGldwId(((SDBaseData) bean).getGydwId());
-					data.setGldwName(((SDBaseData) bean).getGydwName());
-					data.setYhdwId(((SDBaseData) bean).getGydwId());
-					data.setYhdwName(((SDBaseData) bean).getGydwName());
 					data.setLxid(((SDBaseData) bean).getLxid());
 					data.setYhjgId(((SDBaseData) bean).getGydwId());
 					data.setYhjgName(((SDBaseData) bean).getGydwName());

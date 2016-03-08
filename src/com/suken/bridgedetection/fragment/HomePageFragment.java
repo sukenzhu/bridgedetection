@@ -264,6 +264,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 				@Override
 				public void onClick(DialogInterface arg0, int arg1) {
 					arg0.dismiss();
+					LocationManager.getInstance().syncLocation(HomePageFragment.this);
 				}
 			});
 			dialog.show();
