@@ -23,4 +23,12 @@ public class HomeFragmentItemController {
 		mItemView.setOnClickListener(fragment);
 	}
 
+	public  void destory(){
+		mItemView.setOnClickListener(null);
+		mImageView = null;
+		mTextView = null;
+		mItemView = null;
+		mActivity = null;
+	}
+
 }

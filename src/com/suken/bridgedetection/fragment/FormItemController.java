@@ -85,6 +85,32 @@ public class FormItemController implements OnClickListener {
 		initImageAndVideo(null, blank1, blank2);
 	}
 
+	public  void destory(){
+		mFormBaseDetail = null;
+		mFormItem = null;
+		mImgVideoLayout = null;
+		mEditLayout = null;
+		mArrowImgView = null;
+		mContext = null;
+		xczh = null;
+		mFormBaseDetail = null;
+		xiangji = null;
+		imageNum = null;
+		spinner = null;
+		sxj = null;
+		sxjNum = null;
+		qslxEv = null;
+		qsfwEv = null;
+		byyjEv = null;
+		item4Ev = null;
+		item5Ev = null;
+		item4Rg = null;
+		item5Ll = null;
+		mImages.clear();
+		mVedios.clear();
+		mAdapter = null;
+	}
+
 	private ImageView xiangji;
 	private TextView imageNum;
 	private Spinner spinner;

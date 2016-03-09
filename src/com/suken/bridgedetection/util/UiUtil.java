@@ -572,8 +572,13 @@ public class UiUtil {
 		});
 
 	}
+	private static boolean mIsCheckUpdate = false;
 
 	public static void update(final BaseActivity activity) {
+		if(mIsCheckUpdate){
+			return;
+		}
+		mIsCheckUpdate = true;
 		BackgroundExecutor.execute(new Runnable() {
 
 			@Override
@@ -602,7 +607,14 @@ public class UiUtil {
 
 					@Override
 					public void onRequestFail(RequestType type, String resultCode, String result) {
-						activity.dismissLoading();
+						activity.toast(result);
+						activity.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								activity.dismissLoading();
+							}
+						});
+
 					}
 				};
 				activity.showLoading("检查更新中...");
@@ -614,7 +626,7 @@ public class UiUtil {
 					list.add(pair);
 				}
 				new HttpTask(listener, RequestType.update).executePost(list);
-
+				mIsCheckUpdate = false;
 			}
 		});
 	}

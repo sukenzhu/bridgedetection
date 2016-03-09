@@ -292,4 +292,15 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 		notifyDataSetChanged();
 	}
 
+	public void onDestory(){
+		if(mUnfilteredData != null){
+			mUnfilteredData.clear();
+		}
+		if(mSourceData != null){
+			mSourceData.clear();
+		}
+		mFilter = null;
+		mContext = null;
+	}
+
 }

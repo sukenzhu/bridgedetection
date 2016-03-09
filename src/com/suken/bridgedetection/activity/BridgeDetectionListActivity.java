@@ -60,6 +60,40 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 	private TextView row5 = null;
 
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(mList != null){
+			ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
+			if(adapter != null) {
+				adapter.onDestory();
+			}
+			mList.setAdapter(null);
+		}
+		if(mHdList != null) {
+			ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
+			if(adapter != null) {
+				adapter.onDestory();
+			}
+			mHdList.setAdapter(null);
+		}
+		gpsBtn = null;
+		syncBtn = null;
+		mListTitleQl = null;
+		mQlListTitleText = null;
+		mListTitleHd = null;
+		mHdListTitleText = null;
+		mUpdateAll = null;
+		mSearchInput = null;
+		mFormDao = null;
+		mUpdateAll = null;
+		row1 = null;
+		row2 = null;
+		row3 = null;
+		row4 = null;
+		row5 = null;
+	}
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mFormDao = new CheckFormAndDetailDao();

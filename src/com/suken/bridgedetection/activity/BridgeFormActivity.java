@@ -68,6 +68,8 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private String[] detailValues = null;
 	private String[] et1blanks = null;
 	private String[] et2blanks = null;
+
+
 	private Object bean = null;
 	private List<FormItemController> mDetailMaps = new ArrayList<FormItemController>();
 	private LinearLayout mFormContent;
@@ -98,7 +100,59 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	private Spinner lastPddj = null;
 	private Spinner pddj = null;
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(mDetailMaps != null){
+			for(FormItemController con: mDetailMaps){
+				con.destory();
+			}
+			mDetailMaps.clear();
+		}
+		detailNames = null;
+		detailValues = null;
+		mItemTexts = null;
+		et1blanks = null;
+		et2blanks = null;
+		bean = null;
+		mFormContent = null;
+		save1 = null;
+		save2 = null;
+		qlbhTv = null;
+		qlbhEv = null;
+		qlmcEv = null;
+		qlmcTv = null;
+		lxbhEv = null;
+		lxbhTv = null;
+		lxmcEv = null;
+		lxmcTv = null;
+		zxzhTv = null;
+		zxzhEv = null;
+		yhdwEv = null;
+		yhdwTv = null;
+		extra1Ev = null;
+		extra1Tv = null;
+		extraLayout = null;
+		weatherEv = null;
+		weatherTv = null;
+		fzr = null;
+		jlr = null;
+		lastPddj = null;
+		pddj = null;
+		qlhz = null;
+		mFormTitle = null;
+		mOperateLayout = null;
+		mRadioGroup = null;
+		mDealWithEv = null;
+		mJcrEv = null;
+		mGpsTv = null;
+		lastEditForm = null;
+		lastEditBaseClass = null;
+		if(mFormBaseDetails != null){
+			mFormBaseDetails.clear();
+			mFormBaseDetails = null;
+		}
+	}
 	private CheckBox qlhz = null;
 	private TextView mFormTitle;
 	private int mType = -1;
@@ -123,6 +177,8 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	private boolean isCheckAgain = false;
 	private boolean isLastUpdate = false;
 	private Map<String, FormBaseDetail> mFormBaseDetails = null;
+
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

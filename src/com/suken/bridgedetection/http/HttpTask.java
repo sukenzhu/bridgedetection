@@ -153,7 +153,7 @@ public class HttpTask {
 			Log.i("time", "RequestType : " + mRequestType.getDesc() + " : handleResultTime " + (System.currentTimeMillis() - postTime));
 		} catch (Exception e) {
 			e.printStackTrace();
-			mResponseListener.onRequestFail(mRequestType, "-100", e.getMessage());
+			mResponseListener.onRequestFail(mRequestType, "-100", "网络连接失败");
 		} finally {
 			httpClient.getConnectionManager().shutdown();
 		}

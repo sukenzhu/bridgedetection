@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
 import com.suken.bridgedetection.BridgeDetectionApplication;
 
 public class HDBaseDataDao {
@@ -42,7 +43,7 @@ public class HDBaseDataDao {
 
 	public List<HDBaseData> queryAll() {
 		try {
-			return mGXLuXianInfoDao.queryForAll();
+			return mGXLuXianInfoDao.queryBuilder().orderBy("zxzh", true).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -1,5 +1,9 @@
 package com.suken.bridgedetection.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.R;
 
 import android.annotation.SuppressLint;
@@ -20,6 +24,18 @@ import android.widget.Toast;
 
 @SuppressLint("InflateParams")
 public class BaseActivity extends FragmentActivity {
+
+	@Override
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if(this instanceof  LoginActivity){
+			return;
+		}
+		if(BridgeDetectionApplication.mCurrentUser == null){
+			finish();
+			startActivity(new Intent(this, LoginActivity.class));
+		}
+	}
 
 	private Dialog mLoadingDialog = null;
 	

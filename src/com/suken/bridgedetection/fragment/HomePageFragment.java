@@ -1,23 +1,5 @@
 package com.suken.bridgedetection.fragment;
 
-import java.util.Calendar;
-
-import com.googlecode.androidannotations.api.BackgroundExecutor;
-import com.suken.bridgedetection.Constants;
-import com.suken.bridgedetection.R;
-import com.suken.bridgedetection.activity.BridgeDetectionListActivity;
-import com.suken.bridgedetection.location.LocationManager;
-import com.suken.bridgedetection.location.LocationResult;
-import com.suken.bridgedetection.location.OnLocationFinishedListener;
-import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
-import com.suken.bridgedetection.storage.HDBaseDataDao;
-import com.suken.bridgedetection.storage.QLBaseDataDao;
-import com.suken.bridgedetection.storage.SDBaseDataDao;
-import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
-import com.suken.bridgedetection.storage.SharePreferenceManager;
-import com.suken.bridgedetection.util.OnSyncDataFinishedListener;
-import com.suken.bridgedetection.util.UiUtil;
-
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -37,6 +19,20 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.googlecode.androidannotations.api.BackgroundExecutor;
+import com.suken.bridgedetection.Constants;
+import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.activity.BridgeDetectionListActivity;
+import com.suken.bridgedetection.location.LocationManager;
+import com.suken.bridgedetection.location.LocationResult;
+import com.suken.bridgedetection.location.OnLocationFinishedListener;
+import com.suken.bridgedetection.storage.*;
+import com.suken.bridgedetection.util.OnSyncDataFinishedListener;
+import com.suken.bridgedetection.util.UiUtil;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class HomePageFragment extends BaseFragment implements OnClickListener, OnLocationFinishedListener, OnSyncDataFinishedListener {
 
@@ -56,6 +52,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 
 	private View mContentView = null;
 	private boolean mIsGpsSuccess = false;
+	private List<HomeFragmentItemController> list = new ArrayList<HomeFragmentItemController>();
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -64,6 +61,31 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 			sendEmptyMessageDelayed(0, 1000);
 		}
 	};
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		for (HomeFragmentItemController con : list){
+			con.destory();
+		}
+		list.clear();
+		mjingdu = null;
+		mWeidu = null;
+		mDeviceId = null;
+		mLastLogin = null;
+		time = null;
+		tipsNum1 = null;
+		tipsNum2 = null;
+		tipsNum3 = null;
+		tipsNum4 = null;
+		tipLayout1 = null;
+		tipLayout2 = null;
+		tipLayout2 = null;
+		tipLayout3 = null;
+		tipLayout4 = null;
+		handler.removeMessages(0);
+		handler = null;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,16 +114,16 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 		time.setText(UiUtil.formatNowTime());
 		handler.sendEmptyMessageDelayed(0, 1000);
 
-		new HomeFragmentItemController(this, mContentView, R.drawable.richangyanghu, "日常养护");
-		new HomeFragmentItemController(this, mContentView, R.drawable.zhiliangchoujian, "质量抽检");
-		new HomeFragmentItemController(this, mContentView, R.drawable.zhuanxianggongcheng, "专项工程");
-		new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangjiancha, "桥梁检查");
-		new HomeFragmentItemController(this, mContentView, R.drawable.suidaojiancha, "隧道检查");
-		new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangxuncha, "桥梁巡查");
-		new HomeFragmentItemController(this, mContentView, R.drawable.suidaoxuncha, "隧道巡查");
-		new HomeFragmentItemController(this, mContentView, R.drawable.luzhengxunshi, "路政巡视");
-		new HomeFragmentItemController(this, mContentView, R.drawable.jidianxuncha, "机电巡查");
-		new HomeFragmentItemController(this, mContentView, R.drawable.yingjishijian, "应急事件");
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.richangyanghu, "日常养护"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.zhiliangchoujian, "质量抽检"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.zhuanxianggongcheng, "专项工程"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangjiancha, "桥梁检查"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.suidaojiancha, "隧道检查"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangxuncha, "桥梁巡查"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.suidaoxuncha, "隧道巡查"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.luzhengxunshi, "路政巡视"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.jidianxuncha, "机电巡查"));
+		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.yingjishijian, "应急事件"));
 	}
 
 	@Override

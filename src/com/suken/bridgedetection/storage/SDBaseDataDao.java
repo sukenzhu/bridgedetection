@@ -35,7 +35,7 @@ public class SDBaseDataDao {
 
 	public List<SDBaseData> queryAll() {
 		try {
-			return mGXLuXianInfoDao.queryForAll();
+			return mGXLuXianInfoDao.queryBuilder().orderBy("zxzh", true).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
