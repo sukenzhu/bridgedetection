@@ -582,7 +582,7 @@ public class UiUtil {
 
 					@Override
 					public void onRequestSuccess(RequestType type, JSONObject result) {
-
+						activity.dismissLoading();
 						int versioncode = result.getInteger("versioncode");
 						final String url = result.getString("apkurl");
 						try {
@@ -602,7 +602,7 @@ public class UiUtil {
 
 					@Override
 					public void onRequestFail(RequestType type, String resultCode, String result) {
-
+						activity.dismissLoading();
 					}
 				};
 				activity.showLoading("检查更新中...");
@@ -614,7 +614,7 @@ public class UiUtil {
 					list.add(pair);
 				}
 				new HttpTask(listener, RequestType.update).executePost(list);
-				activity.dismissLoading();
+
 			}
 		});
 	}

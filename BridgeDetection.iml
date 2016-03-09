@@ -25,7 +25,7 @@
       <sourceFolder url="file://$MODULE_DIR$/imageditor" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/videoRecorder" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 16 Platform" jdkType="Android SDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="library" exported="" name="com.android.ide.eclipse.adt.DEPENDENCIES" level="application" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="libs" level="project" />

@@ -667,7 +667,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.setZxzh(zxzhEv.getText().toString());
 				data.setLxbh(lxbhEv.getText().toString());
 			} else {
-				
+
 				data.setQhlx(mRadioGroup.getCheckedRadioButtonId() == R.id.radioql ? "b" : "c");
 				data.setXcry(extra1Ev.getText().toString());
 				data.setJcry(mJcrEv.getText().toString());
