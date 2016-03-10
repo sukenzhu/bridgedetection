@@ -53,7 +53,7 @@ public class YWDictionaryDao {
 	
 	public List<YWDictionaryInfo> queryByTypeId(String typeId){
 		try {
-			List<YWDictionaryInfo> infos = mGXLuXianInfoDao.queryForEq("typeId", typeId);
+			List<YWDictionaryInfo> infos = mGXLuXianInfoDao.queryBuilder().where().eq("typeId", typeId).query();
 			return infos;
 		} catch (SQLException e) {
 			e.printStackTrace();

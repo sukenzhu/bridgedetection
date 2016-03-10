@@ -3,6 +3,7 @@ package com.suken.bridgedetection.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.location.LocationManager;
@@ -120,7 +121,40 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		row3 = (TextView) findViewById(R.id.row3);
 		row4 = (TextView) findViewById(R.id.row4);
 		row5 = (TextView) findViewById(R.id.row5);
-		init(false);
+		loadData();
+	}
+
+	private void  loadData(){
+		BackgroundExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				showLoading("加载中...");
+				switch (mType) {
+					case R.drawable.qiaoliangxuncha: {
+						mListArray = new SdxcFormAndDetailDao().queryAll(mType);
+						break;
+					}
+					case R.drawable.qiaoliangjiancha: {
+						mListArray = new QLBaseDataDao().queryAll();
+						mListArray2 = new HDBaseDataDao().queryAll();
+						break;
+					}
+					case R.drawable.suidaojiancha:
+					case R.drawable.suidaoxuncha: {
+						mListArray = new SDBaseDataDao().queryAll();
+						break;
+					}
+				}
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						init(false);
+						dismissLoading();
+					}
+				});
+
+			}
+		});
 	}
 
 	public void switchPanel(View view) {
@@ -187,6 +221,9 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		return a;
 	}
 
+	private  List mListArray = null;
+	private List mListArray2 = null;
+
 	private void init(boolean isReset) {
 		mCurrentNum = 0;
 		mHdCurrentNum = 0;
@@ -198,7 +235,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			row3.setText("天气");
 			row4.setText("管养单位");
 			row5.setText("检查人");
-			List<SdxcFormData> list = new SdxcFormAndDetailDao().queryAll(mType);
+			List<SdxcFormData> list = mListArray;
 			if (list != null && list.size() > 0) {
 				for (SdxcFormData bd : list) {
 					ListBean bean = new ListBean();
@@ -226,7 +263,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		}
 		case R.drawable.qiaoliangjiancha: {
 			List<ListBean> hdData = new ArrayList<ListBean>();
-			List<HDBaseData> hdBaseData = new HDBaseDataDao().queryAll();
+			List<HDBaseData> hdBaseData = mListArray2;
 			if (hdBaseData != null && hdBaseData.size() > 0) {
 				for (HDBaseData bd : hdBaseData) {
 					ListBean bean = new ListBean();
@@ -243,7 +280,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			}
 			mHdListTitleText.setText(" 涵洞(" + mHdCurrentNum + "/" + hdData.size() + ")");
 			mHdList.setAdapter(new ListPageAdapter(this, hdData, mType));
-			List<QLBaseData> qlBaseData = new QLBaseDataDao().queryAll();
+			List<QLBaseData> qlBaseData = mListArray;
 			if (qlBaseData != null && qlBaseData.size() > 0) {
 				for (QLBaseData bd : qlBaseData) {
 					ListBean bean = new ListBean();
@@ -266,7 +303,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		case R.drawable.suidaoxuncha: {
 			row1.setText("隧道桩号");
 			row3.setText("隧道标识");
-			List<SDBaseData> qlBaseData = new SDBaseDataDao().queryAll();
+			List<SDBaseData> qlBaseData = mListArray;
 			if (qlBaseData != null && qlBaseData.size() > 0) {
 				for (SDBaseData bd : qlBaseData) {
 					ListBean bean = new ListBean();

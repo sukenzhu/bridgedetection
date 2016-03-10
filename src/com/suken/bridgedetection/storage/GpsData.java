@@ -17,6 +17,16 @@ public class GpsData {
 	private double gpsX;
 	@DatabaseField
 	private double gpsY;
+	@DatabaseField
+	private String userId;
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	public long getId() {
 		return id;

@@ -30,7 +30,10 @@ public class BridgeDetectionApplication extends Application {
 	public static BridgeDetectionApplication getInstance() {
 		return mInstance;
 	}
-	
-	
 
+	@Override
+	public void onTerminate() {
+		super.onTerminate();
+		System.exit(0);
+	}
 }

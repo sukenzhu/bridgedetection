@@ -48,7 +48,7 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home_page);
 		boolean flag = getIntent().getBooleanExtra("isOnline", true);
-		String time = SharePreferenceManager.getInstance().readString("lastSyncTime", "");
+		String time = SharePreferenceManager.getInstance().readString(BridgeDetectionApplication.mCurrentUser.getUserId() + "lastSyncTime", "");
 		boolean needSync = true;
 		if (!TextUtils.isEmpty(time)) {
 			if (System.currentTimeMillis() - Long.parseLong(time) < 24 * 60 * 60 * 1000) {
@@ -183,4 +183,9 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		BridgeDetectionApplication.getInstance().onTerminate();
+	}
 }

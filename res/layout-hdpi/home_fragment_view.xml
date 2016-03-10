@@ -332,6 +332,7 @@
                             android:id="@+id/left_frag_item_layout1"
                             android:layout_width="match_parent"
                             android:layout_marginTop="2dp"
+                            android:visibility="invisible"
                             android:layout_height="wrap_content" >
 
                             <TextView
@@ -359,6 +360,7 @@
                             android:id="@+id/left_frag_item_layout2"
                             android:layout_width="match_parent"
                             android:layout_marginTop="4dp"
+                            android:visibility="invisible"
                             android:layout_height="wrap_content" >
 
                             <TextView
@@ -386,6 +388,7 @@
                             android:id="@+id/left_frag_item_layout3"
                             android:layout_width="match_parent"
                             android:layout_marginTop="2dp"
+                            android:visibility="invisible"
                             android:layout_height="wrap_content" >
 
                             <TextView
@@ -414,6 +417,7 @@
                             android:id="@+id/left_frag_item_layout4"
                             android:layout_width="match_parent"
                             android:layout_marginTop="2dp"
+                            android:visibility="invisible"
                             android:layout_height="wrap_content" >
 
                             <TextView

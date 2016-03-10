@@ -35,6 +35,7 @@ public class CheckFormAndDetailDao {
 
 	public boolean create(CheckFormData formData) {
 		try {
+			formData.setUserId(BridgeDetectionApplication.mCurrentUser.getUserId());
 			CreateOrUpdateStatus status = mFormDao.createOrUpdate(formData);
 			if (formData.getOftenCheckDetailList() != null) {
 				createDetails(formData.getOftenCheckDetailList());
@@ -83,6 +84,7 @@ public class CheckFormAndDetailDao {
 			} else {
 				map.put("qhid", id);
 			}
+			map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 			map.put("type", type);
 			map.put("lastUpdate", false);
 			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);
@@ -106,6 +108,7 @@ public class CheckFormAndDetailDao {
 			} else {
 				map.put("qhid", id);
 			}
+			map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 			map.put("type", type);
 			map.put("lastUpdate", false);
 			List<CheckFormData> datas = mFormDao.queryForFieldValues(map);
@@ -130,6 +133,7 @@ public class CheckFormAndDetailDao {
 			} else {
 				map.put("qhid", id);
 			}
+			map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 			map.put("status", status);
 			map.put("type", type);
 			map.put("lastUpdate", false);
@@ -152,6 +156,7 @@ public class CheckFormAndDetailDao {
 		} else {
 			map.put("qhid", id);
 		}
+		map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		map.put("type", type);
 		map.put("lastUpdate", false);
 		try {
@@ -178,6 +183,7 @@ public class CheckFormAndDetailDao {
 		map.put("type", type);
 		map.put("status", status);
 		map.put("lastUpdate", false);
+		map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		try {
 			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
 			if(list != null){
@@ -194,6 +200,7 @@ public class CheckFormAndDetailDao {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("type", type);
 			map.put("lastUpdate", true);
+			map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
 			if (list != null && list.size() > 0) {
 				for (CheckFormData data : list) {
@@ -244,6 +251,7 @@ public class CheckFormAndDetailDao {
 		} else {
 			map.put("sdid", id);
 		}
+		map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		map.put("type", type);
 		map.put("lastUpdate", true);
 		try {
@@ -265,6 +273,7 @@ public class CheckFormAndDetailDao {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("lastUpdate", false);
 		map.put("status", "2");
+		map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		try {
 			List<CheckFormData> list = mFormDao.queryForFieldValues(map);
 			boolean isDelete = false;

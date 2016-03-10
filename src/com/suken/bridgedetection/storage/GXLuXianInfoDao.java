@@ -27,6 +27,7 @@ public class GXLuXianInfoDao {
 
 	public void create(GXLuXianInfo info) {
 		try {
+			info.setUserId(BridgeDetectionApplication.mCurrentUser.getUserId());
 			mGXLuXianInfoDao.createOrUpdate(info);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -35,7 +36,7 @@ public class GXLuXianInfoDao {
 
 	public List<GXLuXianInfo> queryAll() {
 		try {
-			return mGXLuXianInfoDao.queryForAll();
+			return mGXLuXianInfoDao.queryForEq("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

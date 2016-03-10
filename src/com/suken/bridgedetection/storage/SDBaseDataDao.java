@@ -8,55 +8,56 @@ import com.suken.bridgedetection.BridgeDetectionApplication;
 
 public class SDBaseDataDao {
 
-	private Dao<SDBaseData, String> mGXLuXianInfoDao = null;
+    private Dao<SDBaseData, String> mGXLuXianInfoDao = null;
 
-	public SDBaseDataDao() {
-		try {
-			mGXLuXianInfoDao = SqliteOpenHelper.getHelper(BridgeDetectionApplication.getInstance())
-					.getDao(SDBaseData.class);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    public SDBaseDataDao() {
+        try {
+            mGXLuXianInfoDao = SqliteOpenHelper.getHelper(BridgeDetectionApplication.getInstance())
+                    .getDao(SDBaseData.class);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void create(List<SDBaseData> list) {
-		for (SDBaseData info : list) {
-			create(info);
-		}
-	}
+    public void create(List<SDBaseData> list) {
+        for (SDBaseData info : list) {
+            create(info);
+        }
+    }
 
-	public void create(SDBaseData info) {
-		try {
-			mGXLuXianInfoDao.createOrUpdate(info);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    public void create(SDBaseData info) {
+        try {
+            info.setUserId(BridgeDetectionApplication.mCurrentUser.getUserId());
+            mGXLuXianInfoDao.createOrUpdate(info);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public List<SDBaseData> queryAll() {
-		try {
-			return mGXLuXianInfoDao.queryBuilder().orderBy("zxzh", true).query();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public List<SDBaseData> queryAll() {
+        try {
+            return mGXLuXianInfoDao.queryBuilder().orderBy("zxzh", true).where().eq("userId", BridgeDetectionApplication.mCurrentUser.getUserId()).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	public SDBaseData queryById(String value) {
-		try {
-			return mGXLuXianInfoDao.queryForId(value);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public int countAll(){
-		List<SDBaseData> list = queryAll();
-		if(list != null){
-			return list.size();
-		}
-		return 0;
-	}
+    public SDBaseData queryById(String value) {
+        try {
+            return mGXLuXianInfoDao.queryForId(value);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int countAll() {
+        List<SDBaseData> list = queryAll();
+        if (list != null) {
+            return list.size();
+        }
+        return 0;
+    }
 
 }

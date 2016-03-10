@@ -289,6 +289,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 					LocationManager.getInstance().syncLocation(HomePageFragment.this);
 				}
 			});
+			dialog.setCancelable(false);
 			dialog.show();
 		} else {
 			LocationManager.getInstance().syncLocation(this);

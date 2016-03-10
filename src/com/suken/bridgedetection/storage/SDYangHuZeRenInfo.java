@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "tb_sdyhzrInfo")
 public class SDYangHuZeRenInfo {
 
-	@DatabaseField(id = true)
+	@DatabaseField
 	private String id;
 	@DatabaseField
 	private String orgid;
@@ -58,6 +58,29 @@ public class SDYangHuZeRenInfo {
 	private String gydwid;
 	@DatabaseField
 	private String gydwname;
+
+	@DatabaseField
+	private String userId;
+
+	@DatabaseField(id = true)
+	private String localId;
+
+	public String getLocalId() {
+		return localId;
+	}
+
+	public void setLocalId(String localId) {
+		this.localId = localId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+		setLocalId(id + userId);
+	}
 
 	public String getId() {
 		return id;

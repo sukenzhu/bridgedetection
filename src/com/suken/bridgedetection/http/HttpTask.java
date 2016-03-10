@@ -131,7 +131,7 @@ public class HttpTask {
 			} else {
 				result = EntityUtils.toString(response.getEntity(), "utf-8");
 			}
-			Log.i("httptask", "result : " + result);
+			Log.i("httptask", "result length : " + result.length());
 
 			if (resultCode == 200) {
 				JSONObject obj = JSON.parseObject(result);

@@ -29,7 +29,7 @@ public class SDBaseData implements Serializable{
 	private String gydwId;
 	@DatabaseField
 	private String gydwName;
-	@DatabaseField(id = true)
+	@DatabaseField
 	private String id;
 	@DatabaseField
 	private String lxbh;
@@ -59,6 +59,29 @@ public class SDBaseData implements Serializable{
 	private String versionno;
 	@DatabaseField
 	private String zxzh;
+
+	@DatabaseField
+	private String userId;
+
+	@DatabaseField(id = true)
+	private String localId;
+
+	public String getLocalId() {
+		return localId;
+	}
+
+	public void setLocalId(String localId) {
+		this.localId = localId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+		setLocalId(id + userId);
+	}
 
 	public String getCdfl() {
 		return cdfl;

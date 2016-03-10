@@ -27,6 +27,7 @@ public class QLBaseDataDao {
 
 	public void create(QLBaseData info) {
 		try {
+			info.setUserId(BridgeDetectionApplication.mCurrentUser.getUserId());
 			mGXLuXianInfoDao.createOrUpdate(info);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -35,7 +36,7 @@ public class QLBaseDataDao {
 
 	public List<QLBaseData> queryAll() {
 		try {
-			return mGXLuXianInfoDao.queryBuilder().orderBy("zxzh", true).query();
+			return mGXLuXianInfoDao.queryBuilder().orderBy("zxzh", true).where().eq("userId", BridgeDetectionApplication.mCurrentUser.getUserId()).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

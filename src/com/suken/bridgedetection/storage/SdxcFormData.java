@@ -115,6 +115,18 @@ public class SdxcFormData implements Serializable {
 	@DatabaseField
 	private long savedTime = System.currentTimeMillis();
 
+	@DatabaseField
+	private String userId;
+
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	public String getJcsj() {
 		return jcsj;
 	}

@@ -11,6 +11,8 @@ import com.j256.ormlite.table.DatabaseTable;
 public class CheckFormData implements Serializable {
 	private static final long serialVersionUID = 1l;
 	@DatabaseField
+	private String userId;
+	@DatabaseField
 	private String bno;
 	@DatabaseField
 	private String createBy;
@@ -525,6 +527,14 @@ public class CheckFormData implements Serializable {
 
 	public void setSaveTime(long saveTime) {
 		this.saveTime = saveTime;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	@Override

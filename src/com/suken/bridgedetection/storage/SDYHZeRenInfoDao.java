@@ -27,6 +27,7 @@ public class SDYHZeRenInfoDao {
 
 	public void create(SDYangHuZeRenInfo info) {
 		try {
+			info.setUserId(BridgeDetectionApplication.mCurrentUser.getUserId());
 			mGXLuXianInfoDao.createOrUpdate(info);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -35,7 +36,7 @@ public class SDYHZeRenInfoDao {
 
 	public List<SDYangHuZeRenInfo> queryAll() {
 		try {
-			return mGXLuXianInfoDao.queryForAll();
+			return mGXLuXianInfoDao.queryBuilder().where().eq("userId", BridgeDetectionApplication.mCurrentUser.getUserId()).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -34,6 +34,7 @@ public class SdxcFormAndDetailDao {
 
 	public boolean create(SdxcFormData formData) {
 		try {
+			formData.setUserId(BridgeDetectionApplication.mCurrentUser.getUserId());
 			CreateOrUpdateStatus status = mFormDao.createOrUpdate(formData);
 			if (formData.getInspectLogDetailList() != null) {
 				createDetails(formData.getInspectLogDetailList());
@@ -65,7 +66,7 @@ public class SdxcFormAndDetailDao {
 
 	public List<SdxcFormData> queryByType(int type) {
 		try {
-			List<SdxcFormData> datas = mFormDao.queryForEq("type", type);
+			List<SdxcFormData> datas = mFormDao.queryBuilder().where().eq("type", type).and().eq("userId", BridgeDetectionApplication.mCurrentUser.getUserId()).query();
 			for (SdxcFormData data : datas) {
 				data.setInspectLogDetailList(queryByFormId(data.getLocalId()));
 			}
@@ -89,21 +90,12 @@ public class SdxcFormAndDetailDao {
 	}
 
 	public List<SdxcFormData> queryAll(int type) {
-		try {
-			List<SdxcFormData> datas = mFormDao.queryForEq("type", type);
-			for (SdxcFormData data : datas) {
-				data.setInspectLogDetailList(queryByFormId(data.getLocalId()));
-			}
-			return datas;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return queryByType(type);
 	}
 
 	public List<SdxcFormData> queryByQHId(String id, int type) {
 		try {
-			List<SdxcFormData> datas = mFormDao.queryForEq("sdid", id);
+			List<SdxcFormData> datas = mFormDao.queryBuilder().where().eq("sdid", id).and().eq("userId", BridgeDetectionApplication.mCurrentUser.getUserId()).query();
 			for (SdxcFormData data : datas) {
 				data.setInspectLogDetailList(queryByFormId(data.getLocalId()));
 			}
@@ -122,6 +114,7 @@ public class SdxcFormAndDetailDao {
 			} else {
 				map.put("sdid", id);
 			}
+			map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 			map.put("status", status);
 			map.put("type", type);
 			List<SdxcFormData> datas = mFormDao.queryForFieldValues(map);
@@ -141,6 +134,7 @@ public class SdxcFormAndDetailDao {
 		if(type == R.drawable.suidaoxuncha){
 			map.put("sdid", id);
 		}
+		map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		map.put("type", type);
 		try {
 			List<SdxcFormData> list = mFormDao.queryForFieldValues(map);
@@ -208,6 +202,7 @@ public class SdxcFormAndDetailDao {
 	public boolean deleteAllLocalData(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("status", "2");
+		map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		try {
 			List<SdxcFormData> list = mFormDao.queryForFieldValues(map);
 			if(list != null){

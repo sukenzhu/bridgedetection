@@ -24,6 +24,7 @@ public class GpsDataDao {
 	
 	public boolean create(GpsData data) {
 		try {
+			data.setUserId(BridgeDetectionApplication.mCurrentUser.getUserId());
 			mGpsDao.create(data);
 			return true;
 		} catch (SQLException e) {
@@ -36,6 +37,7 @@ public class GpsDataDao {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", qhid);
 		map.put("qhlx", qhlx);
+		map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		try {
 			List<GpsData> list = mGpsDao.queryForFieldValues(map);
 			if(list != null && list.size() > 0){

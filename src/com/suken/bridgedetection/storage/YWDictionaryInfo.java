@@ -36,6 +36,17 @@ public class YWDictionaryInfo {
 	private int updateBy;
 	@DatabaseField
 	private String updatetime;
+	@DatabaseField
+	private String userId;
+
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	public int getCreateBy() {
 		return createBy;
 	}

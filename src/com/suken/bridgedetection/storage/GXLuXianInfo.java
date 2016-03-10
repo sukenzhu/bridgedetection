@@ -21,7 +21,7 @@ public class GXLuXianInfo implements Serializable {
 	private String gydwId;
 	@DatabaseField
 	private String gydwName;
-	@DatabaseField(id = true)
+	@DatabaseField
 	private String id;
 	@DatabaseField
 	private String lxbh;
@@ -47,6 +47,28 @@ public class GXLuXianInfo implements Serializable {
 	private String zdmc;
 	@DatabaseField
 	private String zdzh;
+
+	@DatabaseField
+	private String userId;
+	@DatabaseField(id = true)
+	private String localId;
+
+	public String getLocalId() {
+		return localId;
+	}
+
+	public void setLocalId(String localId) {
+		this.localId = localId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+		setLocalId(id + userId);
+	}
 
 	public String getCreateBy() {
 		return createBy;
