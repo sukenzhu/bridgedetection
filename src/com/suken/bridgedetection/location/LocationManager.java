@@ -200,7 +200,12 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 				sb.append("\ndescribe : ");
 				sb.append("网络定位成功");
 				result.message = "网络定位成功";
-				result.isSuccess = true;
+				android.location.LocationManager locationManager = (android.location.LocationManager) BridgeDetectionApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
+				if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+					result.isSuccess = true;
+				} else {
+					result.isSuccess = false;
+				}
 			} else if (location.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
 				sb.append("\ndescribe : ");
 				sb.append("离线定位成功，离线定位结果也是有效的");
