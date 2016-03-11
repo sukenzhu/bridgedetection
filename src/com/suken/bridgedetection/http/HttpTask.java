@@ -1,6 +1,7 @@
 package com.suken.bridgedetection.http;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -8,6 +9,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
@@ -110,6 +112,7 @@ public class HttpTask {
 		long start = System.currentTimeMillis();
 		// 和GET方式一样，先将参数放入List
 		HttpClient httpClient = new DefaultHttpClient();
+		int resultCode = -100;
 		try {
 			// 请求超时
 			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 30000);
@@ -121,7 +124,7 @@ public class HttpTask {
 			HttpResponse response = httpClient.execute(postMethod); // 执行POST方法
 			long postTime = System.currentTimeMillis();
 			Log.i("time", "RequestType : " + mRequestType.getDesc() + " : postTime " + (postTime - start));
-			int resultCode = response.getStatusLine().getStatusCode();
+			resultCode = response.getStatusLine().getStatusCode();
 			String result = "";
 			if (mRequestType == RequestType.syncData) {
 				byte[] reArray = EntityUtils.toByteArray(response.getEntity());
@@ -153,7 +156,9 @@ public class HttpTask {
 			Log.i("time", "RequestType : " + mRequestType.getDesc() + " : handleResultTime " + (System.currentTimeMillis() - postTime));
 		} catch (Exception e) {
 			e.printStackTrace();
-			mResponseListener.onRequestFail(mRequestType, "-100", "网络连接失败");
+			if(resultCode != 200) {
+				mResponseListener.onRequestFail(mRequestType, "-100", "网络连接失败");
+			}
 		} finally {
 			httpClient.getConnectionManager().shutdown();
 		}
