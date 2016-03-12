@@ -165,6 +165,10 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			mListTitleQl.requestFocus();
 			mListTitleHd.clearFocus();
 			mListTitleHd.setSelected(false);
+			if(mType == R.drawable.qiaoliangjiancha){
+				row2.setText("桥梁名称");
+				row3.setText("桥梁编码");
+			}
 		} else {
 			mList.setVisibility(View.GONE);
 			mHdList.setVisibility(View.VISIBLE);
@@ -172,6 +176,10 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			mListTitleQl.clearFocus();
 			mListTitleHd.requestFocus();
 			mListTitleHd.setSelected(true);
+			if(mType == R.drawable.qiaoliangjiancha){
+				row2.setText("涵洞名称");
+				row3.setText("涵洞编码");
+			}
 		}
 	}
 
