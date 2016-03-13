@@ -3,6 +3,7 @@ package com.suken.bridgedetection.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.res.Configuration;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -46,9 +47,12 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if(mIsFinished) {
+			return;
+		}
 		setContentView(R.layout.activity_home_page);
 		boolean flag = getIntent().getBooleanExtra("isOnline", true);
-		String time = SharePreferenceManager.getInstance().readString(BridgeDetectionApplication.mCurrentUser.getUserId() + "lastSyncTime", "");
+		String time = SharePreferenceManager.getInstance().readString(BridgeDetectionApplication.mCurrentUser.getAccount() + "lastSyncTime", "");
 		boolean needSync = true;
 		if (!TextUtils.isEmpty(time)) {
 			if (System.currentTimeMillis() - Long.parseLong(time) < 24 * 60 * 60 * 1000) {
@@ -61,6 +65,7 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		mIpFragment = mFragManager.findFragmentById(R.id.ip_fragment);
 		if (flag && needSync) {
 			UiUtil.syncData(this, false, mHomeFragment);
+			SharePreferenceManager.getInstance().updateString(BridgeDetectionApplication.mCurrentUser.getAccount() + "lastSyncTime", "" + System.currentTimeMillis());
 		} else {
 			mHomeFragment.onSyncFinished(true);
 		}
@@ -155,7 +160,11 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		}
 	}
 
-	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		dismissLoading();
+	}
 
 	@Override
 	public void onRequestFail(RequestType type, String resultCode, String result) {
@@ -186,6 +195,8 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		BridgeDetectionApplication.getInstance().onTerminate();
+		if(mIsNeedTerminal){
+			BridgeDetectionApplication.getInstance().onTerminate();
+		}
 	}
 }

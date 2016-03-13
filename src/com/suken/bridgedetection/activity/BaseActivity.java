@@ -3,6 +3,7 @@ package com.suken.bridgedetection.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.R;
 
@@ -24,14 +25,17 @@ import android.widget.Toast;
 
 @SuppressLint("InflateParams")
 public class BaseActivity extends FragmentActivity {
+	protected  boolean mIsFinished = false;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dismissLoading();
 		if(this instanceof  LoginActivity){
 			return;
 		}
 		if(BridgeDetectionApplication.mCurrentUser == null){
+			mIsFinished = true;
 			finish();
 			startActivity(new Intent(this, LoginActivity.class));
 		}
@@ -86,17 +90,37 @@ public class BaseActivity extends FragmentActivity {
 				loadingDialog.setContentView(layout, new LinearLayout.LayoutParams(
 						LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));// 设置布局
 				mLoadingDialog = loadingDialog;
-				loadingDialog.show();
+				try {
+					loadingDialog.show();
+				} catch (Throwable e){
+					e.printStackTrace();
+				}
 			}
 		});
 
 	}
 
 	public void dismissLoading() {
-		if (mLoadingDialog != null) {
-			mLoadingDialog.dismiss();
-			mLoadingDialog = null;
+		try {
+			if (mLoadingDialog != null) {
+				mLoadingDialog.dismiss();
+				mLoadingDialog = null;
+			}
+		}catch (Throwable e){ e.printStackTrace();}
+	}
+	protected  boolean mIsNeedTerminal = false;
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			mIsNeedTerminal = true;
 		}
+		return super.onKeyDown(keyCode, event);
 	}
 
+	@Override
+	public void finish() {
+		dismissLoading();
+		super.finish();
+	}
 }

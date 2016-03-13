@@ -256,6 +256,9 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 
 	@Override
 	public void onSyncFinished(boolean isSuccess) {
+		if(getActivity() == null){
+			return;
+		}
 		getActivity().runOnUiThread(new Runnable() {
 
 			@Override
