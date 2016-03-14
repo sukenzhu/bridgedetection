@@ -1,446 +1,450 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/main_bg"
-    android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/main_bg"
+              android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/logo" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/logo"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:orientation="vertical" >
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" >
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="16"
-                android:background="#50ffffff"
-                android:orientation="vertical"
-                android:paddingBottom="35dp"
-                android:paddingLeft="@dimen/home_page_padding"
-                android:paddingRight="@dimen/home_page_padding"
-                android:paddingTop="35dp" >
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="16"
+                    android:background="#50ffffff"
+                    android:orientation="vertical"
+                    android:paddingBottom="35dp"
+                    android:paddingLeft="@dimen/home_page_padding"
+                    android:paddingRight="@dimen/home_page_padding"
+                    android:paddingTop="35dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1" >
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1">
 
                     <include
-                        android:id="@drawable/richangyanghu"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/richangyanghu"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
 
                     <View
-                        android:layout_width="@dimen/home_page_padding"
-                        android:layout_height="match_parent" />
+                            android:layout_width="@dimen/home_page_padding"
+                            android:layout_height="match_parent"/>
 
                     <include
-                        android:id="@drawable/zhiliangchoujian"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/zhiliangchoujian"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
 
                     <View
-                        android:layout_width="@dimen/home_page_padding"
-                        android:layout_height="match_parent" />
+                            android:layout_width="@dimen/home_page_padding"
+                            android:layout_height="match_parent"/>
 
                     <include
-                        android:id="@drawable/zhuanxianggongcheng"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/zhuanxianggongcheng"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
 
                     <View
-                        android:layout_width="@dimen/home_page_padding"
-                        android:layout_height="match_parent" />
+                            android:layout_width="@dimen/home_page_padding"
+                            android:layout_height="match_parent"/>
 
                     <include
-                        android:id="@drawable/qiaoliangjiancha"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/qiaoliangjiancha"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
 
                     <View
-                        android:layout_width="@dimen/home_page_padding"
-                        android:layout_height="match_parent" />
+                            android:layout_width="@dimen/home_page_padding"
+                            android:layout_height="match_parent"/>
 
                     <include
-                        android:id="@drawable/suidaojiancha"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/suidaojiancha"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1" >
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1">
 
                     <include
-                        android:id="@drawable/qiaoliangxuncha"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/qiaoliangxuncha"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
 
                     <View
-                        android:layout_width="@dimen/home_page_padding"
-                        android:layout_height="match_parent" />
+                            android:layout_width="@dimen/home_page_padding"
+                            android:layout_height="match_parent"/>
 
                     <include
-                        android:id="@drawable/suidaoxuncha"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/suidaoxuncha"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
 
                     <View
-                        android:layout_width="@dimen/home_page_padding"
-                        android:layout_height="match_parent" />
+                            android:layout_width="@dimen/home_page_padding"
+                            android:layout_height="match_parent"/>
 
                     <include
-                        android:id="@drawable/luzhengxunshi"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/luzhengxunshi"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
 
                     <View
-                        android:layout_width="@dimen/home_page_padding"
-                        android:layout_height="match_parent" />
+                            android:layout_width="@dimen/home_page_padding"
+                            android:layout_height="match_parent"/>
 
                     <include
-                        android:id="@drawable/jidianxuncha"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/jidianxuncha"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
 
                     <View
-                        android:layout_width="@dimen/home_page_padding"
-                        android:layout_height="match_parent" />
+                            android:layout_width="@dimen/home_page_padding"
+                            android:layout_height="match_parent"/>
 
                     <include
-                        android:id="@drawable/yingjishijian"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        layout="@layout/home_item_view" />
+                            android:id="@drawable/yingjishijian"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            layout="@layout/home_item_view"/>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="6"
-                android:background="#60015b8d"
-                android:orientation="vertical" >
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6"
+                    android:background="#60015b8d"
+                    android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/home_right_item_bg"
-                    android:orientation="vertical"
-                    android:padding="3dp" >
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/home_right_item_bg"
+                        android:orientation="vertical"
+                        android:padding="3dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" >
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="3dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginTop="2dp"
-                            android:src="@drawable/gps_global" />
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="3dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/gps_global"/>
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical" >
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" >
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
 
                                 <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="GPS "
-                                    android:textColor="@android:color/white"
-                                    android:textSize="12dp" />
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="GPS "
+                                        android:textColor="@android:color/white"
+                                        android:textSize="12dp"/>
 
                                 <TextView
-                                    android:id="@+id/syncLocationTv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="定位中..."
-                                    android:textColor="@android:color/white"
-                                    android:textSize="10dp" />
+                                        android:id="@+id/syncLocationTv"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="定位中..."
+                                        android:textColor="@android:color/white"
+                                        android:textSize="10dp"/>
+
+                                <ImageView android:id="@+id/gpsgjwarn" android:layout_width="20dp" android:layout_marginLeft="3dp"
+                                           android:layout_height="20dp" android:src="@drawable/gpsgjwarn"/>
+
                             </LinearLayout>
 
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:id="@+id/home_jingdu"
-                                android:text="经度："
-                                android:textColor="@android:color/white"
-                                android:textSize="10dp" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:id="@+id/home_jingdu"
+                                    android:text="经度："
+                                    android:textColor="@android:color/white"
+                                    android:textSize="10dp"/>
 
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:id="@+id/home_weidu"
-                                android:text="纬度："
-                                android:textColor="@android:color/white"
-                                android:textSize="10dp" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:id="@+id/home_weidu"
+                                    android:text="纬度："
+                                    android:textColor="@android:color/white"
+                                    android:textSize="10dp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/home_right_item_light_bg"
-                    android:orientation="vertical"
-                    android:padding="3dp" >
-
-                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_vertical" >
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="2dp"
-                            android:layout_marginRight="5dp"
-                            android:src="@drawable/device_no" />
-
-                        <TextView
-                            android:id="@+id/home_deviceId"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="设备号:123"
-                            android:textColor="#ffffff"
-                            android:textSize="10dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginTop="2dp"
-                        android:gravity="center_vertical" >
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="2dp"
-                            android:layout_marginRight="5dp"
-                            android:src="@drawable/last_login" />
-
-                        <TextView
-                            android:id="@+id/last_login"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="上次登录：2015-11-06"
-                            android:textColor="#ffffff"
-                            android:textSize="10dp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical" >
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/home_right_item_half_bg"
-                        android:gravity="center_vertical"
-                        android:padding="3dp" >
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="3dp"
-                            android:layout_marginLeft="3dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginTop="2dp"
-                            android:src="@drawable/warning" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="离线业务提醒"
-                            android:textColor="#ffffff"
-                            android:textSize="11dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/home_right_item_light_bg"
                         android:orientation="vertical"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="3dp"
-                        android:paddingTop="3dp"
-                        android:background="@drawable/home_right_item_light_half_bg" >
+                        android:padding="3dp">
 
-                        <LinearLayout
-                            android:id="@+id/left_frag_item_layout1"
+                    <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_marginTop="2dp"
-                            android:visibility="invisible"
-                            android:layout_height="wrap_content" >
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center_vertical">
 
-                            <TextView
-                                android:id="@+id/left_frag_item_num1"
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:background="@drawable/circle_text_view_bg"
-                                android:gravity="center"
-                                android:text="2"
-                                android:textColor="#ffffff"
-                                android:textSize="6dp" />
-
-                            <TextView
-                                android:id="@+id/left_frag_item_tv1"
+                        <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:lineSpacingExtra="2dp"
-                                android:text="份《桥梁检查表》未上传"
+                                android:layout_marginLeft="2dp"
+                                android:layout_marginRight="5dp"
+                                android:src="@drawable/device_no"/>
+
+                        <TextView
+                                android:id="@+id/home_deviceId"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="设备号:123"
                                 android:textColor="#ffffff"
-                                android:textSize="8dp" />
+                                android:textSize="10dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center_vertical">
+
+                        <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2dp"
+                                android:layout_marginRight="5dp"
+                                android:src="@drawable/last_login"/>
+
+                        <TextView
+                                android:id="@+id/last_login"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="上次登录：2015-11-06"
+                                android:textColor="#ffffff"
+                                android:textSize="10dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/home_right_item_half_bg"
+                            android:gravity="center_vertical"
+                            android:padding="3dp">
+
+                        <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="3dp"
+                                android:layout_marginLeft="3dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/warning"/>
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="离线业务提醒"
+                                android:textColor="#ffffff"
+                                android:textSize="11dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="3dp"
+                            android:paddingTop="3dp"
+                            android:background="@drawable/home_right_item_light_half_bg">
+
+                        <LinearLayout
+                                android:id="@+id/left_frag_item_layout1"
+                                android:layout_width="match_parent"
+                                android:layout_marginTop="2dp"
+                                android:visibility="invisible"
+                                android:layout_height="wrap_content">
+
+                            <TextView
+                                    android:id="@+id/left_frag_item_num1"
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/circle_text_view_bg"
+                                    android:gravity="center"
+                                    android:text="2"
+                                    android:textColor="#ffffff"
+                                    android:textSize="6dp"/>
+
+                            <TextView
+                                    android:id="@+id/left_frag_item_tv1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingExtra="2dp"
+                                    android:text="份《桥梁检查表》未上传"
+                                    android:textColor="#ffffff"
+                                    android:textSize="8dp"/>
                         </LinearLayout>
                         <LinearLayout
-                            android:id="@+id/left_frag_item_layout2"
-                            android:layout_width="match_parent"
-                            android:visibility="invisible"
-                            android:layout_marginTop="2dp"
-                            android:layout_height="wrap_content" >
+                                android:id="@+id/left_frag_item_layout2"
+                                android:layout_width="match_parent"
+                                android:visibility="invisible"
+                                android:layout_marginTop="2dp"
+                                android:layout_height="wrap_content">
 
                             <TextView
-                                android:id="@+id/left_frag_item_num2"
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:background="@drawable/circle_text_view_bg"
-                                android:gravity="center"
-                                android:text="2"
-                                android:textColor="#ffffff"
-                                android:textSize="6dp" />
+                                    android:id="@+id/left_frag_item_num2"
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/circle_text_view_bg"
+                                    android:gravity="center"
+                                    android:text="2"
+                                    android:textColor="#ffffff"
+                                    android:textSize="6dp"/>
 
                             <TextView
-                                android:id="@+id/left_frag_item_tv2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="份《隧道检查表》未上传"
-                                android:lineSpacingExtra="2dp"
-                                android:textColor="#ffffff"
-                                android:textSize="8dp" />
+                                    android:id="@+id/left_frag_item_tv2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="份《隧道检查表》未上传"
+                                    android:lineSpacingExtra="2dp"
+                                    android:textColor="#ffffff"
+                                    android:textSize="8dp"/>
                         </LinearLayout>
                         <LinearLayout
-                            android:id="@+id/left_frag_item_layout3"
-                            android:layout_width="match_parent"
-                            android:layout_marginTop="2dp"
-                            android:visibility="invisible"
-                            android:layout_height="wrap_content" >
+                                android:id="@+id/left_frag_item_layout3"
+                                android:layout_width="match_parent"
+                                android:layout_marginTop="2dp"
+                                android:visibility="invisible"
+                                android:layout_height="wrap_content">
 
                             <TextView
-                                android:id="@+id/left_frag_item_num3"
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:background="@drawable/circle_text_view_bg"
-                                android:gravity="center"
-                                android:text=""
-                                android:textColor="#ffffff"
-                                android:textSize="6dp" />
+                                    android:id="@+id/left_frag_item_num3"
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/circle_text_view_bg"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="#ffffff"
+                                    android:textSize="6dp"/>
 
                             <TextView
-                                android:id="@+id/left_frag_item_tv3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:lineSpacingExtra="2dp"
-                                android:text="份《桥梁巡查表》未上传"
-                                android:textColor="#ffffff"
-                                android:textSize="8dp" />
+                                    android:id="@+id/left_frag_item_tv3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingExtra="2dp"
+                                    android:text="份《桥梁巡查表》未上传"
+                                    android:textColor="#ffffff"
+                                    android:textSize="8dp"/>
                         </LinearLayout>
-                        
+
                         <LinearLayout
-                            android:id="@+id/left_frag_item_layout4"
-                            android:layout_width="match_parent"
-                            android:layout_marginTop="2dp"
-                            android:visibility="invisible"
-                            android:layout_height="wrap_content" >
+                                android:id="@+id/left_frag_item_layout4"
+                                android:layout_width="match_parent"
+                                android:layout_marginTop="2dp"
+                                android:visibility="invisible"
+                                android:layout_height="wrap_content">
 
                             <TextView
-                                android:id="@+id/left_frag_item_num4"
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:background="@drawable/circle_text_view_bg"
-                                android:gravity="center"
-                                android:text=""
-                                android:textColor="#ffffff"
-                                android:textSize="6dp" />
+                                    android:id="@+id/left_frag_item_num4"
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:background="@drawable/circle_text_view_bg"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="#ffffff"
+                                    android:textSize="6dp"/>
 
                             <TextView
-                                android:id="@+id/left_frag_item_tv4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:lineSpacingExtra="2dp"
-                                android:text="份《隧道巡查表》未上传"
-                                android:textColor="#ffffff"
-                                android:textSize="8dp" />
+                                    android:id="@+id/left_frag_item_tv4"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingExtra="2dp"
+                                    android:text="份《隧道巡查表》未上传"
+                                    android:textColor="#ffffff"
+                                    android:textSize="8dp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -448,36 +452,36 @@
         </LinearLayout>
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="25dp" >
+                android:layout_width="match_parent"
+                android:layout_height="25dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="80dp" >
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="版权所有 @ 河北省高速公路管理局"
-                    android:textSize="10dp" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="80dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="   当前版本V1.0.3"
-                    android:textSize="9dp" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="版权所有 @ 河北省高速公路管理局"
+                        android:textSize="10dp"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="   当前版本V1.0.3"
+                        android:textSize="9dp"/>
             </LinearLayout>
 
             <TextView
-                android:id="@+id/home_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="16dp"
-                android:text="2015年1月22日   200:33 "
-                android:textSize="9dp" />
+                    android:id="@+id/home_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="16dp"
+                    android:text="2015年1月22日   200:33 "
+                    android:textSize="9dp"/>
         </FrameLayout>
     </LinearLayout>
 

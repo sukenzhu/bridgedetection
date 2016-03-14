@@ -9,8 +9,11 @@ public class LocationResult {
 	public double latitude;
 
 	public double longitude;
+
+	public double altitude;
 	
 	public String time;
+	public String wz;
 	
 
 }

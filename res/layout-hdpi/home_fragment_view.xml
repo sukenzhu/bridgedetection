@@ -208,6 +208,9 @@
                                     android:text="定位中..."
                                     android:textColor="@android:color/white"
                                     android:textSize="12dp" />
+
+                                <ImageView android:id="@+id/gpsgjwarn" android:layout_width="20dp" android:layout_marginLeft="3dp"
+                                           android:layout_height="20dp" android:src="@drawable/gpsgjwarn"/>
                             </LinearLayout>
 
                             <TextView

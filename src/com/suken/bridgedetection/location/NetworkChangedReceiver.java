@@ -15,7 +15,7 @@ public class NetworkChangedReceiver extends BroadcastReceiver {
 		NetworkInfo activeInfo = manager.getActiveNetworkInfo();
 		if (wifiInfo != null && activeInfo != null) {
 			if (wifiInfo.isConnected() && activeInfo.isAvailable()) {
-				LocationManager.getInstance().updateGps(true);
+				LocationManager.getInstance().updateGps(true, false, null);
 			}
 		}
 	}

@@ -20,8 +20,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
+import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.activity.BaseActivity;
 import com.suken.bridgedetection.activity.BridgeDetectionListActivity;
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.location.LocationResult;
@@ -36,267 +38,326 @@ import java.util.List;
 
 public class HomePageFragment extends BaseFragment implements OnClickListener, OnLocationFinishedListener, OnSyncDataFinishedListener {
 
-	private TextView mjingdu;
-	private TextView mWeidu;
-	private TextView mDeviceId;
-	private TextView mLastLogin = null;
-	private TextView time = null;
-	private TextView tipsNum1 = null;
-	private TextView tipsNum2 = null;
-	private TextView tipsNum3 = null;
-	private TextView tipsNum4 = null;
-	private View tipLayout1 = null;
-	private View tipLayout2 = null;
-	private View tipLayout3 = null;
-	private View tipLayout4 = null;
+    private TextView mjingdu;
+    private TextView mWeidu;
+    private TextView mDeviceId;
+    private TextView mLastLogin = null;
+    private TextView time = null;
+    private TextView tipsNum1 = null;
+    private TextView tipsNum2 = null;
+    private TextView tipsNum3 = null;
+    private TextView tipsNum4 = null;
+    private View tipLayout1 = null;
+    private View tipLayout2 = null;
+    private View tipLayout3 = null;
+    private View tipLayout4 = null;
+    private View gpsGjWarnView = null;
 
-	private View mContentView = null;
-	private boolean mIsGpsSuccess = false;
-	private List<HomeFragmentItemController> list = new ArrayList<HomeFragmentItemController>();
-	private Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			time.setText(UiUtil.formatNowTime());
-			sendEmptyMessageDelayed(0, 1000);
-		}
-	};
+    private View mContentView = null;
+    private boolean mIsGpsSuccess = false;
+    private List<HomeFragmentItemController> list = new ArrayList<HomeFragmentItemController>();
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            time.setText(UiUtil.formatNowTime());
+            sendEmptyMessageDelayed(0, 1000);
+        }
+    };
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		for (HomeFragmentItemController con : list){
-			con.destory();
-		}
-		list.clear();
-		mjingdu = null;
-		mWeidu = null;
-		mDeviceId = null;
-		mLastLogin = null;
-		time = null;
-		tipsNum1 = null;
-		tipsNum2 = null;
-		tipsNum3 = null;
-		tipsNum4 = null;
-		tipLayout1 = null;
-		tipLayout2 = null;
-		tipLayout2 = null;
-		tipLayout3 = null;
-		tipLayout4 = null;
-		handler.removeMessages(0);
-		handler = null;
-	}
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        for (HomeFragmentItemController con : list) {
+            con.destory();
+        }
+        list.clear();
+        mjingdu = null;
+        mWeidu = null;
+        mDeviceId = null;
+        mLastLogin = null;
+        time = null;
+        tipsNum1 = null;
+        tipsNum2 = null;
+        tipsNum3 = null;
+        tipsNum4 = null;
+        tipLayout1 = null;
+        tipLayout2 = null;
+        tipLayout2 = null;
+        tipLayout3 = null;
+        tipLayout4 = null;
+        handler.removeMessages(0);
+        handler = null;
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.home_fragment_view, container, false);
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.home_fragment_view, container, false);
+    }
 
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		mContentView = view;
-		mjingdu = (TextView) view.findViewById(R.id.home_jingdu);
-		mWeidu = (TextView) view.findViewById(R.id.home_weidu);
-		mDeviceId = (TextView) view.findViewById(R.id.home_deviceId);
-		tipsNum1 = (TextView) view.findViewById(R.id.left_frag_item_num1);
-		tipsNum2 = (TextView) view.findViewById(R.id.left_frag_item_num2);
-		tipsNum3 = (TextView) view.findViewById(R.id.left_frag_item_num3);
-		tipsNum4 = (TextView) view.findViewById(R.id.left_frag_item_num4);
-		tipLayout1 = view.findViewById(R.id.left_frag_item_layout1);
-		tipLayout2 = view.findViewById(R.id.left_frag_item_layout2);
-		tipLayout3 = view.findViewById(R.id.left_frag_item_layout3);
-		tipLayout4 = view.findViewById(R.id.left_frag_item_layout4);
-		mDeviceId.setText("设备号:" + UiUtil.genDeviceId());
-		mLastLogin = (TextView) view.findViewById(R.id.last_login);
-		mLastLogin.setText("上次登录:" + SharePreferenceManager.getInstance().readString("上次登录", UiUtil.formatNowTime("yyyy-MM-dd")));
-		time = (TextView) view.findViewById(R.id.home_time);
-		time.setText(UiUtil.formatNowTime());
-		handler.sendEmptyMessageDelayed(0, 1000);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mContentView = view;
+        mjingdu = (TextView) view.findViewById(R.id.home_jingdu);
+        mWeidu = (TextView) view.findViewById(R.id.home_weidu);
+        mDeviceId = (TextView) view.findViewById(R.id.home_deviceId);
+        tipsNum1 = (TextView) view.findViewById(R.id.left_frag_item_num1);
+        tipsNum2 = (TextView) view.findViewById(R.id.left_frag_item_num2);
+        tipsNum3 = (TextView) view.findViewById(R.id.left_frag_item_num3);
+        tipsNum4 = (TextView) view.findViewById(R.id.left_frag_item_num4);
+        tipLayout1 = view.findViewById(R.id.left_frag_item_layout1);
+        tipLayout2 = view.findViewById(R.id.left_frag_item_layout2);
+        tipLayout3 = view.findViewById(R.id.left_frag_item_layout3);
+        tipLayout4 = view.findViewById(R.id.left_frag_item_layout4);
+        mDeviceId.setText("设备号:" + UiUtil.genDeviceId());
+        mLastLogin = (TextView) view.findViewById(R.id.last_login);
+        mLastLogin.setText("上次登录:" + SharePreferenceManager.getInstance().readString("上次登录", UiUtil.formatNowTime("yyyy-MM-dd")));
+        time = (TextView) view.findViewById(R.id.home_time);
+        time.setText(UiUtil.formatNowTime());
+        gpsGjWarnView = view.findViewById(R.id.gpsgjwarn);
+        gpsGjWarnView.setOnClickListener(this);
+        handler.sendEmptyMessageDelayed(0, 1000);
 
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.richangyanghu, "日常养护"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.zhiliangchoujian, "质量抽检"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.zhuanxianggongcheng, "专项工程"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangjiancha, "桥梁检查"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.suidaojiancha, "隧道检查"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangxuncha, "桥梁巡查"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.suidaoxuncha, "隧道巡查"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.luzhengxunshi, "路政巡视"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.jidianxuncha, "机电巡查"));
-		list.add(new HomeFragmentItemController(this, mContentView, R.drawable.yingjishijian, "应急事件"));
-	}
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.richangyanghu, "日常养护"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.zhiliangchoujian, "质量抽检"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.zhuanxianggongcheng, "专项工程"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangjiancha, "桥梁检查"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.suidaojiancha, "隧道检查"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangxuncha, "桥梁巡查"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.suidaoxuncha, "隧道巡查"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.luzhengxunshi, "路政巡视"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.jidianxuncha, "机电巡查"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.yingjishijian, "应急事件"));
+    }
 
-	@Override
-	public void onClick(View v) {
-		int vid = v.getId();
-		if (vid == R.drawable.qiaoliangjiancha || vid == R.drawable.qiaoliangxuncha || vid == R.drawable.suidaojiancha || vid == R.drawable.suidaoxuncha) {
-			Intent intent = new Intent(getActivity(), BridgeDetectionListActivity.class);
-			intent.putExtra("type", vid);
-			startActivity(intent);
-		} else {
-			toast("敬请期待!");
-		}
-	}
 
-	@Override
-	public void onLocationFinished(LocationResult result) {
-		if (result.isSuccess) {
-			mIsGpsSuccess = true;
-			mjingdu.setText("经度:" + result.latitude);
-			mWeidu.setText("纬度:" + result.longitude);
-			TextView tv = (TextView) getActivity().findViewById(R.id.syncLocationTv);
-			tv.setText("定位成功");
-			tv.setTextColor(Color.WHITE);
-		} else {
-			TextView tv = (TextView) getActivity().findViewById(R.id.syncLocationTv);
-			tv.setText("定位失败");
-			tv.setTextColor(Color.RED);
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        int vid = v.getId();
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		android.location.LocationManager locationManager = (android.location.LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-		if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) && !mIsGpsSuccess) {
-			mContentView.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					if (!getActivity().isFinishing()) {
-						LocationManager.getInstance().syncLocation(HomePageFragment.this);
-					}
-				}
-			}, 200);
-		}
+        if (vid == R.id.gpsgjwarn) {
+            LocationManager.getInstance().updateGps(true, true, (BaseActivity) getActivity());
+            return;
+        }
 
-		BackgroundExecutor.execute(new Runnable() {
+        if (vid == R.drawable.qiaoliangjiancha || vid == R.drawable.qiaoliangxuncha || vid == R.drawable.suidaojiancha || vid == R.drawable.suidaoxuncha) {
+            Intent intent = new Intent(getActivity(), BridgeDetectionListActivity.class);
+            intent.putExtra("type", vid);
+            startActivity(intent);
+        } else {
+            toast("敬请期待!");
+        }
+    }
 
-			@Override
-			public void run() {
+    @Override
+    public void onLocationFinished(LocationResult result) {
+        if (result.isSuccess) {
+            mIsGpsSuccess = true;
+            mjingdu.setText("经度:" + result.latitude);
+            mWeidu.setText("纬度:" + result.longitude);
+            TextView tv = (TextView) getActivity().findViewById(R.id.syncLocationTv);
+            tv.setText("定位成功");
+            tv.setTextColor(Color.WHITE);
+        } else {
+            TextView tv = (TextView) getActivity().findViewById(R.id.syncLocationTv);
+            tv.setText("定位失败");
+            tv.setTextColor(Color.RED);
+        }
+    }
 
-				final int count1 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangjiancha, Constants.STATUS_UPDATE);
-				final int count2 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_UPDATE);
-				final int count3 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangxuncha, Constants.STATUS_UPDATE);
-				final int count4 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_UPDATE);
+    public void onSelected() {
 
-				final int count5 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangjiancha, Constants.STATUS_AGAIN);
-				final int count6 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_AGAIN);
-				final int count7 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_AGAIN);
+        android.location.LocationManager locationManager = (android.location.LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) && !mIsGpsSuccess) {
+            mContentView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!getActivity().isFinishing()) {
+                        LocationManager.getInstance().syncLocation(HomePageFragment.this);
+                    }
+                }
+            }, 200);
+        }
 
-				final int qljxNoCount = new QLBaseDataDao().countAll() + new HDBaseDataDao().countAll() - count1 - count5;
-				final int sdjcNoCount = new SDBaseDataDao().countAll() - count2 - count6;
-				final int sdxcNoCount = new SDBaseDataDao().countAll() - count4 - count7;
+        BackgroundExecutor.execute(new Runnable() {
 
-				getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
-					@Override
-					public void run() {
-						if (count1 > 0) {
-							tipsNum1.setText(count1 + "");
-							tipLayout1.setVisibility(View.VISIBLE);
-						} else {
-							tipLayout1.setVisibility(View.GONE);
-						}
-						if (count2 > 0) {
-							tipsNum2.setText(count2 + "");
-							tipLayout2.setVisibility(View.VISIBLE);
-						} else {
-							tipLayout2.setVisibility(View.GONE);
-						}
-						if (count3 > 0) {
-							tipsNum3.setText(count3 + "");
-							tipLayout3.setVisibility(View.VISIBLE);
-						} else {
-							tipLayout3.setVisibility(View.GONE);
-						}
-						if (count4 > 0) {
-							tipsNum4.setText(count4 + "");
-							tipLayout4.setVisibility(View.VISIBLE);
-						} else {
-							tipLayout4.setVisibility(View.GONE);
-						}
-						Calendar cal = Calendar.getInstance();
-						cal.setTimeInMillis(System.currentTimeMillis());
-						int day = cal.get(Calendar.DAY_OF_MONTH);
-						int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-						if(qljxNoCount + sdjcNoCount + sdxcNoCount > 0 && maxDay - day <= 7){
-							String ns = Context.NOTIFICATION_SERVICE;
-							NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(ns);
-							// 定义通知栏展现的内容信息
-							int icon = R.drawable.ic_launcher;
-							CharSequence tickerText = "提醒";
-							long when = System.currentTimeMillis();
-							Notification notification = new Notification(icon, tickerText, when);
-	
-							// 定义下拉通知栏时要展现的内容信息
-							Context context = getActivity();
-							CharSequence contentTitle = "本月剩余未检查提醒";
-							StringBuilder sb = new StringBuilder();
-							if(qljxNoCount > 0) sb.append("桥梁检查剩余：" + qljxNoCount + "，");
-							if(sdjcNoCount > 0) sb.append("隧道检查剩余：" + sdjcNoCount + "，");
-							if(sdxcNoCount > 0) sb.append("隧道巡查剩余：" + sdxcNoCount);
-							CharSequence contentText =  sb.toString();
-							// Intent notificationIntent = new Intent(getActivity(),
-							// BootStartDemo.class);
-							// PendingIntent contentIntent =
-							// PendingIntent.getActivity(this, 0,
-							// notificationIntent, 0);
-							notification.setLatestEventInfo(context, contentTitle, contentText, null);
-							// 用mNotificationManager的notify方法通知用户生成标题栏消息通知
-							mNotificationManager.notify(1, notification);
-							Vibrator vib = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
-							vib.vibrate(300);
-							Toast.makeText(getActivity(), contentText, Toast.LENGTH_LONG).show();
-						}
-					}
-				});
-			}
-		});
-	}
+                boolean showGpsGjWarn = SharePreferenceManager.getInstance().readBoolean(BridgeDetectionApplication.mCurrentUser.getUserId() + "gpsfail", false);
+                GpsGjDataDao gjDataDao = new GpsGjDataDao();
+                int failCount = gjDataDao.countQueryGpsData();
+                final boolean showGpsGj = showGpsGjWarn && failCount > 0;
 
-	@Override
-	public void onSyncFinished(boolean isSuccess) {
-		if(getActivity() == null){
-			return;
-		}
-		getActivity().runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
 
-			@Override
-			public void run() {
-				initGPS();
-			}
-		});
-	}
+                                                @Override
+                                                public void run() {
 
-	private void initGPS() {
-		android.location.LocationManager locationManager = (android.location.LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-		// 判断GPS模块是否开启，如果没有则开启
-		if (!locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
-			AlertDialog.Builder dialog = new AlertDialog.Builder(this.getActivity());
-			dialog.setTitle("提醒");
-			dialog.setMessage("请打开GPS");
-			dialog.setPositiveButton("确定", new android.content.DialogInterface.OnClickListener() {
+                                                    if (showGpsGj) {
+                                                        gpsGjWarnView.setVisibility(View.VISIBLE);
+                                                    } else {
+                                                        gpsGjWarnView.setVisibility(View.GONE);
+                                                    }
+                                                }
+                                            }
+                );
+            }
+        });
+    }
 
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-					// 转到手机设置界面，用户设置GPS
-					Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-					startActivityForResult(intent, 0); // 设置完成后返回到原来的界面
-				}
-			});
-			dialog.setNeutralButton("取消", new android.content.DialogInterface.OnClickListener() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        onSelected();
 
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-					arg0.dismiss();
-					LocationManager.getInstance().syncLocation(HomePageFragment.this);
-				}
-			});
-			dialog.setCancelable(false);
-			dialog.show();
-		} else {
-			LocationManager.getInstance().syncLocation(this);
-		}
-	}
+        BackgroundExecutor.execute(new Runnable() {
 
+            @Override
+            public void run() {
+
+                final int count1 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangjiancha, Constants.STATUS_UPDATE);
+                final int count2 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_UPDATE);
+                final int count3 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangxuncha, Constants.STATUS_UPDATE);
+                final int count4 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_UPDATE);
+
+                final int count5 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangjiancha, Constants.STATUS_AGAIN);
+                final int count6 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_AGAIN);
+                final int count7 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_AGAIN);
+
+                final int qljxNoCount = new QLBaseDataDao().countAll() + new HDBaseDataDao().countAll() - count1 - count5;
+                final int sdjcNoCount = new SDBaseDataDao().countAll() - count2 - count6;
+                final int sdxcNoCount = new SDBaseDataDao().countAll() - count4 - count7;
+                boolean showGpsGjWarn = SharePreferenceManager.getInstance().readBoolean(BridgeDetectionApplication.mCurrentUser.getUserId() + "gpsGjFail", false);
+                GpsGjDataDao gjDataDao = new GpsGjDataDao();
+                int failCount = gjDataDao.countQueryGpsData();
+                final boolean showGpsGj = showGpsGjWarn && failCount > 0;
+
+                getActivity().runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        if (showGpsGj) {
+                            gpsGjWarnView.setVisibility(View.VISIBLE);
+                        } else {
+                            gpsGjWarnView.setVisibility(View.GONE);
+                        }
+
+                        if (count1 > 0) {
+                            tipsNum1.setText(count1 + "");
+                            tipLayout1.setVisibility(View.VISIBLE);
+                        } else {
+                            tipLayout1.setVisibility(View.GONE);
+                        }
+                        if (count2 > 0) {
+                            tipsNum2.setText(count2 + "");
+                            tipLayout2.setVisibility(View.VISIBLE);
+                        } else {
+                            tipLayout2.setVisibility(View.GONE);
+                        }
+                        if (count3 > 0) {
+                            tipsNum3.setText(count3 + "");
+                            tipLayout3.setVisibility(View.VISIBLE);
+                        } else {
+                            tipLayout3.setVisibility(View.GONE);
+                        }
+                        if (count4 > 0) {
+                            tipsNum4.setText(count4 + "");
+                            tipLayout4.setVisibility(View.VISIBLE);
+                        } else {
+                            tipLayout4.setVisibility(View.GONE);
+                        }
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTimeInMillis(System.currentTimeMillis());
+                        int day = cal.get(Calendar.DAY_OF_MONTH);
+                        int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                        if (qljxNoCount + sdjcNoCount + sdxcNoCount > 0 && maxDay - day <= 7) {
+                            String ns = Context.NOTIFICATION_SERVICE;
+                            NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(ns);
+                            // 定义通知栏展现的内容信息
+                            int icon = R.drawable.ic_launcher;
+                            CharSequence tickerText = "提醒";
+                            long when = System.currentTimeMillis();
+                            Notification notification = new Notification(icon, tickerText, when);
+
+                            // 定义下拉通知栏时要展现的内容信息
+                            Context context = getActivity();
+                            CharSequence contentTitle = "本月剩余未检查提醒";
+                            StringBuilder sb = new StringBuilder();
+                            if (qljxNoCount > 0) sb.append("桥梁检查剩余：" + qljxNoCount + "，");
+                            if (sdjcNoCount > 0) sb.append("隧道检查剩余：" + sdjcNoCount + "，");
+                            if (sdxcNoCount > 0) sb.append("隧道巡查剩余：" + sdxcNoCount);
+                            CharSequence contentText = sb.toString();
+                            // Intent notificationIntent = new Intent(getActivity(),
+                            // BootStartDemo.class);
+                            // PendingIntent contentIntent =
+                            // PendingIntent.getActivity(this, 0,
+                            // notificationIntent, 0);
+                            notification.setLatestEventInfo(context, contentTitle, contentText, null);
+                            // 用mNotificationManager的notify方法通知用户生成标题栏消息通知
+                            mNotificationManager.notify(1, notification);
+                            Vibrator vib = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+                            vib.vibrate(300);
+                            Toast.makeText(getActivity(), contentText, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void onSyncFinished(boolean isSuccess) {
+        if (getActivity() == null) {
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                initGPS();
+            }
+        });
+    }
+
+    private void initGPS() {
+        android.location.LocationManager locationManager = (android.location.LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        // 判断GPS模块是否开启，如果没有则开启
+        if (!locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this.getActivity());
+            dialog.setTitle("提醒");
+            dialog.setMessage("请打开GPS");
+            dialog.setPositiveButton("确定", new android.content.DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    // 转到手机设置界面，用户设置GPS
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(intent, 0); // 设置完成后返回到原来的界面
+                }
+            });
+            dialog.setNeutralButton("取消", new android.content.DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    arg0.dismiss();
+                    LocationManager.getInstance().syncLocation(HomePageFragment.this);
+                }
+            });
+            dialog.setCancelable(false);
+            dialog.show();
+        } else {
+            LocationManager.getInstance().syncLocation(this);
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            onSelected();
+        }
+    }
 }

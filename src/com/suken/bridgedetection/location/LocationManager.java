@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import com.suken.bridgedetection.activity.BaseActivity;
+import com.suken.bridgedetection.activity.HomePageActivity;
+import com.suken.bridgedetection.storage.GpsGjData;
+import com.suken.bridgedetection.storage.GpsGjDataDao;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -38,26 +42,15 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 	private LocationResult mLastBDLocation = null;
 	private List<OnLocationFinishedListener> mListenerArray = new ArrayList<OnLocationFinishedListener>();
 	private Object lock = new Object();
-	private List<GpsRecorder> recordList = new ArrayList<GpsRecorder>();
-
-	class GpsRecorder {
-		public GpsRecorder(String latitude, String longitude) {
-			super();
-			this.latitude = latitude;
-			this.longitude = longitude;
-		}
-
-		String latitude;
-		String longitude;
-	}
+	private GpsGjDataDao mGpsDao = new GpsGjDataDao();
 
 	private OnLocationFinishedListener recordListener = new OnLocationFinishedListener() {
 
 		@Override
 		public void onLocationFinished(LocationResult result) {
 			if (result.isSuccess) {
-				recordList.add(new GpsRecorder(Double.toString(result.latitude), Double.toString(result.longitude)));
-				updateGps(false);
+				mGpsDao.create(new GpsGjData(Double.toString(result.latitude), Double.toString(result.longitude), Double.toString(result.altitude), result.time, result.wz));
+				updateGps(false, false, null);
 			}
 			int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
 			mLocationHandler.sendEmptyMessageAtTime(0, b);
@@ -78,18 +71,25 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 	public void stopRecordLocation() {
 		mLocationHandler.removeMessages(0);
 		// 这里传一次
-		updateGps(true);
+		updateGps(true, false, null);
 	}
 
-	public void updateGps(final boolean force) {
+	private  BaseActivity activity;
+
+	public void updateGps(final boolean force, final  boolean showLoading, final BaseActivity activity) {
 		if(BridgeDetectionApplication.mCurrentUser == null){
 			return;
+		}
+		this.activity = activity;
+		if(showLoading && activity != null){
+			activity.showLoading("上传中...");
 		}
 		BackgroundExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
 				ConnectType type = NetWorkUtil.getConnectType(BridgeDetectionApplication.getInstance());
-				if (type == ConnectType.CONNECT_TYPE_WIFI && (force || recordList.size() > 700)) {
+				int count = mGpsDao.countQueryGpsData();
+				if (type == ConnectType.CONNECT_TYPE_WIFI && (force || count > 700)) {
 					List<NameValuePair> list = new ArrayList<NameValuePair>();
 					BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 					list.add(pair);
@@ -97,8 +97,13 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 					list.add(pair);
 					pair = new BasicNameValuePair("did", BridgeDetectionApplication.mDeviceId);
 					list.add(pair);
+					List recordList = mGpsDao.queryGpsData();
 					pair = new BasicNameValuePair("json", JSON.toJSONString(recordList));
+					list.add(pair);
 					new HttpTask(LocationManager.this, RequestType.updateGpsgjInfo).executePost(list);
+				}
+				if(showLoading && activity != null){
+					activity.dismissLoading();
 				}
 			}
 		});
@@ -169,7 +174,9 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 			sb.append(location.getLatitude());
 			sb.append("\nlontitude : ");
 			result.longitude = location.getLongitude();
+			result.altitude = location.getAltitude() > 0 ? location.getAltitude() : 0;
 			result.time = location.getTime();
+			result.wz = location.getAddrStr();
 			sb.append(location.getLongitude());
 			sb.append("\nradius : ");
 			sb.append(location.getRadius());
@@ -264,11 +271,22 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 
 	@Override
 	public void onRequestSuccess(RequestType type, JSONObject result) {
-
+		//上传成功删掉数据
+		mGpsDao.deleteAll();
+		SharePreferenceManager.getInstance().updateBoolean(BridgeDetectionApplication.mCurrentUser.getUserId()+ "gpsfail", false);
+		if(activity != null){
+			activity.toast("上传gps轨迹成功");
+			if(activity instanceof HomePageActivity){
+				((HomePageActivity) activity).hidden();
+			}
+		}
 	}
 
 	@Override
 	public void onRequestFail(RequestType type, String resultCode, String result) {
-
+		if(activity != null){
+			activity.toast("上传gps轨迹失败");
+		}
+		SharePreferenceManager.getInstance().updateBoolean(BridgeDetectionApplication.mCurrentUser.getUserId()+ "gpsfail", true);
 	}
 }

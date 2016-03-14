@@ -199,4 +199,8 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 			BridgeDetectionApplication.getInstance().onTerminate();
 		}
 	}
+
+	public  void hidden(){
+		mHomeFragment.onSelected();
+	}
 }
