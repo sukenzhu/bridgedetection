@@ -89,7 +89,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 			public void run() {
 				ConnectType type = NetWorkUtil.getConnectType(BridgeDetectionApplication.getInstance());
 				int count = mGpsDao.countQueryGpsData();
-				if (type == ConnectType.CONNECT_TYPE_WIFI && (force || count > 700)) {
+				if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 700)) {
 					List<NameValuePair> list = new ArrayList<NameValuePair>();
 					BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 					list.add(pair);
