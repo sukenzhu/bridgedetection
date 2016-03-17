@@ -57,6 +57,12 @@ public class GpsFragment extends BaseFragment {
 				if (!TextUtils.isEmpty(interval)) {
 					try {
 						a = Integer.parseInt(interval);
+						if (a < 10 ){
+							a = 10;
+						}
+						if(a > 300){
+							a = 300;
+						}
 					} catch (NumberFormatException e) {
 						e.printStackTrace();
 					}
