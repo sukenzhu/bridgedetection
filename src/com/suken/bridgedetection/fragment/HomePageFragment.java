@@ -210,8 +210,19 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
     @Override
     public void onResume() {
         super.onResume();
+        if(getActivity().isDestroyed()){
+            return;
+        }
         onSelected();
+        try {
+            calculateNotUpdate();
+        } catch (Throwable throwable){
+            throwable.printStackTrace();
+        }
 
+    }
+
+    private void calculateNotUpdate(){
         BackgroundExecutor.execute(new Runnable() {
 
             @Override
@@ -233,74 +244,80 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
                 GpsGjDataDao gjDataDao = new GpsGjDataDao();
                 int failCount = gjDataDao.countQueryGpsData();
                 final boolean showGpsGj = showGpsGjWarn && failCount > 0;
+                if(getActivity() == null){
+                    return;
+                }
 
                 getActivity().runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {
+                        try {
+                            if (showGpsGj) {
+                                gpsGjWarnView.setVisibility(View.VISIBLE);
+                            } else {
+                                gpsGjWarnView.setVisibility(View.GONE);
+                            }
 
-                        if (showGpsGj) {
-                            gpsGjWarnView.setVisibility(View.VISIBLE);
-                        } else {
-                            gpsGjWarnView.setVisibility(View.GONE);
-                        }
+                            if (count1 > 0) {
+                                tipsNum1.setText(count1 + "");
+                                tipLayout1.setVisibility(View.VISIBLE);
+                            } else {
+                                tipLayout1.setVisibility(View.GONE);
+                            }
+                            if (count2 > 0) {
+                                tipsNum2.setText(count2 + "");
+                                tipLayout2.setVisibility(View.VISIBLE);
+                            } else {
+                                tipLayout2.setVisibility(View.GONE);
+                            }
+                            if (count3 > 0) {
+                                tipsNum3.setText(count3 + "");
+                                tipLayout3.setVisibility(View.VISIBLE);
+                            } else {
+                                tipLayout3.setVisibility(View.GONE);
+                            }
+                            if (count4 > 0) {
+                                tipsNum4.setText(count4 + "");
+                                tipLayout4.setVisibility(View.VISIBLE);
+                            } else {
+                                tipLayout4.setVisibility(View.GONE);
+                            }
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTimeInMillis(System.currentTimeMillis());
+                            int day = cal.get(Calendar.DAY_OF_MONTH);
+                            int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                            if (qljxNoCount + sdjcNoCount + sdxcNoCount > 0 && maxDay - day <= 7) {
+                                String ns = Context.NOTIFICATION_SERVICE;
+                                NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(ns);
+                                // 定义通知栏展现的内容信息
+                                int icon = R.drawable.ic_launcher;
+                                CharSequence tickerText = "提醒";
+                                long when = System.currentTimeMillis();
+                                Notification notification = new Notification(icon, tickerText, when);
 
-                        if (count1 > 0) {
-                            tipsNum1.setText(count1 + "");
-                            tipLayout1.setVisibility(View.VISIBLE);
-                        } else {
-                            tipLayout1.setVisibility(View.GONE);
-                        }
-                        if (count2 > 0) {
-                            tipsNum2.setText(count2 + "");
-                            tipLayout2.setVisibility(View.VISIBLE);
-                        } else {
-                            tipLayout2.setVisibility(View.GONE);
-                        }
-                        if (count3 > 0) {
-                            tipsNum3.setText(count3 + "");
-                            tipLayout3.setVisibility(View.VISIBLE);
-                        } else {
-                            tipLayout3.setVisibility(View.GONE);
-                        }
-                        if (count4 > 0) {
-                            tipsNum4.setText(count4 + "");
-                            tipLayout4.setVisibility(View.VISIBLE);
-                        } else {
-                            tipLayout4.setVisibility(View.GONE);
-                        }
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTimeInMillis(System.currentTimeMillis());
-                        int day = cal.get(Calendar.DAY_OF_MONTH);
-                        int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                        if (qljxNoCount + sdjcNoCount + sdxcNoCount > 0 && maxDay - day <= 7) {
-                            String ns = Context.NOTIFICATION_SERVICE;
-                            NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(ns);
-                            // 定义通知栏展现的内容信息
-                            int icon = R.drawable.ic_launcher;
-                            CharSequence tickerText = "提醒";
-                            long when = System.currentTimeMillis();
-                            Notification notification = new Notification(icon, tickerText, when);
+                                // 定义下拉通知栏时要展现的内容信息
+                                Context context = getActivity();
+                                CharSequence contentTitle = "本月剩余未检查提醒";
+                                StringBuilder sb = new StringBuilder();
+                                if (qljxNoCount > 0) sb.append("桥梁检查剩余：" + qljxNoCount + "，");
+                                if (sdjcNoCount > 0) sb.append("隧道检查剩余：" + sdjcNoCount + "，");
+                                if (sdxcNoCount > 0) sb.append("隧道巡查剩余：" + sdxcNoCount);
+                                CharSequence contentText = sb.toString();
+                                // Intent notificationIntent = new Intent(getActivity(),
+                                // BootStartDemo.class);
+                                // PendingIntent contentIntent =
+                                // PendingIntent.getActivity(this, 0,
+                                // notificationIntent, 0);
+                                notification.setLatestEventInfo(context, contentTitle, contentText, null);
+                                // 用mNotificationManager的notify方法通知用户生成标题栏消息通知
+                                mNotificationManager.notify(1, notification);
+                                Vibrator vib = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+                                vib.vibrate(300);
+                                Toast.makeText(getActivity(), contentText, Toast.LENGTH_LONG).show();
+                            }
+                        }catch (Throwable throwable){
 
-                            // 定义下拉通知栏时要展现的内容信息
-                            Context context = getActivity();
-                            CharSequence contentTitle = "本月剩余未检查提醒";
-                            StringBuilder sb = new StringBuilder();
-                            if (qljxNoCount > 0) sb.append("桥梁检查剩余：" + qljxNoCount + "，");
-                            if (sdjcNoCount > 0) sb.append("隧道检查剩余：" + sdjcNoCount + "，");
-                            if (sdxcNoCount > 0) sb.append("隧道巡查剩余：" + sdxcNoCount);
-                            CharSequence contentText = sb.toString();
-                            // Intent notificationIntent = new Intent(getActivity(),
-                            // BootStartDemo.class);
-                            // PendingIntent contentIntent =
-                            // PendingIntent.getActivity(this, 0,
-                            // notificationIntent, 0);
-                            notification.setLatestEventInfo(context, contentTitle, contentText, null);
-                            // 用mNotificationManager的notify方法通知用户生成标题栏消息通知
-                            mNotificationManager.notify(1, notification);
-                            Vibrator vib = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
-                            vib.vibrate(300);
-                            Toast.makeText(getActivity(), contentText, Toast.LENGTH_LONG).show();
                         }
                     }
                 });

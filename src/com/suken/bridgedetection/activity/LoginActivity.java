@@ -51,6 +51,14 @@ public class LoginActivity extends BaseActivity {
 		mTextView = (TextView) findViewById(R.id.login_desc);
 		if(mUserInfos != null && mUserInfos.size() > 0){
 			UserInfo info = mUserInfos.get(0);
+			String lastUserId = SharePreferenceManager.getInstance().readString("lastloginuser", info.getUserId());
+			if(!TextUtils.equals(lastUserId, info.getUserId())){
+				for(UserInfo ui : mUserInfos){
+					if(TextUtils.equals(ui.getUserId(), lastUserId)){
+						info = ui;
+					}
+				}
+			}
 			mNameView.setText(info.getAccount());
 			mPwdView.setText(info.getPassword());
 		}
@@ -121,6 +129,7 @@ public class LoginActivity extends BaseActivity {
 		}
 		BridgeDetectionApplication.mCurrentUser = info;
 		BridgeDetectionApplication.mIsOffline = !isOnline;
+		SharePreferenceManager.getInstance().updateString("lastloginuser", info.getUserId());
 		boolean flag = SharePreferenceManager.getInstance().readBoolean(Constants.GPS_SWITCH, false);
 		if(flag){
 			LocationManager.getInstance().startRecordLocation();

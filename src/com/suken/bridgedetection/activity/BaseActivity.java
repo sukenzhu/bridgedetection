@@ -1,6 +1,7 @@
 package com.suken.bridgedetection.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -69,6 +70,8 @@ public class BaseActivity extends FragmentActivity {
 			@Override
 			public void run() {
 				if(mLoadingDialog != null && mLoadingDialog.isShowing()){
+					TextView tv = (TextView) mLoadingDialog.findViewById(R.id.tipTextView);
+					tv.setText(msg);
 					return;
 				}
 				LayoutInflater inflater = LayoutInflater.from(BaseActivity.this);
@@ -100,6 +103,12 @@ public class BaseActivity extends FragmentActivity {
 
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		dismissLoading();
+	}
+
 	public void dismissLoading() {
 		try {
 			if (mLoadingDialog != null) {
@@ -116,6 +125,13 @@ public class BaseActivity extends FragmentActivity {
 			mIsNeedTerminal = true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		BridgeDetectionApplication.mCurrentActivity = this;
 	}
 
 	@Override

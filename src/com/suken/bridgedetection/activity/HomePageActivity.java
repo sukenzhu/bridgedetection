@@ -161,12 +161,6 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		dismissLoading();
-	}
-
-	@Override
 	public void onRequestFail(RequestType type, String resultCode, String result) {
 		if (type == RequestType.update) {
 			runOnUiThread(new Runnable() {

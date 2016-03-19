@@ -78,6 +78,8 @@ public class UiUtil {
 
 	private static float DP = -1f;
 
+	public static  boolean isUpdating = false;
+
 	public static float getDp(Activity context) {
 		if (DP == -1f) {
 			DisplayMetrics dm = new DisplayMetrics();
@@ -242,8 +244,15 @@ public class UiUtil {
 				// new HttpTask(listener,
 				// RequestType.lastsdjcInfo).executePost(list);
 				if (isJustLastUpdate) {
-					new HttpTask(listener, RequestType.lastqhjcInfo).executePost(list);
-					new HttpTask(listener, RequestType.lastsdjcInfo).executePost(list);
+					int currentType = R.drawable.qiaoliangjiancha;
+					if(BridgeDetectionApplication.mCurrentActivity instanceof BridgeDetectionListActivity){
+						currentType = ((BridgeDetectionListActivity) (activity)).getCurrentType();
+					}
+					if(currentType == R.drawable.qiaoliangjiancha || currentType == R.drawable.qiaoliangxuncha){
+						new HttpTask(listener, RequestType.lastqhjcInfo).executePost(list);
+					} else {
+						new HttpTask(listener, RequestType.lastsdjcInfo).executePost(list);
+					}
 				} else {
 					new HttpTask(listener, RequestType.syncData).executePost(list);
 				}
@@ -311,15 +320,19 @@ public class UiUtil {
 		} else {
 			updateCheckData(qhId, type, list, activity);
 		}
-		if (handleDialog) {
+		if (handleDialog && !(activity.isFinishing()  || activity.isDestroyed())) {
 			activity.dismissLoading();
+		} else if(handleDialog && BridgeDetectionApplication.mCurrentActivity != null){
+			BridgeDetectionApplication.mCurrentActivity.dismissLoading();
 		}
 	}
 
 	public static void updateSingle(final String qhId, final int type, final boolean handleDialog, final BaseActivity activity) {
 		BackgroundExecutor.execute(new Runnable() {
 			public void run() {
+				isUpdating = true;
 				updateSingleNotPost(qhId, type, handleDialog, activity);
+				isUpdating = false;
 			}
 		});
 	}
@@ -406,7 +419,15 @@ public class UiUtil {
 								if (type == R.drawable.suidaoxuncha) {
 									dataId = data.getSdid();
 								}
-								((BridgeDetectionListActivity) activity).updateStatus(dataId, data.getLocalId(), Constants.STATUS_AGAIN);
+
+
+								if(activity.isFinishing() || activity.isDestroyed()){
+									if(BridgeDetectionApplication.mCurrentActivity != null  && BridgeDetectionApplication.mCurrentActivity instanceof  BridgeDetectionListActivity){
+										((BridgeDetectionListActivity) BridgeDetectionApplication.mCurrentActivity).updateStatus(dataId, data.getLocalId(), Constants.STATUS_AGAIN);
+									}
+								} else {
+									((BridgeDetectionListActivity) activity).updateStatus(dataId, data.getLocalId(), Constants.STATUS_AGAIN);
+								}
 							}
 						}
 					});
@@ -447,7 +468,13 @@ public class UiUtil {
 									if (type == R.drawable.suidaojiancha) {
 										dataId = data.getSdid();
 									}
-									((BridgeDetectionListActivity) activity).updateStatus(dataId, data.getLocalId(), Constants.STATUS_AGAIN);
+									if(activity.isFinishing() || activity.isDestroyed()){
+										if(BridgeDetectionApplication.mCurrentActivity != null  && BridgeDetectionApplication.mCurrentActivity instanceof  BridgeDetectionListActivity){
+											((BridgeDetectionListActivity) BridgeDetectionApplication.mCurrentActivity).updateStatus(dataId, data.getLocalId(), Constants.STATUS_AGAIN);
+										}
+									} else {
+										((BridgeDetectionListActivity) activity).updateStatus(dataId, data.getLocalId(), Constants.STATUS_AGAIN);
+									}
 								}
 							}
 						});

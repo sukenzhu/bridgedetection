@@ -149,7 +149,11 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 					@Override
 					public void run() {
 						init(false);
-						dismissLoading();
+						if(UiUtil.isUpdating){
+							showLoading("继续上传中...");
+						} else {
+							dismissLoading();
+						}
 					}
 				});
 
@@ -502,6 +506,11 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			gpsBtn.setImageResource(R.drawable.gps_red);
 			gpsBtn.setOnClickListener(this);
 		}
+	}
+
+
+	public int getCurrentType(){
+		return mType;
 	}
 
 }

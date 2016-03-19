@@ -188,6 +188,7 @@ public class SdxcFormAndDetailDao {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("type", type);
 		map.put("status", status);
+		map.put("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 		try {
 			List<SdxcFormData> list = mFormDao.queryForFieldValues(map);
 			if(list != null){
