@@ -210,7 +210,8 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
     @Override
     public void onResume() {
         super.onResume();
-        if(getActivity().isDestroyed()){
+        BaseActivity activity = (BaseActivity) getActivity();
+        if(activity.isDestroyed()){
             return;
         }
         onSelected();

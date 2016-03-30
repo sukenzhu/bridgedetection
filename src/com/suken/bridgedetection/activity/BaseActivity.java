@@ -1,7 +1,9 @@
 package com.suken.bridgedetection.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -60,7 +62,6 @@ public class BaseActivity extends FragmentActivity {
 	/**
 	 * 得到自定义的progressDialog
 	 * 
-	 * @param context
 	 * @param msg
 	 * @return
 	 */
@@ -138,5 +139,17 @@ public class BaseActivity extends FragmentActivity {
 	public void finish() {
 		dismissLoading();
 		super.finish();
+	}
+
+	private boolean mIsDestroyed = false;
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mIsDestroyed = true;
+	}
+
+	public boolean isDestroyed(){
+		return mIsDestroyed;
 	}
 }
