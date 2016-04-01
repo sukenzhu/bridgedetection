@@ -42,6 +42,17 @@ public class UserInfo implements Serializable {
 	@DatabaseField
 	private String defcompName;
 
+	@DatabaseField
+	private String roles;
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+
 	public String getToken() {
 		return token;
 	}

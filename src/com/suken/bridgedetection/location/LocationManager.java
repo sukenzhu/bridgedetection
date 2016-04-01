@@ -49,7 +49,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 		@Override
 		public void onLocationFinished(LocationResult result) {
 			if (result.isSuccess) {
-				mGpsDao.create(new GpsGjData(Double.toString(result.latitude), Double.toString(result.longitude), Double.toString(result.altitude), result.time, result.wz));
+				mGpsDao.create(new GpsGjData(Double.toString(result.longitude), Double.toString(result.latitude), Double.toString(result.altitude), result.time, result.wz));
 				updateGps(false, false, null);
 			}
 			int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);

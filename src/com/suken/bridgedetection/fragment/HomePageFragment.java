@@ -140,6 +140,24 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
             LocationManager.getInstance().updateGps(true, true, (BaseActivity) getActivity());
             return;
         }
+        if(BridgeDetectionApplication.mCurrentUser.getRoles() == null){
+            toast("无权限");
+            return;
+        }
+
+        if(vid == R.drawable.qiaoliangjiancha|| vid == R.drawable.qiaoliangxuncha){
+            if(!BridgeDetectionApplication.mCurrentUser.getRoles().contains("highway_qlxc")){
+                toast("无权限");
+                return;
+            }
+        }
+
+        if(vid == R.drawable.suidaojiancha|| vid == R.drawable.suidaoxuncha){
+            if(!BridgeDetectionApplication.mCurrentUser.getRoles().contains("highway_sdxc")){
+                toast("无权限");
+                return;
+            }
+        }
 
         if (vid == R.drawable.qiaoliangjiancha || vid == R.drawable.qiaoliangxuncha || vid == R.drawable.suidaojiancha || vid == R.drawable.suidaoxuncha) {
             Intent intent = new Intent(getActivity(), BridgeDetectionListActivity.class);
