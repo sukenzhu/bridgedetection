@@ -26,6 +26,9 @@ public class IpConfigFragment extends BaseFragment implements OnClickListener {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		mIpEv = (EditText) view.findViewById(R.id.ip);
+		String port = HttpTask.REQUEST_PORT = SharePreferenceManager.getInstance().readString("port", HttpTask.REQUEST_PORT);
+		String ip = HttpTask.REQUEST_IP = SharePreferenceManager.getInstance().readString("ip", HttpTask.REQUEST_IP);
+
 		mIpEv.setText(HttpTask.REQUEST_IP);
 		mPortEv = (EditText) view.findViewById(R.id.port);
 		mPortEv.setText(HttpTask.REQUEST_PORT);
