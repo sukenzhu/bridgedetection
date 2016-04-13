@@ -7,6 +7,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -110,6 +112,15 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
         tipLayout2 = view.findViewById(R.id.left_frag_item_layout2);
         tipLayout3 = view.findViewById(R.id.left_frag_item_layout3);
         tipLayout4 = view.findViewById(R.id.left_frag_item_layout4);
+        TextView currentVersion = (TextView) view.findViewById(R.id.currentVersion);
+        PackageInfo info;
+        try {
+            info = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            String versionName = info.versionName;
+            currentVersion.setText("当前版本：" + versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         mDeviceId.setText("设备号:" + UiUtil.genDeviceId());
         mLastLogin = (TextView) view.findViewById(R.id.last_login);
         mLastLogin.setText("上次登录:" + SharePreferenceManager.getInstance().readString("上次登录", UiUtil.formatNowTime("yyyy-MM-dd")));

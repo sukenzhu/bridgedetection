@@ -468,9 +468,10 @@
                         android:textSize="10dp"/>
 
                 <TextView
+                        android:id="@+id/currentVersion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="   当前版本V1.0.8"
+                        android:text="   当前版本V1.0.0"
                         android:textSize="9dp"/>
             </LinearLayout>
 
