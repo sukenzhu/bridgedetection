@@ -379,18 +379,14 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 				startActivityForResult(intent, 2);
 				return;
 			}
-			final CharSequence[] charSequences = { "同步基础数据", "同步上次检查数据", "同步本地检查数据" };
+			final CharSequence[] charSequences = { "同步基础数据", "同步上次检查数据" };
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 			builder.setTitle("同步操作").setItems(charSequences, new DialogInterface.OnClickListener() {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					if (which == 2) {
-						updateAll();
-					} else {
-						UiUtil.syncData(BridgeDetectionListActivity.this, which == 1);
-					}
+					UiUtil.syncData(BridgeDetectionListActivity.this, which == 1);
 				}
 			}).show();
 		} else if (v.getId() == R.id.gps_btn) {
