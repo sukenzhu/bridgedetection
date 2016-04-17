@@ -55,8 +55,9 @@
 
                 <ImageView
                     android:id="@+id/xiangji"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="5dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/xiangji" />
 
                 <TextView
@@ -76,8 +77,9 @@
 
                 <ImageView
                     android:id="@+id/video"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="5dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/sxj" />
 
                 <TextView

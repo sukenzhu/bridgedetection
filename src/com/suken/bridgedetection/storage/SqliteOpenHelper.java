@@ -34,6 +34,7 @@ public class SqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, SdxcFormDetail.class);
 			TableUtils.createTable(connectionSource, GpsData.class);
 			TableUtils.createTable(connectionSource, GpsGjData.class);
+			TableUtils.createTable(connectionSource, FileDesc.class);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -56,6 +57,7 @@ public class SqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, SdxcFormDetail.class, true);
 			TableUtils.dropTable(connectionSource, GpsData.class, true);
 			TableUtils.dropTable(connectionSource, GpsGjData.class, true);
+			TableUtils.dropTable(connectionSource, FileDesc.class, true);
 			onCreate(database, connectionSource);
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -2,6 +2,7 @@ package com.suken.bridgedetection.fragment;
 
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.activity.HomePageActivity;
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.storage.SharePreferenceManager;
 
@@ -70,6 +71,8 @@ public class GpsFragment extends BaseFragment {
 				SharePreferenceManager.getInstance().updateInt(Constants.INTERVAL, a);
 				SharePreferenceManager.getInstance().updateBoolean(Constants.GPS_SWITCH, gpsSwitch.isChecked());
 				toast("保存成功");
+				HomePageActivity act = (HomePageActivity) getActivity();
+				act.selectHome();
 			}
 		});
 	}

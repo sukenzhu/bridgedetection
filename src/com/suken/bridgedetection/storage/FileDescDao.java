@@ -33,4 +33,14 @@ public class FileDescDao {
 		}
 	}
 
+	public List<FileDesc> queryAll(){
+		try {
+			List<FileDesc> fileDescs = mFileDescDao.queryForAll();
+			return fileDescs;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }
