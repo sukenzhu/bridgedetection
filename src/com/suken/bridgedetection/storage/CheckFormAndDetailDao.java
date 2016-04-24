@@ -38,6 +38,9 @@ public class CheckFormAndDetailDao {
 			formData.setUserId(BridgeDetectionApplication.mCurrentUser.getUserId());
 			CreateOrUpdateStatus status = mFormDao.createOrUpdate(formData);
 			if (formData.getOftenCheckDetailList() != null) {
+				for(CheckDetail detail : formData.getOftenCheckDetailList()){
+					detail.setFormId(formData.getLocalId());
+				}
 				createDetails(formData.getOftenCheckDetailList());
 			}
 			return status.isCreated() || status.isUpdated();

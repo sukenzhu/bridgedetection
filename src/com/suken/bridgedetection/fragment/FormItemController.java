@@ -233,7 +233,7 @@ public class FormItemController implements OnClickListener {
 			if (!TextUtils.isEmpty(mFormBaseDetail.item2)) {
 				qsfwEv.setText(mFormBaseDetail.item2);
 			}
-			if (!TextUtils.isEmpty(mFormBaseDetail.item1)) {
+			if (!TextUtils.isEmpty(mFormBaseDetail.item3)) {
 				byyjEv.setText(mFormBaseDetail.item3);
 			}
 		}

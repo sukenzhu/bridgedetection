@@ -135,6 +135,9 @@ public class UiUtil {
                             for (CheckFormData data : list) {
                                 data.setType(type == RequestType.lastqhjcInfo ? R.drawable.qiaoliangjiancha : R.drawable.suidaojiancha);
                                 data.setLastUpdate(true);
+                                if(TextUtils.isEmpty(data.getGldwId())){
+                                    data.setGldwId(data.getYhjgId());
+                                }
                             }
                             CheckFormAndDetailDao dao = new CheckFormAndDetailDao();
                             dao.deleteLastUpdateByType(type == RequestType.lastqhjcInfo ? R.drawable.qiaoliangjiancha : R.drawable.suidaojiancha);
