@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.suken.bridgedetection"
     android:versionCode="11"
-    android:versionName="1.0.9" >
+    android:versionName="1.1.0" >
 
     <!-- 这个权限用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
@@ -70,6 +70,12 @@
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="landscape" >
+        </activity>
+        <activity
+                android:name=".activity.IpSettingActivity"
+                android:label="@string/app_name"
+                android:windowSoftInputMode="stateHidden"
+                android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name=".activity.BridgeDetectionListActivity"

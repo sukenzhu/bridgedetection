@@ -54,6 +54,17 @@
             android:text="保存"
             android:textColor="#ffffff"
             android:textSize="18dp" />
+
+        <Button
+                android:id="@+id/syncGps"
+                android:layout_width="250dp"
+                android:layout_height="30dp"
+                android:background="#e76070"
+                android:layout_margin="15dp"
+                android:onClick="offlineLogin"
+                android:text="同步轨迹"
+                android:textColor="#ffffff"
+                android:textSize="18dp" />
     </LinearLayout>
 
 </LinearLayout>

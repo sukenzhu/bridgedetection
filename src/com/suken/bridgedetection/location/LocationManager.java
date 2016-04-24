@@ -1,6 +1,7 @@
 package com.suken.bridgedetection.location;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
@@ -60,7 +61,15 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			syncLocation(recordListener);
+			Calendar calendar  = Calendar.getInstance();
+			calendar.setTimeInMillis(System.currentTimeMillis());
+			int  hour = calendar.get(Calendar.HOUR_OF_DAY);
+			if(hour > 7 && hour < 19 ){
+				syncLocation(recordListener);
+			} else {
+				int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
+				mLocationHandler.sendEmptyMessageAtTime(0, b);
+			}
 		}
 	};
 
@@ -89,7 +98,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 			public void run() {
 				ConnectType type = NetWorkUtil.getConnectType(BridgeDetectionApplication.getInstance());
 				int count = mGpsDao.countQueryGpsData();
-				if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 700)) {
+				if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 50)) {
 					List<NameValuePair> list = new ArrayList<NameValuePair>();
 					BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 					list.add(pair);

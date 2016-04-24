@@ -36,6 +36,7 @@ public class BridgeDetectionApplication extends Application {
             public void uncaughtException(Thread thread, Throwable ex) {
                 String exStr = UiUtil.formatNowTime() + "  " + Log.getStackTraceString(ex);
                 try {
+                    ex.printStackTrace();
                     write(exStr);
                 } catch (IOException e) {
                     e.printStackTrace();

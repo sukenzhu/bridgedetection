@@ -34,7 +34,7 @@ public class BaseActivity extends FragmentActivity {
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		dismissLoading();
-		if(this instanceof  LoginActivity){
+		if(this instanceof  LoginActivity || this instanceof IpSettingActivity){
 			return;
 		}
 		if(BridgeDetectionApplication.mCurrentUser == null){

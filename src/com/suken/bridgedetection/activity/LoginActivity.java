@@ -94,6 +94,11 @@ public class LoginActivity extends BaseActivity {
 		login(name, pwd);
 	}
 
+
+	public void setIp(View view){
+		startActivity(new Intent(this, IpSettingActivity.class));
+	}
+
 	public void offlineLogin(View view) {
 		if (mUserInfos == null || mUserInfos.size() == 0) {
 			toast("请先联网登陆一次");

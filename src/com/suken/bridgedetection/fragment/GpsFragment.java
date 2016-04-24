@@ -2,6 +2,7 @@ package com.suken.bridgedetection.fragment;
 
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.activity.BaseActivity;
 import com.suken.bridgedetection.activity.HomePageActivity;
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.storage.SharePreferenceManager;
@@ -49,6 +50,12 @@ public class GpsFragment extends BaseFragment {
 		gpsInterval = (EditText) view.findViewById(R.id.interval);
 		gpsInterval.setText(b + "");
 		gpsInterval.setInputType(InputType.TYPE_CLASS_NUMBER);
+		view.findViewById(R.id.syncGps).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				LocationManager.getInstance().updateGps(true,true, (BaseActivity) getActivity());
+			}
+		});
 		view.findViewById(R.id.save1).setOnClickListener(new OnClickListener() {
 
 			@Override

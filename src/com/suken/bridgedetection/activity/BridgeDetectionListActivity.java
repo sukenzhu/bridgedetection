@@ -3,6 +3,7 @@ package com.suken.bridgedetection.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Dialog;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
@@ -388,7 +389,11 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 				public void onClick(DialogInterface dialog, int which) {
 					UiUtil.syncData(BridgeDetectionListActivity.this, which == 1);
 				}
-			}).show();
+			});
+			Dialog dialog = builder.create();
+			dialog.setCancelable(true);
+			dialog.setCanceledOnTouchOutside(true);
+			dialog.show();
 		} else if (v.getId() == R.id.gps_btn) {
 
 		} else if (v.getId() == R.id.back) {

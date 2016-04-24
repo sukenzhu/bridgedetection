@@ -113,6 +113,16 @@
                         android:textColor="#ffffff"
                         android:textSize="10dp" />
                 </LinearLayout>
+                <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:background="#3ea49d"
+                        android:onClick="setIp"
+                        android:text="通讯设置"
+                        android:textColor="#ffffff"
+                        android:textSize="10dp" />
             </LinearLayout>
         </LinearLayout>
 
