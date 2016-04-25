@@ -108,7 +108,8 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
 							intent.putExtra("isCheckAgain", true);
 							intent.putExtra("isLastUpdate", true);
 						}
- 						intent.putExtra("localId", bean.lastEditLocalId);
+					} else if(TextUtils.equals(status, "2")){
+						intent.putExtra("localId", bean.lastEditLocalId);
 						intent.putExtra("isCheckAgain", true);
 						intent.putExtra("isLastUpdate", false);
 					}

@@ -3,6 +3,7 @@ package com.suken.bridgedetection.fragment;
 import android.os.Environment;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.activity.HomePageActivity;
+import com.suken.bridgedetection.activity.IpSettingActivity;
 import com.suken.bridgedetection.http.HttpTask;
 import com.suken.bridgedetection.storage.FileDesc;
 import com.suken.bridgedetection.storage.FileDescDao;
@@ -89,8 +90,12 @@ public class IpConfigFragment extends BaseFragment implements OnClickListener {
 			SharePreferenceManager.getInstance().updateString("port", port);
 			toast("保存成功");
 		}
-		HomePageActivity act = (HomePageActivity) getActivity();
-		act.selectHome();
+		if(getActivity() instanceof IpSettingActivity){
+			getActivity().finish();
+		} else {
+			HomePageActivity act = (HomePageActivity) getActivity();
+			act.selectHome();
+		}
 	}
 
 }
