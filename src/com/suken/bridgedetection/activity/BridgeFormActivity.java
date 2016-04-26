@@ -584,7 +584,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			findViewById(R.id.pddj_layout).setVisibility(View.GONE);
 		}
 		jlr.setText(BridgeDetectionApplication.mCurrentUser.getUserName());
-		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId(mIsHanDong?"10000003280009":"10000001160070");
+		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId(mIsHanDong?"10000003280009":"10000000240017");
 		lastPddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
 		pddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));
 
