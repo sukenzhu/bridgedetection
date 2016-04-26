@@ -42,7 +42,7 @@ public class DictionarySpinnerAdapter extends BaseAdapter {
 		TextView view = new TextView(mContext);
 		view.setPadding(5, 0, 0, 0);
 		YWDictionaryInfo desc = getItem(position);
-		view.setText(desc.getItemValue());
+		view.setText(desc.getItemName());
 		view.setTag(desc);
 		view.setTextColor(Color.RED);
 		view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
