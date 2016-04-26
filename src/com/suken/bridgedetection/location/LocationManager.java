@@ -12,6 +12,7 @@ import com.suken.bridgedetection.activity.BaseActivity;
 import com.suken.bridgedetection.activity.HomePageActivity;
 import com.suken.bridgedetection.storage.GpsGjData;
 import com.suken.bridgedetection.storage.GpsGjDataDao;
+import com.suken.bridgedetection.util.UiUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -56,13 +57,13 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 
 		@Override
 		public void onLocationFinished(LocationResult result) {
-			write("location finish : " + result.isSuccess + " times : " + (allTimes++) + "\n");
+			write(UiUtil.formatNowTime() + "   location finish : " + result.isSuccess + " times : " + (allTimes++) + "\n");
 			if (result.isSuccess) {
 				mGpsDao.create(new GpsGjData(Double.toString(result.longitude), Double.toString(result.latitude), Double.toString(result.altitude), result.time, result.wz));
 				updateGps(false, false, null);
-				write("location finish : " + result.isSuccess + " times : " + (sucTimes++) + "\n");
+				write(UiUtil.formatNowTime() + "   location finish : " + result.isSuccess + " times : " + (sucTimes++) + "\n");
 			} else {
-				write("location finish : " + result.isSuccess + " times : " + (failTimes++) + "\n");
+				write(UiUtil.formatNowTime() + "   location finish : " + result.isSuccess + " times : " + (failTimes++) + "\n");
 			}
 			int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
 			mLocationHandler.sendEmptyMessageAtTime(0, b);
@@ -146,9 +147,9 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 			public void run() {
 				ConnectType type = NetWorkUtil.getConnectType(BridgeDetectionApplication.getInstance());
 				int count = mGpsDao.countQueryGpsData();
-				write("updateGps start times " + (updateStartTimes++) + "\n");
+				write(UiUtil.formatNowTime() + "   updateGps start times " + (updateStartTimes++) + "\n");
 				if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 50)) {
-					write("updateGps to update  count : " + count + " times : " + (updateTimes++) + "\n");
+					write(UiUtil.formatNowTime() + "   updateGps to update  count : " + count + " times : " + (updateTimes++) + "\n");
 					List<NameValuePair> list = new ArrayList<NameValuePair>();
 					BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 					list.add(pair);
