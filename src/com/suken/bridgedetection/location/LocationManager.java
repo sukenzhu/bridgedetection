@@ -1,43 +1,33 @@
 package com.suken.bridgedetection.location;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 import android.content.Context;
-import android.os.Environment;
-import android.text.TextUtils;
-import com.suken.bridgedetection.activity.BaseActivity;
-import com.suken.bridgedetection.activity.HomePageActivity;
-import com.suken.bridgedetection.storage.GpsGjData;
-import com.suken.bridgedetection.storage.GpsGjDataDao;
-import com.suken.bridgedetection.util.UiUtil;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.location.LocationClientOption.LocationMode;
-import com.baidu.location.Poi;
-import com.googlecode.androidannotations.api.BackgroundExecutor;
-import com.suken.bridgedetection.BridgeDetectionApplication;
-import com.suken.bridgedetection.Constants;
-import com.suken.bridgedetection.RequestType;
-import com.suken.bridgedetection.http.HttpTask;
-import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
-import com.suken.bridgedetection.storage.SharePreferenceManager;
-import com.suken.bridgedetection.util.NetWorkUtil;
-import com.suken.bridgedetection.util.NetWorkUtil.ConnectType;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.baidu.location.*;
+import com.baidu.location.LocationClientOption.LocationMode;
+import com.googlecode.androidannotations.api.BackgroundExecutor;
+import com.suken.bridgedetection.BridgeDetectionApplication;
+import com.suken.bridgedetection.Constants;
+import com.suken.bridgedetection.RequestType;
+import com.suken.bridgedetection.activity.BaseActivity;
+import com.suken.bridgedetection.activity.HomePageActivity;
+import com.suken.bridgedetection.http.HttpTask;
+import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
+import com.suken.bridgedetection.storage.GpsGjData;
+import com.suken.bridgedetection.storage.GpsGjDataDao;
+import com.suken.bridgedetection.storage.SharePreferenceManager;
+import com.suken.bridgedetection.util.NetWorkUtil;
+import com.suken.bridgedetection.util.NetWorkUtil.ConnectType;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class LocationManager implements OnReceivedHttpResponseListener {
 
@@ -57,52 +47,14 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 
 		@Override
 		public void onLocationFinished(LocationResult result) {
-			write(UiUtil.formatNowTime() + "   location finish : " + result.isSuccess + " times : " + (allTimes++) + "\n");
 			if (result.isSuccess) {
 				mGpsDao.create(new GpsGjData(Double.toString(result.longitude), Double.toString(result.latitude), Double.toString(result.altitude), result.time, result.wz));
 				updateGps(false, false, null);
-				write(UiUtil.formatNowTime() + "   location finish : " + result.isSuccess + " times : " + (sucTimes++) + "\n");
-			} else {
-				write(UiUtil.formatNowTime() + "   location finish : " + result.isSuccess + " times : " + (failTimes++) + "\n");
 			}
 			int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
 			mLocationHandler.sendEmptyMessageAtTime(0, b);
 		}
 	};
-
-
-	private void write(String message) {
-		try {
-			String state = Environment.getExternalStorageState();
-			if (TextUtils.equals(state, Environment.MEDIA_MOUNTED)) {
-				String dir = "/sdcard/com.suken.bridgedetection";
-				File dirFile = new File(dir);
-				if (dirFile != null && !dirFile.exists()) {
-					dirFile.mkdir();
-				}
-				String path = dir + "/gps.log";
-				File file = new File(path);
-				if (file != null) {
-					long size = file.length();
-					if (size > 1 * 1024 * 1024 * 5) {
-						file.delete();
-					}
-					if (!file.exists()) {
-						file.createNewFile();
-					}
-					FileOutputStream fos = new FileOutputStream(file, true);
-					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-					bw.newLine();
-					bw.write(message);
-					bw.flush();
-					fos.close();
-					bw.close();
-				}
-			}
-		}catch (Exception e){
-
-		}
-	}
 
 	private Handler mLocationHandler = new Handler(Looper.getMainLooper()) {
 		@Override
@@ -156,9 +108,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 			public void run() {
 				ConnectType type = NetWorkUtil.getConnectType(BridgeDetectionApplication.getInstance());
 				int count = mGpsDao.countQueryGpsData();
-				write(UiUtil.formatNowTime() + "   updateGps start times " + (updateStartTimes++) + "\n");
 				if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 50)) {
-					write(UiUtil.formatNowTime() + "   updateGps to update  count : " + count + " times : " + (updateTimes++) + "\n");
 					List<NameValuePair> list = new ArrayList<NameValuePair>();
 					BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
 					list.add(pair);
