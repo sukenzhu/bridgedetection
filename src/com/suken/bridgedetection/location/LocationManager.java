@@ -116,11 +116,17 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 			} else {
 				int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
 				mLocationHandler.sendEmptyMessageAtTime(0, b);
+				if(mLocationClient.isStarted()){
+					mLocationClient.stop();
+				}
 			}
 		}
 	};
 
 	public void startRecordLocation() {
+		LocationClientOption option = mLocationClient.getLocOption();
+		int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
+		option.setScanSpan(b * 1000);
 		mLocationHandler.sendEmptyMessage(0);
 	}
 
@@ -128,6 +134,9 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 		mLocationHandler.removeMessages(0);
 		// 这里传一次
 		updateGps(true, false, null);
+		if(mLocationClient.isStarted()){
+			mLocationClient.stop();
+		}
 	}
 
 	private  BaseActivity activity;
@@ -187,25 +196,24 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 	}
 
 	public void syncLocation(OnLocationFinishedListener listener) {
-		if (mLocationClient.isStarted()) {
-			synchronized (lock) {
-				mListenerArray.add(listener);
-			}
-		} else {
-			synchronized (lock) {
-				mListenerArray.add(listener);
-			}
-			mLocationClient.start();
+		synchronized (lock) {
+			mListenerArray.add(listener);
 		}
+		if(!mLocationClient.isStarted()) {
+			mLocationClient.start();
+		} else {
+			mLocationClient.requestLocation();
+		}
+
+
 	}
 
 	private void initLocation() {
 		LocationClientOption option = new LocationClientOption();
 		option.setLocationMode(LocationMode.Hight_Accuracy);// 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
 		option.setCoorType("bd09ll");// 可选，默认gcj02，设置返回的定位结果坐标系
-		int span = 1000;
 		option.setTimeOut(30000);
-		option.setScanSpan(span);// 可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+		option.setScanSpan(0);// 可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
 		option.setIsNeedAddress(true);// 可选，设置是否需要地址信息，默认不需要
 		option.setOpenGps(true);// 可选，默认false,设置是否使用gps
 		option.setLocationNotify(true);// 可选，默认false，设置是否当gps有效时按照1S1次频率输出GPS结果
@@ -215,6 +223,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 		option.SetIgnoreCacheException(false);// 可选，默认false，设置是否收集CRASH信息，默认收集
 		option.setEnableSimulateGps(false);// 可选，默认false，设置是否需要过滤gps仿真结果，默认需要
 		mLocationClient.setLocOption(option);
+		mLocationClient.start();
 	}
 
 	public class MyLocationListener implements BDLocationListener {
@@ -318,7 +327,6 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 			}
 			mLastBDLocation = result;
 			Log.i("BaiduLocationApiDem", sb.toString());
-			mLocationClient.stop();
 		}
 
 	}
