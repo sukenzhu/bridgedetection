@@ -63,7 +63,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour > 12 && hour < 13) {
+            if (hour > 7 && hour < 19) {
                 syncLocation(recordListener);
             } else {
                 int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
