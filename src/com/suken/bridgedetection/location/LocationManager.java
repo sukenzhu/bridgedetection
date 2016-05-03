@@ -42,6 +42,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
     private int allTimes = 0;
     private int sucTimes = 0;
     private int failTimes = 0;
+    private long lastRetryTime = -1;
 
     private OnLocationFinishedListener recordListener = new OnLocationFinishedListener() {
 
@@ -147,7 +148,9 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 
     public void syncLocation(OnLocationFinishedListener listener) {
         synchronized (lock) {
-            mListenerArray.add(listener);
+            if(listener != null) {
+                mListenerArray.add(listener);
+            }
         }
         if (!mLocationClient.isStarted()) {
             mLocationClient.start();
@@ -162,7 +165,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationMode.Hight_Accuracy);// 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");// 可选，默认gcj02，设置返回的定位结果坐标系
-        option.setTimeOut(30000);
+        option.setTimeOut(60000);
         option.setScanSpan(0);// 可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);// 可选，设置是否需要地址信息，默认不需要
         option.setOpenGps(true);// 可选，默认false,设置是否使用gps
@@ -269,13 +272,19 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                     sb.append(p.getId() + " " + p.getName() + " " + p.getRank());
                 }
             }
-            while (!isListEmpty()) {
-                synchronized (lock) {
-                    OnLocationFinishedListener listener = mListenerArray.remove(0);
-                    listener.onLocationFinished(result);
+            mLastBDLocation = result;
+            long now = System.currentTimeMillis() - lastRetryTime;
+            if(now > 2000 * 60 && !result.isSuccess){
+                syncLocation(null);
+                lastRetryTime = System.currentTimeMillis();
+            } else {
+                while (!isListEmpty()) {
+                    synchronized (lock) {
+                        OnLocationFinishedListener listener = mListenerArray.remove(0);
+                        listener.onLocationFinished(result);
+                    }
                 }
             }
-            mLastBDLocation = result;
             Log.i("BaiduLocationApiDem", sb.toString());
         }
 

@@ -395,7 +395,8 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			dialog.setCanceledOnTouchOutside(true);
 			dialog.show();
 		} else if (v.getId() == R.id.gps_btn) {
-
+			toast("重新定位中...");
+			LocationManager.getInstance().syncLocation(this);
 		} else if (v.getId() == R.id.back) {
 			finish();
 		}

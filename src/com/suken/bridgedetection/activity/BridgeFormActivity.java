@@ -272,6 +272,13 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				if (!result.isSuccess) {
 					mGpsTv.setText("gps定位失败");
 					mGpsTv.setTextColor(Color.RED);
+					mGpsTv.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							toast("重新定位中...");
+							syncLocation();
+						}
+					});
 				} else {
 					mIsGpsSuccess = true;
 					if (bean != null && mType == R.drawable.qiaoliangjiancha) {
