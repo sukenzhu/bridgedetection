@@ -188,7 +188,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
             TextView tv = (TextView) getActivity().findViewById(R.id.syncLocationTv);
             tv.setText("定位成功");
             tv.setTextColor(Color.WHITE);
-        } else {
+        } else if(!mIsGpsSuccess){
             TextView tv = (TextView) getActivity().findViewById(R.id.syncLocationTv);
             tv.setText("定位失败");
             tv.setTextColor(Color.RED);
