@@ -676,9 +676,13 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	@Override
 	public void onClick(View view) {
 		if (view.getId() == R.id.save1 || view.getId() == R.id.save2) {
-			if (mIsGpsSuccess) {
+			if (mIsGpsSuccess || (mType == R.drawable.suidaojiancha || mType == R.drawable.suidaoxuncha)) {
 				saveToLocal();
-				toast("Gps定位成功，保存成功！");
+				if((mType == R.drawable.suidaojiancha || mType == R.drawable.suidaoxuncha)){
+					toast("保存成功！");
+				} else {
+					toast("Gps定位成功，保存成功！");
+				}
 			} else {
 				LocationManager.getInstance().syncLocation(new OnLocationFinishedListener() {
 
