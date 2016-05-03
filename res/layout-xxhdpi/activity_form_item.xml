@@ -32,7 +32,6 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/line"
                 android:ems="9"
-                android:inputType="number"
                 android:textSize="10dp"
                 android:visibility="gone" />
         </LinearLayout>
