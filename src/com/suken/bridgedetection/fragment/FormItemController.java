@@ -226,7 +226,7 @@ public class FormItemController implements OnClickListener {
 			byyjEv.setTextColor(Color.BLACK);
 		}
 
-		if (mFormBaseDetail != null) {
+		if (mFormBaseDetail != null && type != R.drawable.qiaoliangxuncha) {
 			if (!TextUtils.isEmpty(mFormBaseDetail.item1)) {
 				qslxEv.setText(mFormBaseDetail.item1);
 			}
@@ -282,11 +282,21 @@ public class FormItemController implements OnClickListener {
 					if(!TextUtils.isEmpty(mFormBaseDetail.item1)){
 						xczh.setText(mFormBaseDetail.item1);
 					}
+
+					if (!TextUtils.isEmpty(mFormBaseDetail.item6)) {
+						item5Ev.setText(mFormBaseDetail.item6);
+					}
+					if (!TextUtils.isEmpty(mFormBaseDetail.item2)) {
+						qslxEv.setText(mFormBaseDetail.item2);
+					}
+					if (!TextUtils.isEmpty(mFormBaseDetail.item3)) {
+						qsfwEv.setText(mFormBaseDetail.item3);
+					}
 					if (!TextUtils.isEmpty(mFormBaseDetail.item4)) {
-						item4Ev.setText(mFormBaseDetail.item4);
+						byyjEv.setText(mFormBaseDetail.item4);
 					}
 					if (!TextUtils.isEmpty(mFormBaseDetail.item5)) {
-						item5Ev.setText(mFormBaseDetail.item5);
+						item4Ev.setText(mFormBaseDetail.item5);
 					}
 				}
 			}

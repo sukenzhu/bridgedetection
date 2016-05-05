@@ -465,9 +465,17 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 					baseDetail.localId = detail.getLocalId();
 					if (mType == R.drawable.qiaoliangjiancha) {
 						baseDetail.title = detail.getBjmc();
-						baseDetail.item1 = detail.getQslx();
-						baseDetail.item2 = detail.getQsfw();
-						baseDetail.item3 = detail.getBlcsyj();
+						if(bean instanceof HDBaseData){
+
+							baseDetail.item1 = detail.getQkms();
+							baseDetail.item2 = detail.getBlcsyj();
+							baseDetail.item3 = detail.getRemark();
+
+						} else {
+							baseDetail.item1 = detail.getQslx();
+							baseDetail.item2 = detail.getQsfw();
+							baseDetail.item3 = detail.getBlcsyj();
+						}
 					} else if (mType == R.drawable.suidaojiancha) {
 						baseDetail.title = detail.getJgmc();
 						baseDetail.item1 = detail.getYcwz();

@@ -120,14 +120,20 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 	
 
 	private void exit() {
-		showLoading("正在注销登录...");
-		List<NameValuePair> list = new ArrayList<NameValuePair>();
-		BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
-		list.add(pair);
-		pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
-		list.add(pair);
-		new HttpTask(this, RequestType.exit).executePost(list);
-		dismissLoading();
+		BackgroundExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				showLoading("正在注销登录...");
+				List<NameValuePair> list = new ArrayList<NameValuePair>();
+				BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
+				list.add(pair);
+				pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
+				list.add(pair);
+				new HttpTask(HomePageActivity.this, RequestType.exit).executePost(list);
+				dismissLoading();
+			}
+		});
+
 	}
 
 	@Override
@@ -183,6 +189,8 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 					builder.setTitle("更新").setMessage("检测更新失败，是否重试？").setPositiveButton("确定", listener).setNegativeButton("取消", listener).show();
 				}
 			});
+		} else if (type == RequestType.exit) {
+			finish();
 		}
 	}
 

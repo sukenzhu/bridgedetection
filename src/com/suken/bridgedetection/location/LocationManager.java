@@ -22,9 +22,11 @@ import com.suken.bridgedetection.storage.GpsGjDataDao;
 import com.suken.bridgedetection.storage.SharePreferenceManager;
 import com.suken.bridgedetection.util.NetWorkUtil;
 import com.suken.bridgedetection.util.NetWorkUtil.ConnectType;
+import com.suken.bridgedetection.util.UiUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -187,46 +189,47 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             LocationResult result = new LocationResult();
             // Receive Location
             StringBuffer sb = new StringBuffer(256);
-            sb.append("time : ");
+            sb.append("当前时间 : " + UiUtil.formatNowTime());
+            sb.append(" ;time : ");
             sb.append(location.getTime());
-            sb.append("\nerror code : ");
+            sb.append(" ;error code : ");
             sb.append(location.getLocType());
-            sb.append("\nlatitude : ");
+            sb.append(";latitude : ");
             result.latitude = location.getLatitude();
             sb.append(location.getLatitude());
-            sb.append("\nlontitude : ");
+            sb.append(" ;lontitude : ");
             result.longitude = location.getLongitude();
             result.altitude = location.getAltitude() > 0 ? location.getAltitude() : 0;
             result.time = location.getTime();
             result.wz = location.getAddrStr();
             sb.append(location.getLongitude());
-            sb.append("\nradius : ");
+            sb.append(" ;radius : ");
             sb.append(location.getRadius());
-            sb.append("\ntime : ");
+            sb.append(" ;time : ");
             sb.append(location.getTime());
             if (location.getLocType() == BDLocation.TypeGpsLocation) {// GPS定位结果
-                sb.append("\nspeed : ");
+                sb.append(" ;speed : ");
                 sb.append(location.getSpeed());// 单位：公里每小时
-                sb.append("\nsatellite : ");
+                sb.append(" ;satellite : ");
                 sb.append(location.getSatelliteNumber());
-                sb.append("\nheight : ");
+                sb.append(" ;height : ");
                 sb.append(location.getAltitude());// 单位：米
-                sb.append("\ndirection : ");
+                sb.append(" ;direction : ");
                 sb.append(location.getDirection());// 单位度
-                sb.append("\naddr : ");
+                sb.append(" ;addr : ");
                 sb.append(location.getAddrStr());
-                sb.append("\ndescribe : ");
-                sb.append("gps定位成功");
+                sb.append(";describe : ");
+                sb.append(" ;gps定位成功");
                 result.message = "gps定位成功";
                 result.isSuccess = true;
 
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {// 网络定位结果
-                sb.append("\naddr : ");
+                sb.append(" ;addr : ");
                 sb.append(location.getAddrStr());
                 // 运营商信息
-                sb.append("\noperationers : ");
+                sb.append(" ;operationers : ");
                 sb.append(location.getOperators());
-                sb.append("\ndescribe : ");
+                sb.append(" ;describe : ");
                 sb.append("网络定位成功");
                 result.message = "网络定位成功";
                 android.location.LocationManager locationManager = (android.location.LocationManager) BridgeDetectionApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
@@ -236,7 +239,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                     result.isSuccess = false;
                 }
             } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {// 离线定位结果
-                sb.append("\ndescribe : ");
+                sb.append(" ;describe : ");
                 sb.append("离线定位成功，离线定位结果也是有效的");
                 result.message = "离线定位成功，离线定位结果也是有效的";
                 android.location.LocationManager locationManager = (android.location.LocationManager) BridgeDetectionApplication.getInstance().getSystemService(Context.LOCATION_SERVICE);
@@ -246,29 +249,29 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                     result.isSuccess = false;
                 }
             } else if (location.getLocType() == BDLocation.TypeServerError) {
-                sb.append("\ndescribe : ");
+                sb.append(" ;describe : ");
                 sb.append("服务端网络定位失败，可以反馈IMEI号和大体定位时间到loc-bugs@baidu.com，会有人追查原因");
                 result.message = "服务端网络定位失败";
                 result.isSuccess = false;
             } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
-                sb.append("\ndescribe : ");
+                sb.append(" ;describe : ");
                 sb.append("网络不同导致定位失败，请检查网络是否通畅");
                 result.message = "网络不同导致定位失败，请检查网络是否通畅";
                 result.isSuccess = false;
             } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
-                sb.append("\ndescribe : ");
+                sb.append(" ;describe : ");
                 sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
                 result.message = "无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机";
                 result.isSuccess = false;
             }
-            sb.append("\nlocationdescribe : ");
+            sb.append(" ;locationdescribe : ");
             sb.append(location.getLocationDescribe());// 位置语义化信息
             List<Poi> list = location.getPoiList();// POI数据
             if (list != null) {
-                sb.append("\npoilist size = : ");
+                sb.append(" ;poilist size = : ");
                 sb.append(list.size());
                 for (Poi p : list) {
-                    sb.append("\npoi= : ");
+                    sb.append(" ;poi= : ");
                     sb.append(p.getId() + " " + p.getName() + " " + p.getRank());
                 }
             }
@@ -284,6 +287,11 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                         listener.onLocationFinished(result);
                     }
                 }
+            }
+            try {
+                BridgeDetectionApplication.getInstance().write("\n" + sb.toString()+"\n");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             Log.i("BaiduLocationApiDem", sb.toString());
         }

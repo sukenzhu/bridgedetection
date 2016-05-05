@@ -45,7 +45,7 @@ public class BridgeDetectionApplication extends Application {
         });
     }
 
-    private void write(String message) throws IOException {
+    public void write(String message) throws IOException {
         String state = Environment.getExternalStorageState();
         if (TextUtils.equals(state, Environment.MEDIA_MOUNTED)) {
             String dir = "/sdcard/com.suken.bridgedetection";
