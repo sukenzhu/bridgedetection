@@ -48,7 +48,7 @@ public class Constants {
 	public static final String[] hdformDetailEt3Blanks = new String[] { "说明其他需要说明的问题" };
 
 	public static final String[] sdformDetailNames = new String[] { "洞口", "洞门", "衬砌", "路面", "检修道", "排水设施", "吊顶及各种预埋件", "标志标线轮廓标", "其他" };
-	public static final String[] sdformDetailItemTexts = new String[] { "异常位置：", "缺损内容：", "异常描述：", "判定：", "保养措施意见：" };
+	public static final String[] sdformDetailItemTexts = new String[] { "里程桩号：", "缺损内容：", "异常描述：", "判定：", "保养措施意见：" };
 	public static final String[] sdxcformDetailNames = new String[] { "洞口边仰坡", "洞门结构", "内部衬砌", "洞内路面积水", "洞内路面撒落物", "洞顶预埋件和悬吊件", "供配电设施", "照明设施", "通风设施",
 			"消防设施", "监控和通信设施", "其他" };
 	public static final String[] sdxcformDetailItemTexts = new String[] { "情况描述：", "处置意见：", "检查时间：" };

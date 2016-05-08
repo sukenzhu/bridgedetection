@@ -18,23 +18,7 @@ import com.suken.bridgedetection.fragment.FormItemController.VideoDesc;
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.location.LocationResult;
 import com.suken.bridgedetection.location.OnLocationFinishedListener;
-import com.suken.bridgedetection.storage.CheckDetail;
-import com.suken.bridgedetection.storage.CheckFormAndDetailDao;
-import com.suken.bridgedetection.storage.CheckFormData;
-import com.suken.bridgedetection.storage.GpsData;
-import com.suken.bridgedetection.storage.GpsDataDao;
-import com.suken.bridgedetection.storage.HDBaseData;
-import com.suken.bridgedetection.storage.QHYHZeRenInfoDao;
-import com.suken.bridgedetection.storage.QHYangHuZeRenInfo;
-import com.suken.bridgedetection.storage.QLBaseData;
-import com.suken.bridgedetection.storage.SDBaseData;
-import com.suken.bridgedetection.storage.SDYHZeRenInfoDao;
-import com.suken.bridgedetection.storage.SDYangHuZeRenInfo;
-import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
-import com.suken.bridgedetection.storage.SdxcFormData;
-import com.suken.bridgedetection.storage.SdxcFormDetail;
-import com.suken.bridgedetection.storage.YWDictionaryDao;
-import com.suken.bridgedetection.storage.YWDictionaryInfo;
+import com.suken.bridgedetection.storage.*;
 import com.suken.bridgedetection.util.UiUtil;
 import com.suken.imageditor.ImageditorActivity;
 
@@ -91,6 +75,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	private TextView extra1Tv = null;
 	private EditText extra1Ev = null;
+	private Spinner extra1Spinner = null;
 	private View extraLayout = null;
 	private TextView weatherTv = null;
 	private Spinner weatherEv = null;
@@ -132,6 +117,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		yhdwTv = null;
 		extra1Ev = null;
 		extra1Tv = null;
+		extra1Spinner = null;
 		extraLayout = null;
 		weatherEv = null;
 		weatherTv = null;
@@ -216,6 +202,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		extraLayout = findViewById(R.id.extra_layout);
 		extra1Tv = (TextView) findViewById(R.id.form_extra1_tv);
 		extra1Ev = (EditText) findViewById(R.id.form_extra1_ev);
+		extra1Spinner = (Spinner) findViewById(R.id.form_extra1_spinner);
+		extra1Spinner.setAdapter(new ArrayAdapter<String>(this, R.layout.spinner_item, new String[]{"左洞","右洞"}));
+		extra1Spinner.setSelection(0);
 		weatherTv = (TextView) findViewById(R.id.form_weather_tv);
 		weatherEv = (Spinner) findViewById(R.id.form_weather_sp);
 		weatherEv.setAdapter(new ArrayAdapter<String>(this, R.layout.spinner_item, Constants.weatherStrs));
@@ -345,6 +334,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		mRadioGroup.setVisibility(View.GONE);
 		extraLayout.setVisibility(View.VISIBLE);
 		extra1Tv.setText("巡查人员：");
+		extra1Ev.setText(SharePreferenceManager.getInstance().readString(BridgeDetectionApplication.mCurrentUser.getUserId()+"qlxcxcry", ""));
 		mFormTitle.setText("高速公路桥梁巡查日志");
 		qlhz.setVisibility(View.GONE);
 		detailNames = new String[] { "桥梁桩号：" };
@@ -363,6 +353,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		findViewById(R.id.qlxcLayout).setVisibility(View.VISIBLE);
 		mDealWithEv = (EditText) findViewById(R.id.dealwithEv);
 		mJcrEv = (EditText) findViewById(R.id.jiancharenEv);
+		mJcrEv.setText(BridgeDetectionApplication.mCurrentUser.getUserName());
 		if ((isEdit || isCheckAgain) && lastEditBaseClass != null) {
 			qlhz.setChecked(TextUtils.equals(lastEditBaseClass.qlhz, "1"));
 			extra1Ev.setText(lastEditBaseClass.xcry);
@@ -567,6 +558,8 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				mFormTitle.setText("隧道经常检查记录表");
 				qlhz.setText("隧道会诊");
 				extraLayout.setVisibility(View.VISIBLE);
+				extra1Spinner.setVisibility(View.VISIBLE);
+				extra1Ev.setVisibility(View.GONE);
 			} else {
 				mItemTexts = Constants.sdxcformDetailItemTexts;
 				detailNames = Constants.sdxcformDetailNames;
@@ -612,7 +605,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				jlr.setText(lastEditBaseClass.jlr);
 			}
 			if (mType == R.drawable.suidaojiancha) {
-				extra1Ev.setText(lastEditBaseClass.sdfx);
+				if(TextUtils.equals(lastEditBaseClass.sdfx, "右洞")){
+					extra1Spinner.setSelection(1);
+				}
 				resetWeather();
 			} else {
 				if (mType == R.drawable.qiaoliangjiancha) {
@@ -728,6 +723,8 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			}
 			data.setGydwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
 			data.setGydwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
+			data.setGldwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
+			data.setGldwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
 			data.setYhdwId(BridgeDetectionApplication.mCurrentUser.getDefgqId());
 			data.setYhdwName(BridgeDetectionApplication.mCurrentUser.getDefgqName());
 			if (bean instanceof SDBaseData) {
@@ -741,16 +738,18 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.setLxmc(lxmcEv.getText().toString());
 				data.setZxzh(zxzhEv.getText().toString());
 				data.setLxbh(lxbhEv.getText().toString());
+				data.setJcsj(time.substring(0, 10));
 			} else {
 
 				data.setQhlx(mRadioGroup.getCheckedRadioButtonId() == R.id.radioql ? "b" : "c");
 				data.setXcry(extra1Ev.getText().toString());
+				SharePreferenceManager.getInstance().updateString(BridgeDetectionApplication.mCurrentUser.getUserId()+"qlxcxcry", data.getXcry());
 				data.setJcry(mJcrEv.getText().toString());
 				data.setDealWith(mDealWithEv.getText().toString());
 				data.setWeather(weatherEv.getSelectedItem().toString());
+				data.setJcsj(time);
 			}
-			
-			data.setJcsj(time);
+
 			data.setJcsd(time);
 			data.setType(mType);
 			data.setFzry(fzr.getText().toString());
@@ -813,7 +812,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.setSdid(qhId);
 				data.setSdbm(qlbhEv.getText().toString());
 				data.setSdzh(zxzhEv.getText().toString());
-				data.setSdfx(extra1Ev.getText().toString());
+				data.setSdfx(extra1Spinner.getSelectedItem().toString());
 				data.setWeather(weatherEv.getSelectedItem().toString());
 			}
 			data.setType(mType);

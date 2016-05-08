@@ -66,7 +66,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour > 7 && hour < 19) {
+            if (hour > 7 && hour < 24) {
                 syncLocation(recordListener);
             } else {
                 int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
@@ -79,9 +79,6 @@ public class LocationManager implements OnReceivedHttpResponseListener {
     };
 
     public void startRecordLocation() {
-        LocationClientOption option = mLocationClient.getLocOption();
-        int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
-        option.setScanSpan(b * 1000);
         mLocationHandler.sendEmptyMessage(0);
     }
 
@@ -186,9 +183,13 @@ public class LocationManager implements OnReceivedHttpResponseListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
 
+//            if(mLocationClient.getLocOption().getScanSpan() == 0){
+                mLocationClient.stop();
+//            }
             LocationResult result = new LocationResult();
             // Receive Location
             StringBuffer sb = new StringBuffer(256);
+            sb.append(System.currentTimeMillis());
             sb.append("当前时间 : " + UiUtil.formatNowTime());
             sb.append(" ;time : ");
             sb.append(location.getTime());

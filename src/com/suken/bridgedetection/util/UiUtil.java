@@ -41,7 +41,7 @@ import java.util.zip.GZIPOutputStream;
 
 public class UiUtil {
 
-    private static float DP = -1f;
+    public static float DP = -1f;
 
     public static boolean isUpdating = false;
 
@@ -251,6 +251,12 @@ public class UiUtil {
     public static String formatNowTime() {
         Date nowTime = new Date();
         SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return time.format(nowTime);
+    }
+
+    public static String formatNowHourTime() {
+        Date nowTime = new Date();
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
         return time.format(nowTime);
     }
 

@@ -27,6 +27,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import com.suken.bridgedetection.widget.TimePickerUtil;
 
 public class FormItemController implements OnClickListener {
 
@@ -221,8 +222,11 @@ public class FormItemController implements OnClickListener {
 
 		}
 		if (type == R.drawable.suidaoxuncha) {
-			byyjEv.setText(UiUtil.formatNowTime());
-			byyjEv.setEnabled(false);
+			byyjEv.setText(UiUtil.formatNowHourTime());
+			byyjEv.setFocusable(false);
+			byyjEv.setFocusableInTouchMode(false);
+			byyjEv.setClickable(true);
+			byyjEv.setOnClickListener(new TimePickerUtil(mContext, byyjEv));
 			byyjEv.setTextColor(Color.BLACK);
 		}
 
