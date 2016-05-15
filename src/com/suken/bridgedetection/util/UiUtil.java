@@ -42,6 +42,9 @@ import java.util.zip.GZIPOutputStream;
 public class UiUtil {
 
     public static float DP = -1f;
+    public static int densityDpi = 480;
+    public  static  int width = 0;
+    public  static  int height = 0;
 
     public static boolean isUpdating = false;
 
@@ -50,8 +53,18 @@ public class UiUtil {
             DisplayMetrics dm = new DisplayMetrics();
             context.getWindowManager().getDefaultDisplay().getMetrics(dm);
             DP = dm.density;
+            densityDpi = (int) (dm.densityDpi * DP);
+            width = dm.widthPixels;
+            height = dm.heightPixels;
         }
         return DP;
+    }
+
+    public  static  void reInitWidthHeight(Activity context){
+        DisplayMetrics dm = new DisplayMetrics();
+        context.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        width = dm.widthPixels;
+        height = dm.heightPixels;
     }
 
     private static final double EARTH_RADIUS = 6378.137;
@@ -264,6 +277,11 @@ public class UiUtil {
         Date nowTime = new Date();
         SimpleDateFormat time = new SimpleDateFormat(format);
         return time.format(nowTime);
+    }
+
+    public static String formatTime(long time){
+        SimpleDateFormat str = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return str.format(time);
     }
 
     public static String[] concat(String[] a, String[] b) {

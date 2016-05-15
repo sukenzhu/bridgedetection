@@ -315,7 +315,7 @@ public class FormItemController implements OnClickListener {
 		sxjNum.setText("0");
 		if (mFormBaseDetail != null && !mIsCheckAgain) {
 			String picAttach = mFormBaseDetail.picAttach;
-			if (!TextUtils.isEmpty(picAttach)) {
+			if (!TextUtils.isEmpty(picAttach) && !TextUtils.isEmpty(mFormBaseDetail.picAttachNames)) {
 				String[] strs = picAttach.split(",");
 				if (strs != null) {
 					imageNum.setText(strs.length + "");

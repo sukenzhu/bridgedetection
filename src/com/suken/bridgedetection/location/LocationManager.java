@@ -1,6 +1,10 @@
 package com.suken.bridgedetection.location;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -41,10 +45,10 @@ public class LocationManager implements OnReceivedHttpResponseListener {
     private Object lock = new Object();
     private GpsGjDataDao mGpsDao = new GpsGjDataDao();
 
-    private int allTimes = 0;
-    private int sucTimes = 0;
-    private int failTimes = 0;
+
     private long lastRetryTime = -1;
+
+    private  boolean mIsBaiduLocation = false;
 
     private OnLocationFinishedListener recordListener = new OnLocationFinishedListener() {
 
@@ -71,12 +75,22 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             } else {
                 int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
                 mLocationHandler.sendEmptyMessageDelayed(0, b * 1000);
-                if (mLocationClient.isStarted()) {
-                    mLocationClient.stop();
+                if(mIsBaiduLocation) {
+                    if (mLocationClient.isStarted()) {
+                        mLocationClient.stop();
+                    }
+                } else {
+                    Intent i = new Intent(BridgeDetectionApplication.getInstance().getApplicationContext(), LBSService.class);
+                    BridgeDetectionApplication.getInstance().getApplicationContext().stopService(i);
+                    if (dataReceiver != null) {
+                        BridgeDetectionApplication.getInstance().getApplicationContext().unregisterReceiver(dataReceiver);// 取消注册Broadcast Receiver
+                        dataReceiver = null;
+                    }
                 }
             }
         }
     };
+    private DataReceiver dataReceiver;
 
     public void startRecordLocation() {
         mLocationHandler.sendEmptyMessage(0);
@@ -86,14 +100,63 @@ public class LocationManager implements OnReceivedHttpResponseListener {
         mLocationHandler.removeMessages(0);
         // 这里传一次
         updateGps(true, false, null);
-        if (mLocationClient.isStarted()) {
-            mLocationClient.stop();
+        if(mIsBaiduLocation) {
+            if (mLocationClient.isStarted()) {
+                mLocationClient.stop();
+            }
+        } else {
+            Intent i = new Intent(BridgeDetectionApplication.getInstance().getApplicationContext(), LBSService.class);
+            BridgeDetectionApplication.getInstance().getApplicationContext().stopService(i);
+            if (dataReceiver != null) {
+            	BridgeDetectionApplication.getInstance().getApplicationContext().unregisterReceiver(dataReceiver);// 取消注册Broadcast Receiver
+                dataReceiver = null;
+            }
+        }
+    }
+
+    private class DataReceiver extends BroadcastReceiver {// 继承自BroadcastReceiver的子类
+
+        @Override
+        public void onReceive(Context context, Intent intent) {// 重写onReceive方法
+
+            Bundle bundledata = intent.getExtras();
+            LocationResult result = new LocationResult();
+            if (bundledata != null) {
+                boolean isSuccess = bundledata.getBoolean("success");
+                result.isSuccess = isSuccess;
+                if(isSuccess) {
+                    double latitude = bundledata.getDouble("latitude");
+                    double longitude = bundledata.getDouble("longitude");
+                    double accuracy = bundledata.getDouble("accuracy");
+                    double speed = bundledata.getDouble("speed");
+                    double Satenum = bundledata.getDouble("Satenum");
+                    double altitude = bundledata.getDouble("altitude");
+                    String dateString = bundledata.getString("date");
+                    String wz = bundledata.getString("wz");
+                    result.latitude = latitude;
+                    result.longitude = longitude;
+                    result.altitude = altitude;
+                    result.time = dateString;
+                    result.wz = wz;
+
+                    while (!isListEmpty()) {
+                        synchronized (lock) {
+                            OnLocationFinishedListener listener = mListenerArray.remove(0);
+                            listener.onLocationFinished(result);
+                        }
+                    }
+                    Log.w("LocationManager", "\t卫星在用数量:" + Satenum + "\n\t纬度:" + latitude
+                            + "\t经度:" + longitude + "\n\t精度:" + accuracy
+                            + "\n\t速度:" + speed + "\n\t更新时间:" + dateString);
+                } else {
+                    Log.w("LocationManager", "syncLocation Failed!");
+                }
+            }
+
         }
     }
 
     private BaseActivity activity;
-    private int updateStartTimes = 0;
-    private int updateTimes = 0;
 
     public void updateGps(final boolean force, final boolean showLoading, final BaseActivity activity) {
         if (BridgeDetectionApplication.mCurrentUser == null) {
@@ -151,10 +214,22 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                 mListenerArray.add(listener);
             }
         }
-        if (!mLocationClient.isStarted()) {
-            mLocationClient.start();
+
+        if(mIsBaiduLocation) {
+            if (!mLocationClient.isStarted()) {
+                mLocationClient.start();
+            } else {
+                mLocationClient.requestLocation();
+            }
         } else {
-            mLocationClient.requestLocation();
+            Intent i = new Intent(BridgeDetectionApplication.getInstance().getApplicationContext(), LBSService.class);
+            BridgeDetectionApplication.getInstance().getApplicationContext().startService(i);
+            if (dataReceiver == null) {
+                dataReceiver = new DataReceiver();
+                IntentFilter filter = new IntentFilter();// 创建IntentFilter对象
+                filter.addAction("com.exams.demo10_lbs");
+                BridgeDetectionApplication.getInstance().getApplicationContext().registerReceiver(dataReceiver, filter);// 注册Broadcast Receiver
+            }
         }
 
 
