@@ -269,6 +269,8 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 						}
 					});
 				} else {
+					mGpsTv.setText("gps定位成功!");
+					mGpsTv.setTextColor(Color.WHITE);
 					mIsGpsSuccess = true;
 					if (bean != null && mType == R.drawable.qiaoliangjiancha) {
 

@@ -43,8 +43,8 @@ public class UiUtil {
 
     public static float DP = -1f;
     public static int densityDpi = 480;
-    public  static  int width = 0;
-    public  static  int height = 0;
+    public static int width = 0;
+    public static int height = 0;
 
     public static boolean isUpdating = false;
 
@@ -60,7 +60,7 @@ public class UiUtil {
         return DP;
     }
 
-    public  static  void reInitWidthHeight(Activity context){
+    public static void reInitWidthHeight(Activity context) {
         DisplayMetrics dm = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(dm);
         width = dm.widthPixels;
@@ -144,16 +144,33 @@ public class UiUtil {
                     case lastqhjcInfo:
                     case lastsdjcInfo: {
                         List<CheckFormData> list = JSON.parseArray(obj.getString("datas"), CheckFormData.class);
+                        int type1 = type == RequestType.lastqhjcInfo ? R.drawable.qiaoliangjiancha : (type == RequestType.lastsdxcinfo ? R.drawable.suidaoxuncha : R.drawable.suidaojiancha);
                         if (list != null && list.size() > 0) {
                             for (CheckFormData data : list) {
-                                data.setType(type == RequestType.lastqhjcInfo ? R.drawable.qiaoliangjiancha : R.drawable.suidaojiancha);
+                                data.setType(type1);
                                 data.setLastUpdate(true);
-                                if(TextUtils.isEmpty(data.getGldwId())){
+                                if (TextUtils.isEmpty(data.getGldwId())) {
                                     data.setGldwId(data.getYhjgId());
                                 }
                             }
                             CheckFormAndDetailDao dao = new CheckFormAndDetailDao();
-                            dao.deleteLastUpdateByType(type == RequestType.lastqhjcInfo ? R.drawable.qiaoliangjiancha : R.drawable.suidaojiancha);
+                            dao.deleteLastUpdateByType(type1);
+                            dao.create(list);
+                        }
+                        break;
+                    }
+                    case lastsdxcinfo:{
+                        List<SdxcFormData> list = JSON.parseArray(obj.getString("datas"), SdxcFormData.class);
+                        if (list != null && list.size() > 0) {
+                            for (SdxcFormData data : list) {
+                                data.setType(R.drawable.suidaoxuncha);
+                                data.setLastUpdate(true);
+                                if (TextUtils.isEmpty(data.getGldwId())) {
+                                    data.setGldwId(data.getYhjgId());
+                                }
+                            }
+                            SdxcFormAndDetailDao dao = new SdxcFormAndDetailDao();
+                            dao.deleteLastUpdateByType(R.drawable.suidaoxuncha);
                             dao.create(list);
                         }
                         break;
@@ -231,8 +248,10 @@ public class UiUtil {
                     }
                     if (currentType == R.drawable.qiaoliangjiancha || currentType == R.drawable.qiaoliangxuncha) {
                         new HttpTask(listener, RequestType.lastqhjcInfo).executePost(list);
-                    } else {
+                    } else if (currentType == R.drawable.suidaojiancha) {
                         new HttpTask(listener, RequestType.lastsdjcInfo).executePost(list);
+                    } else if (currentType == R.drawable.suidaoxuncha) {
+                        new HttpTask(listener, RequestType.lastsdxcinfo).executePost(list);
                     }
                 } else {
                     new HttpTask(listener, RequestType.syncData).executePost(list);
@@ -279,7 +298,7 @@ public class UiUtil {
         return time.format(nowTime);
     }
 
-    public static String formatTime(long time){
+    public static String formatTime(long time) {
         SimpleDateFormat str = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return str.format(time);
     }

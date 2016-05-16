@@ -63,7 +63,7 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		mHomeFragment = (HomePageFragment) mFragManager.findFragmentById(R.id.home_fragment);
 		mGpsFragment = mFragManager.findFragmentById(R.id.gps_fragment);
 		mIpFragment = mFragManager.findFragmentById(R.id.ip_fragment);
-		if (flag && needSync) {
+		if ((flag && needSync) || !BridgeDetectionApplication.mHasCacheUser ) {
 			UiUtil.syncData(this, false, mHomeFragment);
 			SharePreferenceManager.getInstance().updateString(BridgeDetectionApplication.mCurrentUser.getAccount() + "lastSyncTime", "" + System.currentTimeMillis());
 		} else {

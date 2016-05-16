@@ -20,6 +20,7 @@ public class BridgeDetectionApplication extends Application {
     public static String mDeviceId = "";
 
     public static UserInfo mCurrentUser = null;
+    public static boolean mHasCacheUser = false;
     public static boolean mIsOffline = false;
     public static BaseActivity mCurrentActivity = null;
 

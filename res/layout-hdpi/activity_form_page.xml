@@ -80,7 +80,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:text="GPS信号正常！"
+                            android:text="GPS定位中..."
                             android:textColor="#ffffff"
                             android:textSize="13dp" />
 

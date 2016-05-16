@@ -50,6 +50,7 @@ public class LoginActivity extends BaseActivity {
 		mPwdView = (EditText) findViewById(R.id.userpwd);
 		mTextView = (TextView) findViewById(R.id.login_desc);
 		if(mUserInfos != null && mUserInfos.size() > 0){
+			BridgeDetectionApplication.mHasCacheUser = true;
 			UserInfo info = mUserInfos.get(0);
 			String lastUserId = SharePreferenceManager.getInstance().readString("lastloginuser", info.getUserId());
 			if(!TextUtils.equals(lastUserId, info.getUserId())){

@@ -30,7 +30,7 @@ public class GXLuXianInfo implements Serializable {
 	@DatabaseField
 	private String qdmc;
 	@DatabaseField
-	private int qdzh;
+	private String qdzh;
 	@DatabaseField
 	private String updateBy;
 	@DatabaseField
@@ -150,11 +150,11 @@ public class GXLuXianInfo implements Serializable {
 		this.qdmc = qdmc;
 	}
 
-	public int getQdzh() {
+	public String getQdzh() {
 		return qdzh;
 	}
 
-	public void setQdzh(int qdzh) {
+	public void setQdzh(String qdzh) {
 		this.qdzh = qdzh;
 	}
 

@@ -202,7 +202,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
             mContentView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!getActivity().isFinishing()) {
+                    if (getActivity()!= null &&  !getActivity().isFinishing()) {
                         LocationManager.getInstance().syncLocation(HomePageFragment.this);
                     }
                 }

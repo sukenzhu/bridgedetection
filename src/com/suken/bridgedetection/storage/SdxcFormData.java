@@ -3,6 +3,7 @@ package com.suken.bridgedetection.storage;
 import java.io.Serializable;
 import java.util.List;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -112,12 +113,22 @@ public class SdxcFormData implements Serializable {
 	private String qhlx;
 	@DatabaseField
 	private String tjsj;
+
+	@DatabaseField(defaultValue = "false", dataType = DataType.BOOLEAN)
+	private boolean lastUpdate;
 	@DatabaseField
 	private long savedTime = System.currentTimeMillis();
 
 	@DatabaseField
 	private String userId;
 
+	public boolean isLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(boolean lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
 
 	public String getUserId() {
 		return userId;

@@ -157,7 +157,7 @@ public class HttpTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 			if(resultCode != 200) {
-				mResponseListener.onRequestFail(mRequestType, "-100", "网络连接失败");
+				mResponseListener.onRequestFail(mRequestType, "-100", e.getMessage());
 			}
 		} finally {
 			httpClient.getConnectionManager().shutdown();
