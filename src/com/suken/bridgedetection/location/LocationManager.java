@@ -70,15 +70,15 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour >= 0) {
+            if (hour > 7 && hour < 19) {
                 syncLocation(recordListener);
             } else {
                 int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
                 mLocationHandler.sendEmptyMessageDelayed(0, b * 1000);
                 if (mIsBaiduLocation) {
-                    if (mLocationClient.isStarted()) {
-                        mLocationClient.stop();
-                    }
+//                    if (mLocationClient.isStarted()) {
+//                        mLocationClient.stop();
+//                    }
                 } else {
                     Intent i = new Intent(BridgeDetectionApplication.getInstance().getApplicationContext(), LBSService.class);
                     BridgeDetectionApplication.getInstance().getApplicationContext().stopService(i);
@@ -174,7 +174,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                 count = mGpsDao.countQueryGpsData();
                 BridgeDetectionApplication.getInstance().write("触发上传:" + count + "   " + force);
 
-                if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 10)) {
+                if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 50)) {
                     List<NameValuePair> list = new ArrayList<NameValuePair>();
                     BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
                     list.add(pair);
@@ -196,9 +196,9 @@ public class LocationManager implements OnReceivedHttpResponseListener {
     }
 
     private LocationManager() {
-        mLocationClient = new LocationClient(BridgeDetectionApplication.getInstance()); // 声明LocationClient类
-        initLocation();
-        mLocationClient.registerLocationListener(myListener); // 注册监听函数
+//        mLocationClient = new LocationClient(BridgeDetectionApplication.getInstance()); // 声明LocationClient类
+//        initLocation();
+//        mLocationClient.registerLocationListener(myListener); // 注册监听函数
     }
 
     public static LocationManager getInstance() {
@@ -220,11 +220,11 @@ public class LocationManager implements OnReceivedHttpResponseListener {
         }
 
         if (mIsBaiduLocation) {
-            if (!mLocationClient.isStarted()) {
-                mLocationClient.start();
-            } else {
-                mLocationClient.requestLocation();
-            }
+//            if (!mLocationClient.isStarted()) {
+//                mLocationClient.start();
+//            } else {
+//                mLocationClient.requestLocation();
+//            }
         } else {
             Intent i = new Intent(BridgeDetectionApplication.getInstance().getApplicationContext(), LBSService.class);
             BridgeDetectionApplication.getInstance().getApplicationContext().startService(i);
@@ -263,7 +263,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
         public void onReceiveLocation(BDLocation location) {
 
 //            if(mLocationClient.getLocOption().getScanSpan() == 0){
-            mLocationClient.stop();
+//            mLocationClient.stop();
 //            }
             LocationResult result = new LocationResult();
             // Receive Location
