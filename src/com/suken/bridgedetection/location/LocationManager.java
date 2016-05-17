@@ -48,7 +48,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 
     private long lastRetryTime = -1;
 
-    private  boolean mIsBaiduLocation = false;
+    private boolean mIsBaiduLocation = false;
 
     private OnLocationFinishedListener recordListener = new OnLocationFinishedListener() {
 
@@ -70,12 +70,12 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour > 7 && hour < 24) {
+            if (hour >= 0) {
                 syncLocation(recordListener);
             } else {
                 int b = SharePreferenceManager.getInstance().readInt(Constants.INTERVAL, 50);
                 mLocationHandler.sendEmptyMessageDelayed(0, b * 1000);
-                if(mIsBaiduLocation) {
+                if (mIsBaiduLocation) {
                     if (mLocationClient.isStarted()) {
                         mLocationClient.stop();
                     }
@@ -100,7 +100,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
         mLocationHandler.removeMessages(0);
         // 这里传一次
         updateGps(true, false, null);
-        if(mIsBaiduLocation) {
+        if (mIsBaiduLocation) {
             if (mLocationClient.isStarted()) {
                 mLocationClient.stop();
             }
@@ -108,7 +108,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             Intent i = new Intent(BridgeDetectionApplication.getInstance().getApplicationContext(), LBSService.class);
             BridgeDetectionApplication.getInstance().getApplicationContext().stopService(i);
             if (dataReceiver != null) {
-            	BridgeDetectionApplication.getInstance().getApplicationContext().unregisterReceiver(dataReceiver);// 取消注册Broadcast Receiver
+                BridgeDetectionApplication.getInstance().getApplicationContext().unregisterReceiver(dataReceiver);// 取消注册Broadcast Receiver
                 dataReceiver = null;
             }
         }
@@ -124,7 +124,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             if (bundledata != null) {
                 boolean isSuccess = bundledata.getBoolean("success");
                 result.isSuccess = isSuccess;
-                if(isSuccess) {
+                if (isSuccess) {
                     double latitude = bundledata.getDouble("latitude");
                     double longitude = bundledata.getDouble("longitude");
                     double accuracy = bundledata.getDouble("accuracy");
@@ -145,7 +145,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                             listener.onLocationFinished(result);
                         }
                     }
-                    Log.w("LocationManager", "\t卫星在用数量:" + Satenum + "\n\t纬度:" + latitude
+                    BridgeDetectionApplication.getInstance().write("\t卫星在用数量:" + Satenum + "\n\t纬度:" + latitude
                             + "\t经度:" + longitude + "\n\t精度:" + accuracy
                             + "\n\t速度:" + speed + "\n\t更新时间:" + dateString);
                 } else {
@@ -157,6 +157,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
     }
 
     private BaseActivity activity;
+    private int count;
 
     public void updateGps(final boolean force, final boolean showLoading, final BaseActivity activity) {
         if (BridgeDetectionApplication.mCurrentUser == null) {
@@ -170,8 +171,10 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             @Override
             public void run() {
                 ConnectType type = NetWorkUtil.getConnectType(BridgeDetectionApplication.getInstance());
-                int count = mGpsDao.countQueryGpsData();
-                if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 50)) {
+                count = mGpsDao.countQueryGpsData();
+                BridgeDetectionApplication.getInstance().write("触发上传:" + count + "   " + force);
+
+                if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 10)) {
                     List<NameValuePair> list = new ArrayList<NameValuePair>();
                     BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
                     list.add(pair);
@@ -182,6 +185,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                     List recordList = mGpsDao.queryGpsData();
                     pair = new BasicNameValuePair("json", JSON.toJSONString(recordList));
                     list.add(pair);
+                    BridgeDetectionApplication.getInstance().write("开始上传gps轨迹:" + count + "   " + force);
                     new HttpTask(LocationManager.this, RequestType.updateGpsgjInfo).executePost(list);
                 }
                 if (showLoading && activity != null) {
@@ -210,12 +214,12 @@ public class LocationManager implements OnReceivedHttpResponseListener {
 
     public void syncLocation(OnLocationFinishedListener listener) {
         synchronized (lock) {
-            if(listener != null) {
+            if (listener != null) {
                 mListenerArray.add(listener);
             }
         }
 
-        if(mIsBaiduLocation) {
+        if (mIsBaiduLocation) {
             if (!mLocationClient.isStarted()) {
                 mLocationClient.start();
             } else {
@@ -259,7 +263,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
         public void onReceiveLocation(BDLocation location) {
 
 //            if(mLocationClient.getLocOption().getScanSpan() == 0){
-                mLocationClient.stop();
+            mLocationClient.stop();
 //            }
             LocationResult result = new LocationResult();
             // Receive Location
@@ -353,7 +357,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             }
             mLastBDLocation = result;
             long now = System.currentTimeMillis() - lastRetryTime;
-            if(now > 2000 * 60 && !result.isSuccess){
+            if (now > 2000 * 60 && !result.isSuccess) {
                 syncLocation(null);
                 lastRetryTime = System.currentTimeMillis();
             } else {
@@ -364,11 +368,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                     }
                 }
             }
-            try {
-                BridgeDetectionApplication.getInstance().write("\n" + sb.toString()+"\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            BridgeDetectionApplication.getInstance().write("\n" + sb.toString() + "\n");
             Log.i("BaiduLocationApiDem", sb.toString());
         }
 
@@ -384,19 +384,24 @@ public class LocationManager implements OnReceivedHttpResponseListener {
     public void onRequestSuccess(RequestType type, JSONObject result) {
         //上传成功删掉数据
         mGpsDao.deleteAll();
+        BridgeDetectionApplication.getInstance().write("上传成功gps轨迹条数:" + count);
+        count = 0;
         SharePreferenceManager.getInstance().updateBoolean(BridgeDetectionApplication.mCurrentUser.getUserId() + "gpsfail", false);
         if (activity != null) {
             activity.toast("上传gps轨迹成功");
             if (activity instanceof HomePageActivity) {
                 ((HomePageActivity) activity).hidden();
             }
+            activity = null;
         }
     }
 
     @Override
     public void onRequestFail(RequestType type, String resultCode, String result) {
+        BridgeDetectionApplication.getInstance().write("上传失败gps轨迹条数:" + count + "  " + result);
         if (activity != null) {
             activity.toast(result);
+            activity = null;
         }
         SharePreferenceManager.getInstance().updateBoolean(BridgeDetectionApplication.mCurrentUser.getUserId() + "gpsfail", true);
     }

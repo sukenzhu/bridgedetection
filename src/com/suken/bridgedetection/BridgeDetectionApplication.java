@@ -2,6 +2,8 @@ package com.suken.bridgedetection;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -35,43 +37,47 @@ public class BridgeDetectionApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                String exStr = UiUtil.formatNowTime() + "  " + Log.getStackTraceString(ex);
-                try {
-                    ex.printStackTrace();
-                    write(exStr);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                String exStr = Log.getStackTraceString(ex);
+                ex.printStackTrace();
+                write(exStr);
             }
         });
     }
 
-    public void write(String message) throws IOException {
-        String state = Environment.getExternalStorageState();
-        if (TextUtils.equals(state, Environment.MEDIA_MOUNTED)) {
-            String dir = "/sdcard/com.suken.bridgedetection";
-            File dirFile = new File(dir);
-            if (dirFile != null && !dirFile.exists()) {
-                dirFile.mkdir();
-            }
-            String path = dir + "/log.log";
-            File file = new File(path);
-            if (file != null) {
-                long size = file.length();
-                if (size > 1 * 1024 * 1024 * 5) {
-                    file.delete();
+    public void write(String message) {
+        Log.e("BridgeDetectionApplication", message);
+        try {
+            String state = Environment.getExternalStorageState();
+            if (TextUtils.equals(state, Environment.MEDIA_MOUNTED)) {
+                String dir = "/sdcard/com.suken.bridgedetection";
+                File dirFile = new File(dir);
+                if (dirFile != null && !dirFile.exists()) {
+                    dirFile.mkdir();
                 }
-                if (!file.exists()) {
-                    file.createNewFile();
+                String path = dir + "/log.log";
+                File file = new File(path);
+                if (file != null) {
+                    long size = file.length();
+                    if (size > 1 * 1024 * 1024 * 5) {
+                        file.delete();
+                    }
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    FileOutputStream fos = new FileOutputStream(file, true);
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+                    bw.newLine();
+                    PackageInfo info;
+                    info = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    String versionName = info.versionName;
+                    bw.write(UiUtil.formatNowTime() + "  " + versionName + message);
+                    bw.flush();
+                    fos.close();
+                    bw.close();
                 }
-                FileOutputStream fos = new FileOutputStream(file, true);
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-                bw.newLine();
-                bw.write(message);
-                bw.flush();
-                fos.close();
-                bw.close();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
