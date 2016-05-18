@@ -194,6 +194,9 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		boolean has1 = false;
 		boolean has2 = false;
 		if (mType != R.drawable.suidaoxuncha) {
+			if(mFormDao == null){
+				mFormDao = new CheckFormAndDetailDao();
+			}
 			List<CheckFormData> savedFormDatas = mFormDao.queryByQHId(bean.id, type);
 			if (savedFormDatas != null && savedFormDatas.size() > 0) {
 				for (CheckFormData cfd : savedFormDatas) {
@@ -502,6 +505,9 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 
 	@Override
 	public void onLocationFinished(LocationResult result) {
+		if(isFinishing() || isDestroyed()){
+			return;
+		}
 		if (result.isSuccess) {
 			gpsBtn.setImageResource(R.drawable.list_gps);
 		} else {

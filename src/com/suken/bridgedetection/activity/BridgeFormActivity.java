@@ -717,7 +717,11 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	private void saveToLocal() {
 		long savedId = -1l;
-		String time = LocationManager.getInstance().getLastLocationResult().time;
+		String time = "";
+
+		if(LocationManager.getInstance().getLastLocationResult() != null) {
+			time = LocationManager.getInstance().getLastLocationResult().time;
+		}
 		if (mType == R.drawable.suidaoxuncha || mType == R.drawable.qiaoliangxuncha) {
 			SdxcFormData data = new SdxcFormData();
 			if (isEdit) {

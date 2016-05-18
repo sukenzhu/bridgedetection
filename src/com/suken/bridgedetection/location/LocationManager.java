@@ -148,6 +148,7 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                     BridgeDetectionApplication.getInstance().write("\t卫星在用数量:" + Satenum + "\n\t纬度:" + latitude
                             + "\t经度:" + longitude + "\n\t精度:" + accuracy
                             + "\n\t速度:" + speed + "\n\t更新时间:" + dateString);
+                    mLastBDLocation = result;
                 } else {
                     Log.w("LocationManager", "syncLocation Failed!");
                 }
