@@ -689,6 +689,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 					toast("Gps定位成功，保存成功！");
 				}
 			} else {
+				toast("Gps定位中...");
 				LocationManager.getInstance().syncLocation(new OnLocationFinishedListener() {
 
 					@Override
@@ -717,7 +718,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	private void saveToLocal() {
 		long savedId = -1l;
-		String time = "";
+		String time = UiUtil.formatNowTime();
 
 		if(LocationManager.getInstance().getLastLocationResult() != null) {
 			time = LocationManager.getInstance().getLastLocationResult().time;

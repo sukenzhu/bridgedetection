@@ -72,7 +72,7 @@
                     android:background="#303a48"
                     android:hint="账户"
                     android:paddingLeft="5dp"
-                    android:textColor="#697687"
+                    android:textColor="#ffffff"
                     android:textSize="12dp" />
 
                 <EditText
@@ -84,7 +84,7 @@
                     android:hint="密码"
                     android:paddingLeft="5dp"
                     android:password="true"
-                    android:textColor="#697687"
+                    android:textColor="#ffffff"
                     android:textSize="12dp" />
 
                 <LinearLayout

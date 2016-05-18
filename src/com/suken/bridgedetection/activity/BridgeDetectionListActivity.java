@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Dialog;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
+import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.location.LocationManager;
@@ -506,9 +507,10 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 	@Override
 	public void onLocationFinished(LocationResult result) {
 		if(isFinishing() || isDestroyed()){
+			BridgeDetectionApplication.getInstance().write(this.getComponentName() + "Activity finished!");
 			return;
 		}
-		if (result.isSuccess) {
+		if (result != null  && result.isSuccess) {
 			gpsBtn.setImageResource(R.drawable.list_gps);
 		} else {
 			gpsBtn.setImageResource(R.drawable.gps_red);

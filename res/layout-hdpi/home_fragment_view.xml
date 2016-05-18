@@ -219,6 +219,8 @@
                                 android:layout_marginTop="2dp"
                                 android:id="@+id/home_jingdu"
                                 android:text="经度："
+                                android:singleLine="true"
+                                android:ellipsize="end"
                                 android:textColor="@android:color/white"
                                 android:textSize="12dp" />
 
@@ -227,7 +229,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:id="@+id/home_weidu"
+                                android:singleLine="true"
                                 android:text="纬度："
+                                android:ellipsize="end"
                                 android:textColor="@android:color/white"
                                 android:textSize="12dp" />
                         </LinearLayout>

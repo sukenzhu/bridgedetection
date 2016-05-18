@@ -26,6 +26,17 @@ public class BridgeDetectionApplication extends Application {
     public static boolean mIsOffline = false;
     public static BaseActivity mCurrentActivity = null;
 
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+    }
+
     @Override
     public void onCreate() {
         mInstance = this;
@@ -45,7 +56,7 @@ public class BridgeDetectionApplication extends Application {
     }
 
     public void write(String message) {
-        Log.e("BridgeDetectionApplication", message);
+        Log.e("BridgeDetection", message);
         try {
             String state = Environment.getExternalStorageState();
             if (TextUtils.equals(state, Environment.MEDIA_MOUNTED)) {
