@@ -258,6 +258,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 			@Override
 			public void onLocationFinished(LocationResult result) {
+				if(BridgeFormActivity.this.isDestroyed() || BridgeFormActivity.this.isFinishing()){
+					return;
+				}
 				if (!result.isSuccess) {
 					mGpsTv.setText("gps定位失败");
 					mGpsTv.setTextColor(Color.RED);
@@ -694,6 +697,9 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 					@Override
 					public void onLocationFinished(LocationResult result) {
+						if(BridgeFormActivity.this.isDestroyed() || BridgeFormActivity.this.isFinishing()){
+							return;
+						}
 						if (result.isSuccess) {
 							saveToLocal();
 							toast("Gps定位成功，保存成功！");

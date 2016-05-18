@@ -181,6 +181,11 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 
     @Override
     public void onLocationFinished(LocationResult result) {
+
+        if(((BaseActivity)getActivity()).isDestroyed() || getActivity().isFinishing()){
+            return;
+        }
+
         if (result.isSuccess) {
             mIsGpsSuccess = true;
             mjingdu.setText("经度:" + result.latitude);
