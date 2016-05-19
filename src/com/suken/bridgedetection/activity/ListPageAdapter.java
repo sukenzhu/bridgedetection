@@ -84,14 +84,17 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
                 String status = bean.status;
                 if (TextUtils.equals(status, "0") || TextUtils.equals(status, "2")) {
 
+                    String qllx = "b";
                     // 去检查
                     Intent intent = new Intent(mContext, BridgeFormActivity.class);
 
                     if (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.qiaoliangxuncha) {
                         if (bean.realBean instanceof QLBaseData) {
                             intent.putExtra("qhInfo", (QLBaseData) bean.realBean);
+                            qllx = "b";
                         } else if (bean.realBean instanceof HDBaseData) {
                             intent.putExtra("qhInfo", (HDBaseData) bean.realBean);
+                            qllx = "c";
                         }
                     } else {
                         intent.putExtra("qhInfo", (SDBaseData) bean.realBean);
@@ -101,7 +104,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
                     if (flag) {
                         long localId = -1;
                         if(mType != R.drawable.suidaoxuncha) {
-                            CheckFormData  a = new CheckFormAndDetailDao().queryLastUpdateByTypeAndId(bean.id, mType);
+                            CheckFormData  a = new CheckFormAndDetailDao().queryLastUpdateByTypeAndId(bean.id, mType, qllx);
                             if(a != null) {
                                 localId = a.getLocalId();
                             }

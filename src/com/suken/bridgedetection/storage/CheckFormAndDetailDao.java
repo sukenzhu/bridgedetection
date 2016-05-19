@@ -246,7 +246,7 @@ public class CheckFormAndDetailDao {
 		return null;
 	}
 	
-	public CheckFormData queryLastUpdateByTypeAndId(String id, int type){
+	public CheckFormData queryLastUpdateByTypeAndId(String id, int type, String qllx){
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(type == R.drawable.qiaoliangjiancha){
@@ -254,6 +254,7 @@ public class CheckFormAndDetailDao {
 		} else {
 			map.put("sdid", id);
 		}
+		map.put("qhlx", qllx);
 		map.put("gldwId", BridgeDetectionApplication.mCurrentUser.getDefgqId());
 		map.put("type", type);
 		map.put("lastUpdate", true);

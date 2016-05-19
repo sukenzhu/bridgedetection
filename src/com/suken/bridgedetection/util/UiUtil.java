@@ -206,7 +206,7 @@ public class UiUtil {
 
             @Override
             public void onRequestFail(RequestType type, String resultCode, String result) {
-                builder.append(type.getDesc() + "、");
+                builder.append(result + "("+ resultCode + "),");
             }
         };
         BackgroundExecutor.execute(new Runnable() {
