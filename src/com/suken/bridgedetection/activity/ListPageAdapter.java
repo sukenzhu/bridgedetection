@@ -217,7 +217,15 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
         }
         holder.bean = getItem(position);
         view.setTag(holder);
-        holder.zxzh.setText(holder.bean.qhzh);
+        String qhzh = holder.bean.qhzh;
+        int index = qhzh.indexOf('.');
+        if(index > 0){
+            int length = qhzh.length();
+            if(length - index <= 3){
+                qhzh += "0";
+            }
+        }
+        holder.zxzh.setText(qhzh);
         holder.qhmc.setText(holder.bean.qhmc);
         holder.qhbs.setText(holder.bean.qhbs);
         holder.lxbm.setText(holder.bean.lxbm);
