@@ -221,8 +221,12 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
         int index = qhzh.indexOf('.');
         if(index > 0){
             int length = qhzh.length();
-            if(length - index <= 3){
+            if(length - index == 3){
                 qhzh += "0";
+            } else if(length -index == 2){
+                qhzh += "00";
+            } else if(length - index == 1){
+                qhzh += "000";
             }
         }
         holder.zxzh.setText(qhzh);
