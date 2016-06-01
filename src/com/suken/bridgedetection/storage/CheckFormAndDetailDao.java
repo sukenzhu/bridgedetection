@@ -251,10 +251,10 @@ public class CheckFormAndDetailDao {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(type == R.drawable.qiaoliangjiancha){
 			map.put("qhid", id);
+			map.put("qhlx", qllx);
 		} else {
 			map.put("sdid", id);
 		}
-		map.put("qhlx", qllx);
 		map.put("gldwId", BridgeDetectionApplication.mCurrentUser.getDefgqId());
 		map.put("type", type);
 		map.put("lastUpdate", true);
