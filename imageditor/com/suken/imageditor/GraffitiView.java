@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import com.suken.bridgedetection.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -63,12 +62,13 @@ public class GraffitiView extends FrameLayout {
 
     private void init(Context context) {
         setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        inflate(getContext(), R.layout.graffiti_layout, this);
-        mTextFrame = findViewById(R.id.title_view_frame);
-        titleView = (TextView) findViewById(R.id.title_view);
+
+        inflate(getContext(), ResUtil.getLayoutId("graffiti_layout"), this);
+        mTextFrame = findViewById(ResUtil.getId("title_view_frame"));
+        titleView = (TextView) findViewById(ResUtil.getId("title_view"));
         titleView.setTextColor(Color.RED);
         titleView.setOnTouchListener(new MultiTouchListener());
-        doodleView = (GraffitiSurface) findViewById(R.id.doodle_view);
+        doodleView = (GraffitiSurface) findViewById(ResUtil.getId("doodle_view"));
     }
     private static String path = "";
 

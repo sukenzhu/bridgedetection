@@ -15,7 +15,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
-            android:text="TEST TITLE test title"
+            android:text=""
             android:textColor="#ffffff"
             android:textIsSelectable="false" />
     </FrameLayout>

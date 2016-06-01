@@ -322,8 +322,8 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 								GpsData gpsData = new GpsData();
 								gpsData.setId(Long.parseLong(qhId));
 								gpsData.setQhlx(qhlx);
-								gpsData.setGpsX(result.latitude);
-								gpsData.setGpsY(result.longitude);
+								gpsData.setGpsX(result.longitude);
+								gpsData.setGpsY(result.latitude);
 								new GpsDataDao().create(gpsData);
 							}
 						}
