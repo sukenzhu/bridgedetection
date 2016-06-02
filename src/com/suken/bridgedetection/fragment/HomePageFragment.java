@@ -182,7 +182,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
     @Override
     public void onLocationFinished(LocationResult result) {
 
-        if(((BaseActivity)getActivity()).isDestroyed() || getActivity().isFinishing()){
+        if(getActivity() == null || ((BaseActivity)getActivity()).isDestroyed() || getActivity().isFinishing()){
             return;
         }
 
