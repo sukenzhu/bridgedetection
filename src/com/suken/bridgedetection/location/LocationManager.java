@@ -16,6 +16,7 @@ import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.RequestType;
 import com.suken.bridgedetection.activity.BaseActivity;
+import com.suken.bridgedetection.activity.BridgeFormActivity;
 import com.suken.bridgedetection.activity.HomePageActivity;
 import com.suken.bridgedetection.http.HttpTask;
 import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
@@ -120,6 +121,9 @@ public class LocationManager implements OnReceivedHttpResponseListener {
                             + "\t经度:" + longitude + "\n\t精度:" + accuracy
                             + "\n\t速度:" + speed + "\n\t更新时间:" + dateString);
                     mLastBDLocation = result;
+                    if(BridgeDetectionApplication.getInstance().mCurrentActivity instanceof BridgeFormActivity){
+                        ((BridgeFormActivity) BridgeDetectionApplication.getInstance().mCurrentActivity).onLocationSucess(result);
+                    }
                 } else {
                     Log.w("LocationManager", "syncLocation Failed!");
                 }

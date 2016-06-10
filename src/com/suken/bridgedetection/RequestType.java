@@ -14,7 +14,8 @@ public enum RequestType {
             "/m/check/inspect/uploadTun.ht"), updateGpsgjInfo("上传GPS轨迹信息",
             "/m/gps/subGPSDatas.ht"), uploadFile("上传附件",
             "/m/file/upload.ht"), updateGps("更新gps",
-            "/m/base/updateGPS.ht"), syncData("同步基础数据", "/m/base/synBaseData.ht");
+            "/m/base/updateGPS.ht"), syncData("同步基础数据", "/m/base/synBaseData.ht"),remainNotCheck(
+            "剩余还没检查", "/m/check/ofencheck/getTodoBrgCheck.ht");
 
     private String desc;
     private String url;

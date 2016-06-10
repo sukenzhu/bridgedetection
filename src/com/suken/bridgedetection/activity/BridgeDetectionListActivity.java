@@ -274,7 +274,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			}
 			mHdList.setVisibility(View.GONE);
 			mListTitleHd.setVisibility(View.GONE);
-			mQlListTitleText.setText(" 桥梁(" + mCurrentNum + "/" + data.size() + ")");
+			mQlListTitleText.setText(" 桥梁巡查(" + mCurrentNum + "/" + data.size() + ")");
 			switchPanel(mListTitleQl);
 			break;
 		}
@@ -319,6 +319,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		case R.drawable.suidaojiancha:
 		case R.drawable.suidaoxuncha: {
 			row1.setText("隧道桩号");
+			row2.setText("隧道名称");
 			row3.setText("隧道标识");
 			List<SDBaseData> qlBaseData = mListArray;
 			if (qlBaseData != null && qlBaseData.size() > 0) {
@@ -339,7 +340,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			mListTitleHd.setVisibility(View.GONE);
 			mListTitleQl.setSelected(true);
 			mListTitleQl.requestFocus();
-			mQlListTitleText.setText(" 隧道(" + mCurrentNum + "/" + data.size() + ")");
+			mQlListTitleText.setText(" 隧道"+ ((mType == R.drawable.suidaojiancha)? "检查":"巡查")+"(" + mCurrentNum + "/" + data.size() + ")");
 			break;
 		}
 		}

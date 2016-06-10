@@ -253,6 +253,65 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 
 	}
 
+	public void onLocationSucess(LocationResult result){
+		mGpsTv.setText("gps定位成功!");
+		mGpsTv.setTextColor(Color.WHITE);
+		mIsGpsSuccess = true;
+		if (bean != null && mType == R.drawable.qiaoliangjiancha) {
+
+			String qhlx = "b";
+			double baseX = -1d;
+			double baseY = -1d;
+
+			if (bean instanceof QLBaseData) {
+				qhlx = "b";
+				baseX = ((QLBaseData) bean).getGpsX();
+				baseY = ((QLBaseData) bean).getGpsY();
+				boolean needUpdateGps = false;
+				String kjfl = ((QLBaseData) bean).getQlkjfl();
+				int kjflInt = 4;
+				if (!TextUtils.isEmpty(kjfl)) {
+					kjflInt = Integer.parseInt(kjfl);
+				}
+				double distance = 50;
+				switch (kjflInt) {
+					case 1:
+						distance = 1000;
+						break;
+					case 2:
+						distance = 350;
+						break;
+					case 3:
+						distance = 100;
+						break;
+					case 4:
+						distance = 50;
+						break;
+					default:
+						break;
+				}
+
+				if (baseX <= 0 || baseY <= 0) {
+					needUpdateGps = true;
+				} else {
+					double distance1 = UiUtil.getDistance(baseX, baseY, result.latitude, result.longitude);
+					if (distance1 > distance) {
+						needUpdateGps = true;
+						toast("当前误差为：" + distance1 + "千米，允许误差范围为：" + distance + "米");
+					}
+				}
+				if (needUpdateGps) {
+					GpsData gpsData = new GpsData();
+					gpsData.setId(Long.parseLong(qhId));
+					gpsData.setQhlx(qhlx);
+					gpsData.setGpsX(result.longitude);
+					gpsData.setGpsY(result.latitude);
+					new GpsDataDao().create(gpsData);
+				}
+			}
+		}
+	}
+
 	private void syncLocation() {
 		LocationManager.getInstance().syncLocation(new OnLocationFinishedListener() {
 
@@ -272,62 +331,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 						}
 					});
 				} else {
-					mGpsTv.setText("gps定位成功!");
-					mGpsTv.setTextColor(Color.WHITE);
-					mIsGpsSuccess = true;
-					if (bean != null && mType == R.drawable.qiaoliangjiancha) {
-
-						String qhlx = "b";
-						double baseX = -1d;
-						double baseY = -1d;
-
-						if (bean instanceof QLBaseData) {
-							qhlx = "b";
-							baseX = ((QLBaseData) bean).getGpsX();
-							baseY = ((QLBaseData) bean).getGpsY();
-							boolean needUpdateGps = false;
-							String kjfl = ((QLBaseData) bean).getQlkjfl();
-							int kjflInt = 4;
-							if (!TextUtils.isEmpty(kjfl)) {
-								kjflInt = Integer.parseInt(kjfl);
-							}
-							double distance = 50;
-							switch (kjflInt) {
-							case 1:
-								distance = 1000;
-								break;
-							case 2:
-								distance = 350;
-								break;
-							case 3:
-								distance = 100;
-								break;
-							case 4:
-								distance = 50;
-								break;
-							default:
-								break;
-							}
-
-							if (baseX <= 0 || baseY <= 0) {
-								needUpdateGps = true;
-							} else {
-								double distance1 = UiUtil.getDistance(baseX, baseY, result.latitude, result.longitude);
-								if (distance1 > distance) {
-									needUpdateGps = true;
-									toast("当前误差为：" + distance1 + "千米，允许误差范围为：" + distance + "米");
-								}
-							}
-							if (needUpdateGps) {
-								GpsData gpsData = new GpsData();
-								gpsData.setId(Long.parseLong(qhId));
-								gpsData.setQhlx(qhlx);
-								gpsData.setGpsX(result.longitude);
-								gpsData.setGpsY(result.latitude);
-								new GpsDataDao().create(gpsData);
-							}
-						}
-					}
+					onLocationSucess(result);
 				}
 			}
 		});

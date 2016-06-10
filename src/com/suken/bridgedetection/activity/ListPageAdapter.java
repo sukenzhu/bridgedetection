@@ -100,27 +100,26 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
                         intent.putExtra("qhInfo", (SDBaseData) bean.realBean);
                     }
                     intent.putExtra("type", mType);
-                    boolean flag = (TextUtils.equals(status, "0") && (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.suidaojiancha || mType == R.drawable.suidaoxuncha));
-                    if (flag) {
-                        long localId = -1;
-                        if(mType != R.drawable.suidaoxuncha) {
-                            CheckFormData  a = new CheckFormAndDetailDao().queryLastUpdateByTypeAndId(bean.id, mType, qllx);
-                            if(a != null) {
-                                localId = a.getLocalId();
-                            }
-                            bean.mLastFormData = a;
-                        } else {
-                            SdxcFormData a = new SdxcFormAndDetailDao().queryLastUpdateByTypeAndId(bean.id, mType);
-                            if(a != null) {
-                                localId = a.getLocalId();
-                            }
-                            bean.mLastFormData = a;
+                    boolean flag = (mType == R.drawable.qiaoliangjiancha || mType == R.drawable.suidaojiancha || mType == R.drawable.suidaoxuncha);
+                    long localId = -1;
+                    if(mType != R.drawable.suidaoxuncha) {
+                        CheckFormData  a = new CheckFormAndDetailDao().queryLastUpdateByTypeAndId(bean.id, mType, qllx);
+                        if(a != null) {
+                            localId = a.getLocalId();
                         }
-                        if (bean.mLastFormData != null) {
-                            intent.putExtra("localId", localId);
-                            intent.putExtra("isCheckAgain", true);
-                            intent.putExtra("isLastUpdate", true);
+                        bean.mLastFormData = a;
+                    } else {
+                        SdxcFormData a = new SdxcFormAndDetailDao().queryLastUpdateByTypeAndId(bean.id, mType);
+                        if(a != null) {
+                            localId = a.getLocalId();
                         }
+                        bean.mLastFormData = a;
+                    }
+
+                    if (flag && bean.mLastFormData != null) {
+                        intent.putExtra("localId", localId);
+                        intent.putExtra("isCheckAgain", true);
+                        intent.putExtra("isLastUpdate", true);
                     } else if (TextUtils.equals(status, "2")) {
                         intent.putExtra("localId", bean.lastEditLocalId);
                         intent.putExtra("isCheckAgain", true);
