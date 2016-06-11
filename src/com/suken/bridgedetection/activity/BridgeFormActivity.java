@@ -811,8 +811,12 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				data.setQhmc(qlmcEv.getText().toString());
 				data.setQhid(qhId);
 				data.setQhbm(qlbhEv.getText().toString());
-				data.setPrePddj(((YWDictionaryInfo) lastPddj.getSelectedItem()).getItemValue() + "");
-				data.setPddj(((YWDictionaryInfo) pddj.getSelectedItem()).getItemValue() + "");
+				if(lastPddj != null && lastPddj.getSelectedItem() != null) {
+					data.setPrePddj(((YWDictionaryInfo) lastPddj.getSelectedItem()).getItemValue() + "");
+				}
+				if(pddj != null && pddj.getSelectedItem() != null) {
+					data.setPddj(((YWDictionaryInfo) pddj.getSelectedItem()).getItemValue() + "");
+				}
 				LocationResult re = LocationManager.getInstance().getLastLocationResult();
 				if(re != null){
 					data.setCus1(re.latitude + "");
