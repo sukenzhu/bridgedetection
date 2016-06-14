@@ -21,18 +21,25 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.suken.bridgedetection.BridgeDetectionApplication;
 import com.suken.bridgedetection.Constants;
 import com.suken.bridgedetection.R;
+import com.suken.bridgedetection.RequestType;
 import com.suken.bridgedetection.activity.BaseActivity;
 import com.suken.bridgedetection.activity.BridgeDetectionListActivity;
+import com.suken.bridgedetection.http.HttpTask;
+import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
 import com.suken.bridgedetection.location.LocationManager;
 import com.suken.bridgedetection.location.LocationResult;
 import com.suken.bridgedetection.location.OnLocationFinishedListener;
 import com.suken.bridgedetection.storage.*;
 import com.suken.bridgedetection.util.OnSyncDataFinishedListener;
 import com.suken.bridgedetection.util.UiUtil;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -272,7 +279,6 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
                 final int count6 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_AGAIN);
                 final int count7 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_AGAIN);
 
-                final int qljxNoCount = new QLBaseDataDao().countAll() + new HDBaseDataDao().countAll() - count1 - count5;
                 final int sdjcNoCount = new SDBaseDataDao().countAll() - count2 - count6;
                 final int sdxcNoCount = new SDBaseDataDao().countAll() - count4 - count7;
                 boolean showGpsGjWarn = SharePreferenceManager.getInstance().readBoolean(BridgeDetectionApplication.mCurrentUser.getUserId() + "gpsGjFail", false);
@@ -318,44 +324,90 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
                             } else {
                                 tipLayout4.setVisibility(View.GONE);
                             }
-                            Calendar cal = Calendar.getInstance();
-                            cal.setTimeInMillis(System.currentTimeMillis());
-                            int day = cal.get(Calendar.DAY_OF_MONTH);
-                            int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                            if (qljxNoCount + sdjcNoCount + sdxcNoCount > 0 && maxDay - day <= 7) {
-                                String ns = Context.NOTIFICATION_SERVICE;
-                                NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(ns);
-                                // 定义通知栏展现的内容信息
-                                int icon = R.drawable.ic_launcher;
-                                CharSequence tickerText = "提醒";
-                                long when = System.currentTimeMillis();
-                                Notification notification = new Notification(icon, tickerText, when);
 
-                                // 定义下拉通知栏时要展现的内容信息
-                                Context context = getActivity();
-                                CharSequence contentTitle = "本月剩余未检查提醒";
-                                StringBuilder sb = new StringBuilder();
-                                if (qljxNoCount > 0) sb.append("桥梁检查剩余：" + qljxNoCount + "，");
-                                if (sdjcNoCount > 0) sb.append("隧道检查剩余：" + sdjcNoCount + "，");
-                                if (sdxcNoCount > 0) sb.append("隧道巡查剩余：" + sdxcNoCount);
-                                CharSequence contentText = sb.toString();
-                                // Intent notificationIntent = new Intent(getActivity(),
-                                // BootStartDemo.class);
-                                // PendingIntent contentIntent =
-                                // PendingIntent.getActivity(this, 0,
-                                // notificationIntent, 0);
-                                notification.setLatestEventInfo(context, contentTitle, contentText, null);
-                                // 用mNotificationManager的notify方法通知用户生成标题栏消息通知
-                                mNotificationManager.notify(1, notification);
-                                Vibrator vib = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
-                                vib.vibrate(300);
-                                Toast.makeText(getActivity(), contentText, Toast.LENGTH_LONG).show();
-                            }
                         }catch (Throwable throwable){
 
                         }
                     }
                 });
+
+
+                OnReceivedHttpResponseListener responseListener = new OnReceivedHttpResponseListener() {
+                    @Override
+                    public void onRequestSuccess(RequestType type, JSONObject result) {
+
+                        JSONArray array = result.getJSONArray("datas");
+                        int qlCount = 0;
+                        int hdCount = 0;
+
+                        if(array == null){
+                            return;
+                        }
+
+                        for(int i = 0;i < array.size(); i++){
+                            JSONObject object = array.getJSONObject(i);
+                            if("b".equals(object.getString("qhlx"))){
+                                qlCount++;
+                            } else if("c".equals(object.getString("qhlx"))){
+                                hdCount++;
+                            }
+                        }
+
+                        if (qlCount + hdCount + sdjcNoCount + sdxcNoCount > 0) {
+                           final  StringBuilder sb = new StringBuilder();
+                            if (qlCount > 0) sb.append("桥梁检查剩余：" + qlCount + "，");
+                            if (hdCount > 0) sb.append("涵洞检查剩余：" + hdCount + "，");
+                            if (sdjcNoCount > 0) sb.append("隧道检查剩余：" + sdjcNoCount + "，");
+                            if (sdxcNoCount > 0) sb.append("隧道巡查剩余：" + sdxcNoCount);
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String ns = Context.NOTIFICATION_SERVICE;
+                                    NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(ns);
+                                    // 定义通知栏展现的内容信息
+                                    int icon = R.drawable.ic_launcher;
+                                    CharSequence tickerText = "提醒";
+                                    long when = System.currentTimeMillis();
+                                    Notification notification = new Notification(icon, tickerText, when);
+
+                                    // 定义下拉通知栏时要展现的内容信息
+                                    Context context = getActivity();
+                                    CharSequence contentTitle = "本月剩余未检查提醒";
+                                    CharSequence contentText = sb.toString();
+                                    notification.setLatestEventInfo(context, contentTitle, contentText, null);
+                                    // 用mNotificationManager的notify方法通知用户生成标题栏消息通知
+                                    mNotificationManager.notify(1, notification);
+                                    Vibrator vib = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+                                    vib.vibrate(300);
+                                    Toast.makeText(getActivity(), contentText, Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+                    }
+
+                    @Override
+                    public void onRequestFail(RequestType type, String resultCode, String result) {
+
+                    }
+                };
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(System.currentTimeMillis());
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+                if(maxDay - day <= 7) {
+                    List<NameValuePair> list = new ArrayList<NameValuePair>();
+                    BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
+                    list.add(pair);
+                    pair = new BasicNameValuePair("token", BridgeDetectionApplication.mCurrentUser.getToken());
+                    list.add(pair);
+                    new HttpTask(responseListener, RequestType.remainNotCheck).executePost(list);
+                }
+
+
             }
         });
     }
