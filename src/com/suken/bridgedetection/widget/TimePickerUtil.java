@@ -103,6 +103,10 @@ public class TimePickerUtil implements View.OnClickListener {
             }
         });
 
-        builder.show();
+        try {
+            builder.show();
+        }catch (Throwable e){
+
+        }
     }
 }

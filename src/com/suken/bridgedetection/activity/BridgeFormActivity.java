@@ -1,8 +1,10 @@
 package com.suken.bridgedetection.activity;
 
 import java.io.File;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -294,10 +296,15 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 				if (baseX <= 0 || baseY <= 0) {
 					needUpdateGps = true;
 				} else {
-					double distance1 = UiUtil.getDistance(baseX, baseY, result.latitude, result.longitude);
+					double distance1 = UiUtil.getDistance(baseX, baseY, result.longitude, result.latitude);
 					if (distance1 > distance) {
 						needUpdateGps = true;
-						toast("当前误差为：" + distance1 + "千米，允许误差范围为：" + distance + "米");
+						DecimalFormat formater = new DecimalFormat();
+						//保留几位小数
+						formater.setMaximumFractionDigits(2);
+						//模式  四舍五入
+						formater.setRoundingMode(RoundingMode.UP);
+						toast("当前误差为：" + formater.format(distance1) + "千米，允许误差范围为：" + distance + "米");
 					}
 				}
 				if (needUpdateGps) {
@@ -600,6 +607,13 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 		if (mType != R.drawable.qiaoliangjiancha) {
 			findViewById(R.id.pddj_layout).setVisibility(View.GONE);
 		}
+
+		if(BridgeDetectionApplication.mCurrentUser == null){
+			finish();
+			startActivity(new Intent(this, LoginActivity.class));
+			return;
+		}
+
 		jlr.setText(BridgeDetectionApplication.mCurrentUser.getUserName());
 		List<YWDictionaryInfo> dinfos = new YWDictionaryDao().queryByTypeId(mIsHanDong?"10000003280009":"10000000240017");
 		lastPddj.setAdapter(new DictionarySpinnerAdapter(this, dinfos));

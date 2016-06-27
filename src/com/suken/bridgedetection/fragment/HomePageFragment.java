@@ -195,8 +195,8 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
 
         if (result.isSuccess) {
             mIsGpsSuccess = true;
-            mjingdu.setText("经度:" + result.latitude);
-            mWeidu.setText("纬度:" + result.longitude);
+            mjingdu.setText("经度:" + result.longitude);
+            mWeidu.setText("纬度:" + result.latitude);
             TextView tv = (TextView) getActivity().findViewById(R.id.syncLocationTv);
             tv.setText("定位成功");
             tv.setTextColor(Color.WHITE);
@@ -275,12 +275,6 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
                 final int count3 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangxuncha, Constants.STATUS_UPDATE);
                 final int count4 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_UPDATE);
 
-                final int count5 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.qiaoliangjiancha, Constants.STATUS_AGAIN);
-                final int count6 = new CheckFormAndDetailDao().countTypeAndStatus(R.drawable.suidaojiancha, Constants.STATUS_AGAIN);
-                final int count7 = new SdxcFormAndDetailDao().countTypeAndStatus(R.drawable.suidaoxuncha, Constants.STATUS_AGAIN);
-
-                final int sdjcNoCount = new SDBaseDataDao().countAll() - count2 - count6;
-                final int sdxcNoCount = new SDBaseDataDao().countAll() - count4 - count7;
                 boolean showGpsGjWarn = SharePreferenceManager.getInstance().readBoolean(BridgeDetectionApplication.mCurrentUser.getUserId() + "gpsGjFail", false);
                 GpsGjDataDao gjDataDao = new GpsGjDataDao();
                 int failCount = gjDataDao.countQueryGpsData();
@@ -339,6 +333,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
                         JSONArray array = result.getJSONArray("datas");
                         int qlCount = 0;
                         int hdCount = 0;
+                        int sdjcNoCount = 0;
 
                         if(array == null){
                             return;
@@ -350,15 +345,16 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
                                 qlCount++;
                             } else if("c".equals(object.getString("qhlx"))){
                                 hdCount++;
+                            } else if("f".equals(object.getString("qhlx"))){
+                                sdjcNoCount++;
                             }
                         }
 
-                        if (qlCount + hdCount + sdjcNoCount + sdxcNoCount > 0) {
+                        if (qlCount + hdCount + sdjcNoCount > 0) {
                            final  StringBuilder sb = new StringBuilder();
-                            if (qlCount > 0) sb.append("桥梁检查剩余：" + qlCount + "，");
-                            if (hdCount > 0) sb.append("涵洞检查剩余：" + hdCount + "，");
-                            if (sdjcNoCount > 0) sb.append("隧道检查剩余：" + sdjcNoCount + "，");
-                            if (sdxcNoCount > 0) sb.append("隧道巡查剩余：" + sdxcNoCount);
+                            if (qlCount > 0) sb.append("未检查桥梁" + qlCount + "座");
+                            if (hdCount > 0) sb.append(",涵洞" + hdCount + "道");
+                            if (sdjcNoCount > 0) sb.append(",隧道" + sdjcNoCount + "道");
 
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -451,7 +447,11 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
                 }
             });
             dialog.setCancelable(false);
-            dialog.show();
+            try {
+                dialog.show();
+            }catch (Throwable e){
+
+            }
         } else {
             LocationManager.getInstance().syncLocation(this);
         }

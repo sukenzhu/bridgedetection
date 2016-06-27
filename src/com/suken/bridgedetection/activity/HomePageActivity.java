@@ -100,7 +100,11 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 			break;
 		case R.id.left_frag_exit: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("退出").setMessage("确定退出？").setPositiveButton("确定", this).setNegativeButton("取消", this).show();
+			try {
+				builder.setTitle("退出").setMessage("确定退出？").setPositiveButton("确定", this).setNegativeButton("取消", this).show();
+			}catch (Throwable e){
+
+			}
 		}
 			break;
 		case R.id.left_frag_gps: {
@@ -186,7 +190,11 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 							}
 						}
 					};
-					builder.setTitle("更新").setMessage("检测更新失败，是否重试？").setPositiveButton("确定", listener).setNegativeButton("取消", listener).show();
+					try {
+						builder.setTitle("更新").setMessage("检测更新失败，是否重试？").setPositiveButton("确定", listener).setNegativeButton("取消", listener).show();
+					}catch (Throwable e){
+
+					}
 				}
 			});
 		} else if (type == RequestType.exit) {
