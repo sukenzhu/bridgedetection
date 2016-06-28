@@ -513,7 +513,7 @@ public class UiUtil {
                 }
             };
             data.setStatus("2");
-            data.setTjsj(UiUtil.formatNowTime());
+            //data.setTjsj(UiUtil.formatNowTime());
             String json = new String(JSON.toJSONString(data));
             if (type == R.drawable.qiaoliangjiancha) {
                 GpsData gpsData = new GpsDataDao().queryGpsData(Long.parseLong(qhId), data.getQhlx());

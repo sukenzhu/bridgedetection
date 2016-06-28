@@ -13,6 +13,8 @@ public class ListBean {
 	public String status;
 	public String id;
 	public int type;
+
+	public int mtimes;
 	
 	public Object realBean;
 	public Object mLastFormData;

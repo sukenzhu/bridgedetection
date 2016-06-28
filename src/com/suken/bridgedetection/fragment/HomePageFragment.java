@@ -345,17 +345,18 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
                                 qlCount++;
                             } else if("c".equals(object.getString("qhlx"))){
                                 hdCount++;
-                            } else if("f".equals(object.getString("qhlx"))){
+                            } else if("t".equals(object.getString("qhlx"))){
                                 sdjcNoCount++;
                             }
                         }
 
                         if (qlCount + hdCount + sdjcNoCount > 0) {
                            final  StringBuilder sb = new StringBuilder();
-                            if (qlCount > 0) sb.append("未检查桥梁" + qlCount + "座");
-                            if (hdCount > 0) sb.append(",涵洞" + hdCount + "道");
-                            if (sdjcNoCount > 0) sb.append(",隧道" + sdjcNoCount + "道");
+                            if (qlCount > 0) sb.append("未检查桥梁" + qlCount + "座,");
+                            if (hdCount > 0) sb.append("涵洞" + hdCount + "道,");
+                            if (sdjcNoCount > 0) sb.append("隧道" + sdjcNoCount + "道,");
 
+                            sb.deleteCharAt(sb.length() - 1);
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

@@ -291,6 +291,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 					bean.qhmc = bd.getHdmc();
 					bean.qhzh = bd.getZxzh();
 					bean.type = mType;
+					bean.mtimes = bd.getMtimes();
 					mHdCurrentNum = initStatus(bean, bd, bean.type);
 					hdData.add(bean);
 				}
@@ -308,6 +309,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 					bean.qhmc = bd.getQlmc();
 					bean.qhzh = bd.getZxzh();
 					bean.type = mType;
+					bean.mtimes = bd.getMtimes();
 					mCurrentNum = initStatus(bean, bd, bean.type);
 					data.add(bean);
 				}
@@ -332,6 +334,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 					bean.qhmc = bd.getSdmc();
 					bean.qhzh = bd.getZxzh();
 					bean.type = mType;
+					bean.mtimes = bd.getMtimes();
 					mCurrentNum = initStatus(bean, bd, bean.type);
 					data.add(bean);
 				}

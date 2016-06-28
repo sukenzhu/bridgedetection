@@ -66,6 +66,17 @@ public class SDBaseData implements Serializable{
 	@DatabaseField(id = true)
 	private String localId;
 
+	@DatabaseField
+	private int mtimes = 0;
+
+	public int getMtimes() {
+		return mtimes;
+	}
+
+	public void setMtimes(int mtimes) {
+		this.mtimes = mtimes;
+	}
+
 	public String getLocalId() {
 		return localId;
 	}

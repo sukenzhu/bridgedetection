@@ -142,7 +142,13 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
     private void changeView(String status, ViewHolder holder) {
         holder.operate.setVisibility(View.VISIBLE);
         holder.colorCircle.setVisibility(View.VISIBLE);
-        if (TextUtils.equals(status, Constants.STATUS_CHECK)) {
+        boolean isChecked = false;
+        if(holder.bean.realBean instanceof HDBaseData){
+            isChecked = holder.bean.mtimes > 1;
+        } else {
+            isChecked = holder.bean.mtimes > 0;
+        }
+        if (TextUtils.equals(status, Constants.STATUS_CHECK) && !isChecked) {
             holder.operate.setBackgroundColor(Color.parseColor("#c0c0c0"));
             holder.operate.setText(mType == R.drawable.suidaoxuncha ? "开始巡查" : "开始检查");
             holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_gray);
@@ -150,7 +156,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
             holder.operate.setBackgroundColor(Color.parseColor("#ff9900"));
             holder.operate.setText("上传");
             holder.colorCircle.setBackgroundResource(R.drawable.circle_view_bg_yellow);
-        } else if (TextUtils.equals(status, Constants.STATUS_AGAIN)) {
+        } else if (TextUtils.equals(status, Constants.STATUS_AGAIN) || isChecked) {
             holder.operate.setBackgroundColor(Color.parseColor("#199847"));
             if (mType == R.drawable.qiaoliangxuncha) {
                 holder.operate.setText("查看");
@@ -193,6 +199,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
         TextView lxbm;
         TextView lxmc;
         View colorCircle;
+        TextView times;
         Button operate;
         ListBean bean;
 
@@ -211,6 +218,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
             holder.lxmc = (TextView) view.findViewById(R.id.lxmc);
             holder.operate = (Button) view.findViewById(R.id.operator);
             holder.colorCircle = view.findViewById(R.id.color_circle);
+            holder.times = (TextView) view.findViewById(R.id.times);
         } else {
             holder = (ViewHolder) view.getTag();
         }
@@ -237,7 +245,16 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
         holder.operate.setTag(holder.bean);
         holder.operate.setOnClickListener(mItemClickListener);
         view.setOnLongClickListener(mItemLongClickListener);
-        if (!TextUtils.equals(holder.bean.status, "0")) {
+
+        boolean isChecked = false;
+        if(holder.bean.realBean instanceof HDBaseData){
+            isChecked = holder.bean.mtimes > 1;
+        } else {
+            isChecked = holder.bean.mtimes > 0;
+        }
+        holder.times.setVisibility(holder.bean.mtimes > 0 ?View.VISIBLE : View.GONE);
+        holder.times.setText("(" +holder.bean.mtimes+")");
+        if (!TextUtils.equals(holder.bean.status, "0") || isChecked) {
             changeView(holder.bean.status, holder);
         } else {
             holder.operate.setVisibility(View.GONE);
