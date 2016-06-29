@@ -21,6 +21,7 @@ import com.suken.bridgedetection.storage.SDBaseData;
 import com.suken.bridgedetection.storage.SDBaseDataDao;
 import com.suken.bridgedetection.storage.SdxcFormAndDetailDao;
 import com.suken.bridgedetection.storage.SdxcFormData;
+import com.suken.bridgedetection.util.OnSyncDataFinishedListener;
 import com.suken.bridgedetection.util.UiUtil;
 
 import android.app.AlertDialog;
@@ -395,7 +396,14 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					UiUtil.syncData(BridgeDetectionListActivity.this, which == 1);
+					UiUtil.syncData(BridgeDetectionListActivity.this, which == 1, new OnSyncDataFinishedListener() {
+						@Override
+						public void onSyncFinished(boolean isSuccess) {
+							if(isSuccess){
+								loadData();
+							}
+						}
+					});
 				}
 			});
 			Dialog dialog = builder.create();

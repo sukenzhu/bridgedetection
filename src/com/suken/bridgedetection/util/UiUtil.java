@@ -285,6 +285,10 @@ public class UiUtil {
 
     }
 
+    public static void syncData(final BaseActivity activity, final boolean isJustLastUpdate, boolean isListPage) {
+        syncData(activity, isJustLastUpdate, null);
+    }
+
     public static void syncData(final BaseActivity activity, final boolean isJustLastUpdate) {
         syncData(activity, isJustLastUpdate, null);
     }

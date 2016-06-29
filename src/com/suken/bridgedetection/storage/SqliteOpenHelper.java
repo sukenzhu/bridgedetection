@@ -14,7 +14,7 @@ public class SqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 	private static final String TABLE_NAME = "bridgedetection.db";
 	private static SqliteOpenHelper instance;
 	private SqliteOpenHelper(Context context) {
-		super(context, TABLE_NAME, null, 9);
+		super(context, TABLE_NAME, null, 10);
 	}
 
 	@Override
