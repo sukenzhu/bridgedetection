@@ -147,10 +147,11 @@ public class LocationManager implements OnReceivedHttpResponseListener {
             @Override
             public void run() {
                 ConnectType type = NetWorkUtil.getConnectType(BridgeDetectionApplication.getInstance());
+                NetWorkUtil.MobileNetworkType mtype = NetWorkUtil.getMobileNetworkType(BridgeDetectionApplication.getInstance());
                 count = mGpsDao.countQueryGpsData();
                 BridgeDetectionApplication.getInstance().write("触发上传:" + count + "   " + force);
 
-                if (type == ConnectType.CONNECT_TYPE_WIFI && count > 0 && (force || count > 50)) {
+                if ((type == ConnectType.CONNECT_TYPE_WIFI || mtype == NetWorkUtil.MobileNetworkType.MOBILE_NETWORK_TYPE_4G) && count > 0 && (force || count > 50)) {
                     List<NameValuePair> list = new ArrayList<NameValuePair>();
                     BasicNameValuePair pair = new BasicNameValuePair("userId", BridgeDetectionApplication.mCurrentUser.getUserId());
                     list.add(pair);
