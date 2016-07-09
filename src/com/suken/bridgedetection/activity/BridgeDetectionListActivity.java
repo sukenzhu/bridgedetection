@@ -62,6 +62,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 	private TextView row3 = null;
 	private TextView row4 = null;
 	private TextView row5 = null;
+	private TextView row6 = null;
 
 	@Override
 	protected void onDestroy() {
@@ -95,6 +96,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		row3 = null;
 		row4 = null;
 		row5 = null;
+		row6 = null;
 	}
 
 	@Override
@@ -124,6 +126,7 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		row3 = (TextView) findViewById(R.id.row3);
 		row4 = (TextView) findViewById(R.id.row4);
 		row5 = (TextView) findViewById(R.id.row5);
+		row6 = (TextView) findViewById(R.id.row6);
 		loadData();
 	}
 
@@ -252,7 +255,8 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			row2.setText("巡查人员");
 			row3.setText("天气");
 			row4.setText("管养单位");
-			row5.setText("检查人");
+			row6.setText("检查人");
+			row5.setVisibility(View.GONE);
 			List<SdxcFormData> list = mListArray;
 			if (list != null && list.size() > 0) {
 				for (SdxcFormData bd : list) {

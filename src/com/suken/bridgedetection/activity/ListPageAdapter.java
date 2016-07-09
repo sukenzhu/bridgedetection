@@ -222,6 +222,12 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
         } else {
             holder = (ViewHolder) view.getTag();
         }
+
+
+        if(mType == R.drawable.qiaoliangxuncha){
+            holder.times.setVisibility(View.GONE);
+            view.findViewById(R.id.times_line).setVisibility(View.GONE);
+        }
         holder.bean = getItem(position);
         view.setTag(holder);
         String qhzh = holder.bean.qhzh;
@@ -252,8 +258,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
         } else {
             isChecked = holder.bean.mtimes > 0;
         }
-        holder.times.setVisibility(holder.bean.mtimes > 0 ?View.VISIBLE : View.GONE);
-        holder.times.setText("(" +holder.bean.mtimes+")");
+        holder.times.setText((isChecked ? (holder.bean.mtimes + "") : "0") + "次");
         if (!TextUtils.equals(holder.bean.status, "0") || isChecked) {
             changeView(holder.bean.status, holder);
         } else {

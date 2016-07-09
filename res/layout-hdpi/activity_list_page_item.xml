@@ -21,32 +21,22 @@
     <LinearLayout
         android:layout_width="180dp"
         android:layout_height="match_parent"
-        android:gravity="center_vertical" >
+        android:gravity="center" >
 
         <View
             android:id="@+id/color_circle"
             android:layout_width="8dp"
             android:layout_height="8dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="6dp"
             android:background="@drawable/circle_view_bg_green" />
-
-        <TextView
-                android:id="@+id/times"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="(2)"
-                android:visibility="gone"
-                android:textColor="#ff0000"
-                android:textSize="13dp" />
-
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginLeft="10dp"
+
             android:text="K41+25.18箱型通道"
             android:textSize="13dp" />
     </LinearLayout>
@@ -58,7 +48,7 @@
 
     <TextView
         android:id="@+id/qhbs"
-        android:layout_width="160dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="G45131081H0650"
@@ -71,7 +61,7 @@
 
     <TextView
         android:id="@+id/lxbm"
-        android:layout_width="150dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="G45"
@@ -81,6 +71,21 @@
         android:layout_width="2px"
         android:layout_height="match_parent"
         android:background="#90808080" />
+
+    <TextView
+            android:id="@+id/times"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="(2)"
+            android:textColor="#ff0000"
+            android:textSize="13dp" />
+
+    <View
+            android:layout_width="2px"
+            android:id="@+id/times_line"
+            android:layout_height="match_parent"
+            android:background="#90808080" />
 
     <LinearLayout
         android:layout_width="match_parent"

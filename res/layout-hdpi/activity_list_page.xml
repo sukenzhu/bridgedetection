@@ -197,7 +197,7 @@
 
             <TextView
                 android:id="@+id/row3"
-                android:layout_width="160dp"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="桥梁编码"
@@ -205,14 +205,22 @@
 
             <TextView
                 android:id="@+id/row4"
-                android:layout_width="150dp"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="路线编码"
                 android:textSize="13dp" />
 
             <TextView
-                android:id="@+id/row5"
+                    android:id="@+id/row5"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="检查次数"
+                    android:textSize="10dp" />
+
+            <TextView
+                android:id="@+id/row6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

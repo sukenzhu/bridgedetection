@@ -101,8 +101,9 @@ public class UiUtil {
             activity.toast("当前无网络，无法同步数据");
             return;
         }
-        if (type != ConnectType.CONNECT_TYPE_WIFI) {
-            activity.toast("当前网络不是WiFi，不同步数据");
+        NetWorkUtil.MobileNetworkType mobileType = NetWorkUtil.getMobileNetworkType(activity);
+        if (type != ConnectType.CONNECT_TYPE_WIFI && mobileType != NetWorkUtil.MobileNetworkType.MOBILE_NETWORK_TYPE_4G) {
+            activity.toast("当前网络不是WiFi和4G，不同步数据");
             return;
         }
         final AtomicInteger flagInt = new AtomicInteger();
