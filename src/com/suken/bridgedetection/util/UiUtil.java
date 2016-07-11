@@ -156,7 +156,7 @@ public class UiUtil {
                             for (CheckFormData data : list) {
                                 data.setType(type1);
                                 data.setLastUpdate(true);
-                                if (data.getZxzh().equals("297.014")) {
+                                if (data.getZxzh().equals("0.02")) {
                                     Log.e("", data.toString());
                                 }
                                 if (TextUtils.isEmpty(data.getGldwId())) {

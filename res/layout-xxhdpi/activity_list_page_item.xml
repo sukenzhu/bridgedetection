@@ -25,6 +25,7 @@
 
         <View
             android:id="@+id/color_circle"
+
             android:layout_width="8dp"
             android:layout_height="8dp"
             android:layout_marginLeft="10dp"

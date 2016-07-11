@@ -40,14 +40,14 @@ public class Constants {
 			"注明继续观察或修复时限或向上级报告情况（手工填写）", "注明继续观察或修复时限或向上级报告情况（手工填写）", "注明继续观察或修复时限或向上级报告情况（手工填写）" };
 
 	public static final String[] hdformDetailItemTexts = new String[] { "情况描述：", "保养措施意见：", "备注：" };
-	public static final String[] hdformDetailNames = new String[] { "进（水）口", "出（水）口", "沉砂井", "涵洞内部", "洞口周围", "涵附近填土", "涵洞结构", "其它" };
+	public static final String[] hdformDetailNames = new String[] { "进（水）口", "出（水）口", "沉砂井", "涵洞内部", "洞口周围", "涵附近填土", "涵洞结构", "其他" };
 	public static final String[] hdformDetailValues = new String[] { "完好或进（水）口是否堵塞", "完好或出（水）口是否堵塞", "完好或有无淤积", "完好或有无淤塞、排水不畅、是否清洁、漏水。", "完好或是否有杂物堆积。",
 			"路基填土是否稳定和完整", "完好或结构有裂缝等病害，有无异常变形，异常的竖向振动、横向摆动，各部件病害情况。", "通道性质参考桥梁填写" };
 	public static final String[] hdformDetailEt2Blanks = new String[] { "注明清除时限和履行的报告情况", "注明清除时限和履行的报告情况", "注明清除时限和履行的报告情况", "注明清除时限和履行的报告情况",
 			"注明清除时限和履行的报告情况", "出现渗水、缺口及时封塞填平", "注明清除时限和履行的报告情况", "注明清除时限和履行的报告情况" };
 	public static final String[] hdformDetailEt3Blanks = new String[] { "说明其他需要说明的问题" };
 
-	public static final String[] sdformDetailNames = new String[] { "洞口", "洞门", "衬砌", "路面", "检修道", "排水设施", "吊顶及各种预埋件", "标志标线轮廓标", "其它" };
+	public static final String[] sdformDetailNames = new String[] { "洞口", "洞门", "衬砌", "路面", "检修道", "排水设施", "吊顶及各种预埋件", "标志标线轮廓标", "其他" };
 	public static final String[] sdformDetailItemTexts = new String[] { "里程桩号：", "缺损内容：", "异常描述：", "判定：", "保养措施意见：" };
 	public static final String[] sdxcformDetailNames = new String[] { "洞口边仰坡", "洞门结构", "内部衬砌", "洞内路面积水", "洞内路面撒落物", "洞顶预埋件和悬吊件", "供配电设施", "照明设施", "通风设施",
 			"消防设施", "监控和通信设施", "其他" };
