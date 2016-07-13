@@ -258,7 +258,7 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
         } else {
             isChecked = holder.bean.mtimes > 0;
         }
-        holder.times.setText((isChecked ? (holder.bean.mtimes + "") : "0") + "次");
+        holder.times.setText(holder.bean.mtimes + "次");
         if (!TextUtils.equals(holder.bean.status, "0") || isChecked) {
             changeView(holder.bean.status, holder);
         } else {
