@@ -201,8 +201,10 @@ public class SdxcFormAndDetailDao {
     public SdxcFormData queryByLocalId(long localId) {
         try {
             SdxcFormData data = mFormDao.queryForId(localId);
-            data.setInspectLogDetailList(queryByFormId(localId));
-            return data;
+            if(data != null) {
+                data.setInspectLogDetailList(queryByFormId(localId));
+                return data;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

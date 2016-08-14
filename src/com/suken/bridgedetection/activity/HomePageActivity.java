@@ -56,7 +56,7 @@ public class HomePageActivity extends BaseActivity implements DialogInterface.On
 		boolean needSync = true;
 		if (!TextUtils.isEmpty(time)) {
 			if (System.currentTimeMillis() - Long.parseLong(time) < 24 * 60 * 60 * 1000) {
-				needSync = false;
+				needSync = true;
 			}
 		}
 		mFragManager = getSupportFragmentManager();

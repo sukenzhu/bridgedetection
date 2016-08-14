@@ -42,7 +42,7 @@ public class HttpTask {
 
     private OnReceivedHttpResponseListener mResponseListener;
 
-    private String getUrl(String suffix) {
+    public static String getUrl(String suffix) {
         String ip = SharePreferenceManager.getInstance().readString("ip", REQUEST_IP);
         String port = SharePreferenceManager.getInstance().readString("port", REQUEST_PORT);
         String portStr = "";

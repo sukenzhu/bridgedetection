@@ -30,6 +30,7 @@ import com.suken.bridgedetection.R;
 import com.suken.bridgedetection.RequestType;
 import com.suken.bridgedetection.activity.BaseActivity;
 import com.suken.bridgedetection.activity.BridgeDetectionListActivity;
+import com.suken.bridgedetection.activity.WebViewActivity;
 import com.suken.bridgedetection.http.HttpTask;
 import com.suken.bridgedetection.http.OnReceivedHttpResponseListener;
 import com.suken.bridgedetection.location.LocationManager;
@@ -141,11 +142,44 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
         list.add(new HomeFragmentItemController(this, mContentView, R.drawable.zhiliangchoujian, "质量抽检"));
         list.add(new HomeFragmentItemController(this, mContentView, R.drawable.zhuanxianggongcheng, "专项工程"));
         list.add(new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangjiancha, "桥梁检查"));
+        if(BridgeDetectionApplication.isHiddenSuidao){
+            View suidaojiancha = mContentView.findViewById(R.drawable.suidaojiancha);
+            View suidaoxuncha = mContentView.findViewById(R.drawable.suidaoxuncha);
+
+            View qiaoliangxuncha = mContentView.findViewById(R.drawable.qiaoliangxuncha);
+            View jidianxuncha = mContentView.findViewById(R.drawable.jidianxuncha);
+            View luzhengxunshi = mContentView.findViewById(R.drawable.luzhengxunshi);
+
+            View yingjishijian = mContentView.findViewById(R.drawable.yingjishijian);
+
+
+            suidaojiancha.setId(R.drawable.qiaoliangxuncha);
+            qiaoliangxuncha.setId(R.drawable.suidaojiancha);
+
+
+            qiaoliangxuncha.setId(R.drawable.luzhengxunshi);
+
+            luzhengxunshi.setId(R.drawable.suidaojiancha);
+
+
+            suidaoxuncha.setId(R.drawable.jidianxuncha);
+
+            jidianxuncha.setId(R.drawable.suidaoxuncha);
+
+            luzhengxunshi.setId(R.drawable.yingjishijian);
+
+            yingjishijian.setId(R.drawable.suidaojiancha);
+
+
+            mContentView.findViewById(R.drawable.suidaoxuncha).setVisibility(View.INVISIBLE);
+            mContentView.findViewById(R.drawable.suidaojiancha).setVisibility(View.INVISIBLE);
+
+        }
         list.add(new HomeFragmentItemController(this, mContentView, R.drawable.suidaojiancha, "隧道检查"));
         list.add(new HomeFragmentItemController(this, mContentView, R.drawable.qiaoliangxuncha, "桥梁巡查"));
         list.add(new HomeFragmentItemController(this, mContentView, R.drawable.suidaoxuncha, "隧道巡查"));
         list.add(new HomeFragmentItemController(this, mContentView, R.drawable.luzhengxunshi, "路政巡视"));
-        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.jidianxuncha, "机电巡查"));
+        list.add(new HomeFragmentItemController(this, mContentView, R.drawable.jidianxuncha, "桥梁抽查"));
         list.add(new HomeFragmentItemController(this, mContentView, R.drawable.yingjishijian, "应急事件"));
     }
 
@@ -181,8 +215,10 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
             Intent intent = new Intent(getActivity(), BridgeDetectionListActivity.class);
             intent.putExtra("type", vid);
             startActivity(intent);
-        } else {
-            toast("敬请期待!");
+        } else if(vid == R.drawable.jidianxuncha) {
+            startActivity(new Intent(getActivity(), WebViewActivity.class));
+        } else  {
+                toast("敬请期待!");
         }
     }
 

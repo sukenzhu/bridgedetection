@@ -732,7 +732,7 @@ public class UiUtil {
         // 设定一个五秒后的时间
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.SECOND, 50);
+        calendar.add(Calendar.MINUTE, 30);
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
     }

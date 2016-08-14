@@ -284,25 +284,11 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 			break;
 		}
 		case R.drawable.qiaoliangjiancha: {
-			List<ListBean> hdData = new ArrayList<ListBean>();
-			List<HDBaseData> hdBaseData = mListArray2;
-			if (hdBaseData != null && hdBaseData.size() > 0) {
-				for (HDBaseData bd : hdBaseData) {
-					ListBean bean = new ListBean();
-					bean.id = bd.getId();
-					bean.lxbm = bd.getLxbh();
-					bean.lxmc = bd.getLxmc();
-					bean.qhbs = bd.getHdbh();
-					bean.qhmc = bd.getHdmc();
-					bean.qhzh = bd.getZxzh();
-					bean.type = mType;
-					bean.mtimes = bd.getMtimes();
-					mHdCurrentNum = initStatus(bean, bd, bean.type);
-					hdData.add(bean);
-				}
-			}
-			mHdListTitleText.setText(" 涵洞(" + mHdCurrentNum + "/" + hdData.size() + ")");
-			mHdList.setAdapter(new ListPageAdapter(this, hdData, mType));
+//			List<ListBean> hdData = new ArrayList<ListBean>();
+
+//			mHdListTitleText.setText(" 涵洞(" + mHdCurrentNum + "/" + hdData.size() + ")");
+//			mHdList.setAdapter(new ListPageAdapter(this, hdData, mType));
+			mListTitleHd.setVisibility(View.GONE);
 			List<QLBaseData> qlBaseData = mListArray;
 			if (qlBaseData != null && qlBaseData.size() > 0) {
 				for (QLBaseData bd : qlBaseData) {
@@ -316,6 +302,22 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 					bean.type = mType;
 					bean.mtimes = bd.getMtimes();
 					mCurrentNum = initStatus(bean, bd, bean.type);
+					data.add(bean);
+				}
+			}
+			List<HDBaseData> hdBaseData = mListArray2;
+			if (hdBaseData != null && hdBaseData.size() > 0) {
+				for (HDBaseData bd : hdBaseData) {
+					ListBean bean = new ListBean();
+					bean.id = bd.getId();
+					bean.lxbm = bd.getLxbh();
+					bean.lxmc = bd.getLxmc();
+					bean.qhbs = bd.getHdbh();
+					bean.qhmc = bd.getHdmc();
+					bean.qhzh = bd.getZxzh();
+					bean.type = mType;
+					bean.mtimes = bd.getMtimes();
+					mHdCurrentNum = initStatus(bean, bd, bean.type);
 					data.add(bean);
 				}
 			}
