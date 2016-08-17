@@ -24,6 +24,7 @@ public class WebViewActivity extends Activity {
         webView = (WebView) findViewById(R.id.webview);
         //WebView加载web资源
         webView.loadUrl(HttpTask.getUrl("/sso/m/brgChk/listTree.ht") + "?userId=" + BridgeDetectionApplication.mCurrentUser.getUserId() + "&token=" + BridgeDetectionApplication.mCurrentUser.getToken());
+        webView.getSettings().setJavaScriptEnabled(true);
         //覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
         webView.setWebViewClient(new WebViewClient() {
             @Override
