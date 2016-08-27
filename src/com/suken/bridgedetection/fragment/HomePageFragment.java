@@ -216,6 +216,7 @@ public class HomePageFragment extends BaseFragment implements OnClickListener, O
             intent.putExtra("type", vid);
             startActivity(intent);
         } else if(vid == R.drawable.jidianxuncha) {
+            //内部实现修改
             startActivity(new Intent(getActivity(), WebViewActivity.class));
         } else  {
                 toast("敬请期待!");
