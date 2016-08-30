@@ -256,6 +256,12 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 	}
 
 	public void onLocationSucess(LocationResult result){
+		if(this.isDestroyed() || this.isFinishing()){
+			return;
+		}
+		if(mGpsTv == null){
+			return;
+		}
 		mGpsTv.setText("gps定位成功!");
 		mGpsTv.setTextColor(Color.WHITE);
 		mIsGpsSuccess = true;
