@@ -91,6 +91,9 @@ public class BridgeDetectionApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
     }
 
     public static BridgeDetectionApplication getInstance() {

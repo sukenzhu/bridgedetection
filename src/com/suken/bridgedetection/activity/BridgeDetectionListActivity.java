@@ -501,20 +501,24 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		updateAllList = new ArrayList<ListBean>();
 		if (mList.getVisibility() == View.VISIBLE) {
 			ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
-			List<ListBean> data = adapter.getSourceData();
-			for(ListBean bean : data){
-				if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
-					updateAllList.add(bean);
+			if(adapter != null) {
+				List<ListBean> data = adapter.getSourceData();
+				for (ListBean bean : data) {
+					if (TextUtils.equals(bean.status, Constants.STATUS_UPDATE)) {
+						updateAllList.add(bean);
+					}
 				}
 			}
 		}
 
 		if (mType == R.drawable.qiaoliangjiancha) {
 			ListPageAdapter adapter = (ListPageAdapter) mHdList.getAdapter();
-			List<ListBean> data = adapter.getSourceData();
-			for(ListBean bean : data){
-				if(TextUtils.equals(bean.status, Constants.STATUS_UPDATE)){
-					updateAllList.add(bean);
+			if(adapter != null) {
+				List<ListBean> data = adapter.getSourceData();
+				for (ListBean bean : data) {
+					if (TextUtils.equals(bean.status, Constants.STATUS_UPDATE)) {
+						updateAllList.add(bean);
+					}
 				}
 			}
 		}
