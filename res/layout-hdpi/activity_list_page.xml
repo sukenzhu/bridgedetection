@@ -185,6 +185,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="中心桩号"
+                android:drawableRight="@drawable/sort_arrow"
+                android:paddingRight="10dp"
                 android:textSize="13dp" />
 
             <TextView

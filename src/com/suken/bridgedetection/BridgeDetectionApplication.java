@@ -25,7 +25,7 @@ public class BridgeDetectionApplication extends Application {
     public static boolean mHasCacheUser = false;
     public static boolean mIsOffline = false;
     public static BaseActivity mCurrentActivity = null;
-    public static  boolean isHiddenSuidao = true;
+    public static  boolean isHiddenSuidao = false;
 
 
     @Override

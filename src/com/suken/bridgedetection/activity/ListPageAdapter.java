@@ -1,6 +1,8 @@
 package com.suken.bridgedetection.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.suken.bridgedetection.Constants;
@@ -173,6 +175,8 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
         super();
         this.mType = type;
         this.mContext = mContext;
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+        Collections.sort(data, comparator);
         mSourceData = data;
         mUnfilteredData = data;
     }
@@ -330,6 +334,23 @@ public class ListPageAdapter extends BaseAdapter implements Filterable {
             }
         }
 
+    }
+
+    boolean isUpSort = true;
+    Comparator<ListBean> comparator = new Comparator<ListBean>() {
+        @Override
+        public int compare(ListBean listBean, ListBean t1) {
+            int re = Double.valueOf(listBean.qhzh).compareTo(Double.valueOf(t1.qhzh));
+            return isUpSort ?  re : - re;
+        }
+    };
+
+    public void sortData(){
+        if(mSourceData != null && mSourceData.size() >0) {
+            isUpSort = !isUpSort;
+            Collections.sort(mSourceData, comparator);
+            notifyDataSetChanged();
+        }
     }
 
     public void addData(ListBean bean) {

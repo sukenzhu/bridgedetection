@@ -122,6 +122,15 @@ public class BridgeDetectionListActivity extends BaseActivity implements OnClick
 		mListTitleHd = findViewById(R.id.handong_base_title);
 		findViewById(R.id.back).setOnClickListener(this);
 		row1 = (TextView) findViewById(R.id.row1);
+		row1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				ListPageAdapter adapter = (ListPageAdapter) mList.getAdapter();
+				if(adapter != null){
+					adapter.sortData();
+				}
+			}
+		});
 		row2 = (TextView) findViewById(R.id.row2);
 		row3 = (TextView) findViewById(R.id.row3);
 		row4 = (TextView) findViewById(R.id.row4);

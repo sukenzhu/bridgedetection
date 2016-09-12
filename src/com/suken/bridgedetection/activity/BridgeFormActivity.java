@@ -271,16 +271,21 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 			double baseX = -1d;
 			double baseY = -1d;
 
+			int kjflInt = 4;
+			boolean needUpdateGps = false;
 			if (bean instanceof QLBaseData) {
 				qhlx = "b";
 				baseX = ((QLBaseData) bean).getGpsX();
 				baseY = ((QLBaseData) bean).getGpsY();
-				boolean needUpdateGps = false;
 				String kjfl = ((QLBaseData) bean).getQlkjfl();
-				int kjflInt = 4;
 				if (!TextUtils.isEmpty(kjfl)) {
 					kjflInt = Integer.parseInt(kjfl);
 				}
+			} else if(bean instanceof HDBaseData){
+				qhlx = "c";
+				baseX = ((HDBaseData) bean).getGpsX();
+				baseY = ((HDBaseData) bean).getGpsY();
+			}
 				double distance = 50;
 				switch (kjflInt) {
 					case 1:
@@ -303,7 +308,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 					needUpdateGps = true;
 				} else {
 					double distance1 = UiUtil.getDistance(baseX, baseY, result.longitude, result.latitude);
-					if (distance1 > distance) {
+					if (distance1 > distance && bean instanceof QLBaseData) {
 						needUpdateGps = true;
 						DecimalFormat formater = new DecimalFormat();
 						//保留几位小数
@@ -321,7 +326,7 @@ public class BridgeFormActivity extends BaseActivity implements OnClickListener 
 					gpsData.setGpsY(result.latitude);
 					new GpsDataDao().create(gpsData);
 				}
-			}
+
 		}
 	}
 
